@@ -3,7 +3,14 @@
   "version": "0.1.0",
   "description": "TOTP-based two-factor authentication. Generate secrets, create QR URIs, and verify tokens (RFC 6238).",
   "category": "auth",
-  "tags": ["2fa", "totp", "otp", "authentication", "security", "mfa"],
+  "tags": [
+    "2fa",
+    "totp",
+    "otp",
+    "authentication",
+    "security",
+    "mfa"
+  ],
   "inputs": {
     "issuer": {
       "type": "string",
@@ -42,5 +49,13 @@
       "description": "Verify a TOTP token against a secret"
     }
   },
-  "languages": ["typescript", "python"]
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "composesWith": [
+    "auth-oauth",
+    "sms-send",
+    "email-send"
+  ]
 }

@@ -3,9 +3,17 @@
   "name": "@radzor/realtime-chat",
   "version": "0.1.0",
   "description": "Real-time chat messaging via WebSocket. Supports rooms, typing indicators, message history, and user presence. Works in both browser and Node.js environments.",
-  "languages": ["typescript"],
+  "languages": [
+    "typescript"
+  ],
   "category": "chat",
-  "tags": ["websocket", "realtime", "messaging", "chat", "rooms"],
+  "tags": [
+    "websocket",
+    "realtime",
+    "messaging",
+    "chat",
+    "rooms"
+  ],
   "inputs": [
     {
       "name": "roomId",
@@ -49,27 +57,43 @@
   "events": [
     {
       "name": "onMessage",
-      "payload": { "id": "string", "userId": "string", "content": "string", "timestamp": "number" },
+      "payload": {
+        "id": "string",
+        "userId": "string",
+        "content": "string",
+        "timestamp": "number"
+      },
       "description": "Fired when a new message is received in the room."
     },
     {
       "name": "onUserJoin",
-      "payload": { "userId": "string", "username": "string" },
+      "payload": {
+        "userId": "string",
+        "username": "string"
+      },
       "description": "Fired when a user joins the room."
     },
     {
       "name": "onUserLeave",
-      "payload": { "userId": "string" },
+      "payload": {
+        "userId": "string"
+      },
       "description": "Fired when a user leaves the room."
     },
     {
       "name": "onTyping",
-      "payload": { "userId": "string", "isTyping": "boolean" },
+      "payload": {
+        "userId": "string",
+        "isTyping": "boolean"
+      },
       "description": "Fired when a user starts or stops typing."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired on connection or messaging errors."
     }
   ],
@@ -139,5 +163,9 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Browser environment only. Uses native WebSocket API (not the ws npm package). Requires a WebSocket server. For production, use wss:// (TLS). The server component handles room state and message broadcasting."
-  }
+  },
+  "composesWith": [
+    "video-call",
+    "llm-completion"
+  ]
 }

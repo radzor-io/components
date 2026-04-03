@@ -3,7 +3,14 @@
   "version": "0.1.0",
   "description": "Send push notifications via Firebase Cloud Messaging (FCM) or Apple Push Notification service (APNs).",
   "category": "messaging",
-  "tags": ["push", "notification", "fcm", "apns", "mobile", "messaging"],
+  "tags": [
+    "push",
+    "notification",
+    "fcm",
+    "apns",
+    "mobile",
+    "messaging"
+  ],
   "inputs": {
     "provider": {
       "type": "string",
@@ -34,5 +41,11 @@
       "description": "Send push notification to a topic (FCM only)"
     }
   },
-  "languages": ["typescript", "python"]
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "composesWith": [
+    "queue-worker"
+  ]
 }

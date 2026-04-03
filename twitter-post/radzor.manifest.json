@@ -3,33 +3,128 @@
   "name": "@radzor/twitter-post",
   "version": "0.1.0",
   "description": "Post tweets and threads via the Twitter/X API v2. Supports text, media attachments, and reading timeline data with OAuth 2.0 authentication.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "media",
-  "tags": ["twitter", "x", "social", "tweet", "thread", "api"],
+  "tags": [
+    "twitter",
+    "x",
+    "social",
+    "tweet",
+    "thread",
+    "api"
+  ],
   "inputs": [
-    { "name": "bearerToken", "type": "string", "description": "Twitter API v2 Bearer Token or OAuth 2.0 access token.", "required": true },
-    { "name": "apiKey", "type": "string", "description": "API Key (Consumer Key) for OAuth 1.0a.", "required": false },
-    { "name": "apiSecret", "type": "string", "description": "API Secret for OAuth 1.0a.", "required": false },
-    { "name": "accessToken", "type": "string", "description": "Access Token for OAuth 1.0a.", "required": false },
-    { "name": "accessSecret", "type": "string", "description": "Access Token Secret for OAuth 1.0a.", "required": false }
+    {
+      "name": "bearerToken",
+      "type": "string",
+      "description": "Twitter API v2 Bearer Token or OAuth 2.0 access token.",
+      "required": true
+    },
+    {
+      "name": "apiKey",
+      "type": "string",
+      "description": "API Key (Consumer Key) for OAuth 1.0a.",
+      "required": false
+    },
+    {
+      "name": "apiSecret",
+      "type": "string",
+      "description": "API Secret for OAuth 1.0a.",
+      "required": false
+    },
+    {
+      "name": "accessToken",
+      "type": "string",
+      "description": "Access Token for OAuth 1.0a.",
+      "required": false
+    },
+    {
+      "name": "accessSecret",
+      "type": "string",
+      "description": "Access Token Secret for OAuth 1.0a.",
+      "required": false
+    }
   ],
   "outputs": [
-    { "name": "tweetResult", "type": "TweetResult", "description": "Posted tweet ID, text, and metadata." }
+    {
+      "name": "tweetResult",
+      "type": "TweetResult",
+      "description": "Posted tweet ID, text, and metadata."
+    }
   ],
   "events": [
-    { "name": "onTweeted", "payload": { "tweetId": "string", "text": "string" }, "description": "Fired when a tweet is posted." },
-    { "name": "onError", "payload": { "code": "string", "message": "string" }, "description": "Fired on API errors." }
+    {
+      "name": "onTweeted",
+      "payload": {
+        "tweetId": "string",
+        "text": "string"
+      },
+      "description": "Fired when a tweet is posted."
+    },
+    {
+      "name": "onError",
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
+      "description": "Fired on API errors."
+    }
   ],
   "actions": [
-    { "name": "tweet", "params": [{ "name": "text", "type": "string", "description": "Tweet text (max 280 chars)." }], "returns": "Promise<TweetResult>", "description": "Post a single tweet." },
-    { "name": "thread", "params": [{ "name": "tweets", "type": "string[]", "description": "Array of tweet texts for a thread." }], "returns": "Promise<TweetResult[]>", "description": "Post a thread of tweets." },
-    { "name": "deleteTweet", "params": [{ "name": "tweetId", "type": "string", "description": "Tweet ID to delete." }], "returns": "Promise<void>", "description": "Delete a tweet." }
+    {
+      "name": "tweet",
+      "params": [
+        {
+          "name": "text",
+          "type": "string",
+          "description": "Tweet text (max 280 chars)."
+        }
+      ],
+      "returns": "Promise<TweetResult>",
+      "description": "Post a single tweet."
+    },
+    {
+      "name": "thread",
+      "params": [
+        {
+          "name": "tweets",
+          "type": "string[]",
+          "description": "Array of tweet texts for a thread."
+        }
+      ],
+      "returns": "Promise<TweetResult[]>",
+      "description": "Post a thread of tweets."
+    },
+    {
+      "name": "deleteTweet",
+      "params": [
+        {
+          "name": "tweetId",
+          "type": "string",
+          "description": "Tweet ID to delete."
+        }
+      ],
+      "returns": "Promise<void>",
+      "description": "Delete a tweet."
+    }
   ],
-  "dependencies": { "packages": {}, "radzor": [] },
-  "composability": { "connectsTo": [] },
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": []
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Requires Twitter API v2 access. Tweet text max 280 characters. API rate limits apply."
-  }
+  },
+  "composesWith": [
+    "queue-worker",
+    "llm-completion"
+  ]
 }

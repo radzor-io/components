@@ -3,7 +3,14 @@
   "version": "0.1.0",
   "description": "Generate and parse CSV files from data arrays. Supports custom delimiters, headers, and streaming.",
   "category": "data",
-  "tags": ["csv", "export", "import", "parse", "data", "spreadsheet"],
+  "tags": [
+    "csv",
+    "export",
+    "import",
+    "parse",
+    "data",
+    "spreadsheet"
+  ],
   "inputs": {
     "delimiter": {
       "type": "string",
@@ -37,5 +44,13 @@
       "description": "Write CSV to a file"
     }
   },
-  "languages": ["typescript", "python"]
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "composesWith": [
+    "web-scraper",
+    "pdf-generate",
+    "email-send"
+  ]
 }

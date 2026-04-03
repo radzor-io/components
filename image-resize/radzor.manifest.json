@@ -3,7 +3,14 @@
   "version": "0.1.0",
   "description": "Resize, crop, and transform images using raw pixel manipulation. No external dependencies.",
   "category": "media",
-  "tags": ["image", "resize", "crop", "thumbnail", "transform", "media"],
+  "tags": [
+    "image",
+    "resize",
+    "crop",
+    "thumbnail",
+    "transform",
+    "media"
+  ],
   "inputs": {
     "quality": {
       "type": "number",
@@ -35,5 +42,12 @@
       "description": "Get image dimensions and format info"
     }
   },
-  "languages": ["typescript", "python"]
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "composesWith": [
+    "image-generation",
+    "file-upload"
+  ]
 }

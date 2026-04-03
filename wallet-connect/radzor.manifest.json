@@ -3,7 +3,14 @@
   "version": "0.1.0",
   "description": "Connect to Ethereum wallets (MetaMask, WalletConnect) for Web3 dApps. Client-side only.",
   "category": "security",
-  "tags": ["wallet", "ethereum", "web3", "metamask", "crypto", "blockchain"],
+  "tags": [
+    "wallet",
+    "ethereum",
+    "web3",
+    "metamask",
+    "crypto",
+    "blockchain"
+  ],
   "inputs": {
     "chainId": {
       "type": "number",
@@ -51,5 +58,10 @@
       "description": "Sign a message with the connected wallet"
     }
   },
-  "languages": ["typescript"]
+  "languages": [
+    "typescript"
+  ],
+  "composesWith": [
+    "smart-contract"
+  ]
 }

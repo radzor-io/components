@@ -3,9 +3,19 @@
   "name": "@radzor/rate-limiter",
   "version": "0.1.0",
   "description": "In-memory rate limiting with token bucket and sliding window algorithms. Zero dependencies, automatic cleanup, and HTTP header generation.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "security",
-  "tags": ["rate-limit", "throttle", "api", "security", "token-bucket", "middleware"],
+  "tags": [
+    "rate-limit",
+    "throttle",
+    "api",
+    "security",
+    "token-bucket",
+    "middleware"
+  ],
   "inputs": [
     {
       "name": "algorithm",
@@ -42,17 +52,28 @@
   "events": [
     {
       "name": "onAllowed",
-      "payload": { "key": "string", "remaining": "number" },
+      "payload": {
+        "key": "string",
+        "remaining": "number"
+      },
       "description": "Fired when a request is allowed through."
     },
     {
       "name": "onBlocked",
-      "payload": { "code": "string", "message": "string", "key": "string", "retryAfterMs": "number" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "key": "string",
+        "retryAfterMs": "number"
+      },
       "description": "Fired when a request is rate-limited."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired on internal errors."
     }
   ],
@@ -119,6 +140,11 @@
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "In-memory only — rate limits reset on process restart. For distributed systems, use an external store (Redis). Automatic cleanup prevents memory leaks."
-  }
+    "constraints": "In-memory only \u2014 rate limits reset on process restart. For distributed systems, use an external store (Redis). Automatic cleanup prevents memory leaks."
+  },
+  "composesWith": [
+    "api-key-auth",
+    "auth-oauth",
+    "cache-store"
+  ]
 }

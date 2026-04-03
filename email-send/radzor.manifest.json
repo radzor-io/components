@@ -3,9 +3,19 @@
   "name": "@radzor/email-send",
   "version": "0.1.0",
   "description": "Send transactional emails via Resend, SendGrid, or raw SMTP. Supports HTML/text content, attachments, CC/BCC, reply-to, and batch sending.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "email",
-  "tags": ["email", "resend", "sendgrid", "smtp", "transactional", "notifications"],
+  "tags": [
+    "email",
+    "resend",
+    "sendgrid",
+    "smtp",
+    "transactional",
+    "notifications"
+  ],
   "inputs": [
     {
       "name": "provider",
@@ -68,12 +78,19 @@
   "events": [
     {
       "name": "onSent",
-      "payload": { "id": "string", "status": "string" },
+      "payload": {
+        "id": "string",
+        "status": "string"
+      },
       "description": "Fired when an email is successfully sent or queued."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "provider": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "provider": "string"
+      },
       "description": "Fired when sending fails."
     }
   ],
@@ -116,5 +133,11 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Node.js only. Resend and SendGrid require API keys. SMTP requires server credentials. The from address must be verified with your provider."
-  }
+  },
+  "composesWith": [
+    "queue-worker",
+    "pdf-generate",
+    "two-factor-auth",
+    "stripe-checkout"
+  ]
 }

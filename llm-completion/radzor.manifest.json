@@ -3,9 +3,21 @@
   "name": "@radzor/llm-completion",
   "version": "0.1.0",
   "description": "Universal LLM completion client supporting OpenAI, Anthropic, and Ollama. Provides chat completions, streaming, conversation history, and automatic retries with exponential backoff.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "ai",
-  "tags": ["llm", "openai", "anthropic", "ollama", "chat", "streaming", "ai", "completion"],
+  "tags": [
+    "llm",
+    "openai",
+    "anthropic",
+    "ollama",
+    "chat",
+    "streaming",
+    "ai",
+    "completion"
+  ],
   "inputs": [
     {
       "name": "provider",
@@ -62,17 +74,28 @@
   "events": [
     {
       "name": "onChunk",
-      "payload": { "content": "string", "done": "boolean" },
+      "payload": {
+        "content": "string",
+        "done": "boolean"
+      },
       "description": "Fired for each streamed token. done=true signals the stream is complete."
     },
     {
       "name": "onComplete",
-      "payload": { "content": "string", "model": "string", "finishReason": "string" },
+      "payload": {
+        "content": "string",
+        "model": "string",
+        "finishReason": "string"
+      },
       "description": "Fired when a completion (streamed or non-streamed) finishes."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "provider": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "provider": "string"
+      },
       "description": "Fired when an API call fails after all retries."
     }
   ],
@@ -134,5 +157,13 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Requires an API key for OpenAI and Anthropic. Ollama requires a local instance running. Uses the native fetch API (Node.js 18+ or browser)."
-  }
+  },
+  "composesWith": [
+    "embeddings-store",
+    "speech-to-text",
+    "text-to-speech",
+    "discord-bot",
+    "telegram-bot",
+    "cache-store"
+  ]
 }

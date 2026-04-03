@@ -3,9 +3,20 @@
   "name": "@radzor/speech-to-text",
   "version": "0.1.0",
   "description": "Audio transcription using OpenAI Whisper or Deepgram APIs. Supports file upload, language detection, timestamps, and multiple output formats.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "ai",
-  "tags": ["speech", "transcription", "whisper", "deepgram", "audio", "ai", "stt"],
+  "tags": [
+    "speech",
+    "transcription",
+    "whisper",
+    "deepgram",
+    "audio",
+    "ai",
+    "stt"
+  ],
   "inputs": [
     {
       "name": "provider",
@@ -42,12 +53,19 @@
   "events": [
     {
       "name": "onTranscribed",
-      "payload": { "text": "string", "language": "string", "duration": "number" },
+      "payload": {
+        "text": "string",
+        "language": "string",
+        "duration": "number"
+      },
       "description": "Fired when transcription completes."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired when transcription fails."
     }
   ],
@@ -55,8 +73,16 @@
     {
       "name": "transcribe",
       "params": [
-        { "name": "audio", "type": "Buffer | Blob | string", "description": "Audio data as Buffer, Blob, or file path." },
-        { "name": "options", "type": "TranscribeOptions", "description": "Optional: language, timestamps, response format." }
+        {
+          "name": "audio",
+          "type": "Buffer | Blob | string",
+          "description": "Audio data as Buffer, Blob, or file path."
+        },
+        {
+          "name": "options",
+          "type": "TranscribeOptions",
+          "description": "Optional: language, timestamps, response format."
+        }
       ],
       "returns": "Promise<TranscriptionResult>",
       "description": "Transcribe audio to text."
@@ -70,7 +96,9 @@
     "connectsTo": [
       {
         "output": "transcriptionResult",
-        "compatibleWith": ["@radzor/llm-completion.input.systemPrompt"]
+        "compatibleWith": [
+          "@radzor/llm-completion.input.systemPrompt"
+        ]
       }
     ]
   },
@@ -78,5 +106,10 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Requires API key. Audio size limits: Whisper 25MB, Deepgram varies by plan. Server-side only."
-  }
+  },
+  "composesWith": [
+    "llm-completion",
+    "text-to-speech",
+    "embeddings-store"
+  ]
 }

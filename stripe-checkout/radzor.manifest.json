@@ -3,9 +3,18 @@
   "name": "@radzor/stripe-checkout",
   "version": "0.1.0",
   "description": "Simplified Stripe Checkout integration. Creates checkout sessions, handles payment webhooks, and manages subscription lifecycle.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "payment",
-  "tags": ["stripe", "payment", "checkout", "subscription", "billing"],
+  "tags": [
+    "stripe",
+    "payment",
+    "checkout",
+    "subscription",
+    "billing"
+  ],
   "inputs": [
     {
       "name": "priceId",
@@ -67,22 +76,35 @@
   "events": [
     {
       "name": "onPaymentSuccess",
-      "payload": { "sessionId": "string", "customerId": "string", "amount": "number" },
+      "payload": {
+        "sessionId": "string",
+        "customerId": "string",
+        "amount": "number"
+      },
       "description": "Fired when payment is successfully completed (via webhook)."
     },
     {
       "name": "onPaymentFailed",
-      "payload": { "sessionId": "string", "error": "string" },
+      "payload": {
+        "sessionId": "string",
+        "error": "string"
+      },
       "description": "Fired when payment fails."
     },
     {
       "name": "onSubscriptionCreated",
-      "payload": { "subscriptionId": "string", "customerId": "string", "priceId": "string" },
+      "payload": {
+        "subscriptionId": "string",
+        "customerId": "string",
+        "priceId": "string"
+      },
       "description": "Fired when a new subscription is created."
     },
     {
       "name": "onSubscriptionCanceled",
-      "payload": { "subscriptionId": "string" },
+      "payload": {
+        "subscriptionId": "string"
+      },
       "description": "Fired when a subscription is canceled."
     }
   ],
@@ -152,5 +174,10 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Requires Stripe secret key (server-side) and publishable key (client-side). Webhook endpoint must be publicly accessible. Use STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET environment variables."
-  }
+  },
+  "composesWith": [
+    "webhook-receiver",
+    "email-send",
+    "queue-worker"
+  ]
 }

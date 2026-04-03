@@ -3,7 +3,14 @@
   "version": "0.1.0",
   "description": "WebRTC-based peer-to-peer video calling. Manage local/remote streams, signaling, and call lifecycle.",
   "category": "chat",
-  "tags": ["video", "call", "webrtc", "peer-to-peer", "streaming", "media"],
+  "tags": [
+    "video",
+    "call",
+    "webrtc",
+    "peer-to-peer",
+    "streaming",
+    "media"
+  ],
   "inputs": {
     "iceServers": {
       "type": "array",
@@ -51,5 +58,10 @@
       "description": "Enable/disable video"
     }
   },
-  "languages": ["typescript"]
+  "languages": [
+    "typescript"
+  ],
+  "composesWith": [
+    "realtime-chat"
+  ]
 }

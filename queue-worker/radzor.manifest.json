@@ -3,7 +3,14 @@
   "version": "0.1.0",
   "description": "In-memory job queue with workers, retries, and dead-letter handling. No external dependencies.",
   "category": "automation",
-  "tags": ["queue", "worker", "jobs", "background", "async", "task"],
+  "tags": [
+    "queue",
+    "worker",
+    "jobs",
+    "background",
+    "async",
+    "task"
+  ],
   "inputs": {
     "concurrency": {
       "type": "number",
@@ -49,5 +56,15 @@
       "description": "Stop processing jobs"
     }
   },
-  "languages": ["typescript", "python"]
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "composesWith": [
+    "email-send",
+    "sms-send",
+    "push-notification",
+    "discord-bot",
+    "telegram-bot"
+  ]
 }

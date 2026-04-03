@@ -3,7 +3,13 @@
   "version": "0.1.0",
   "description": "Post to Reddit using the Reddit API. Submit text or link posts and manage comments.",
   "category": "media",
-  "tags": ["reddit", "social", "post", "comments", "api"],
+  "tags": [
+    "reddit",
+    "social",
+    "post",
+    "comments",
+    "api"
+  ],
   "inputs": {
     "clientId": {
       "type": "string",
@@ -47,5 +53,12 @@
       "description": "Add a comment to a post or reply to a comment"
     }
   },
-  "languages": ["typescript", "python"]
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "composesWith": [
+    "queue-worker",
+    "llm-completion"
+  ]
 }

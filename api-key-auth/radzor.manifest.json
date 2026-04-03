@@ -3,7 +3,13 @@
   "version": "0.1.0",
   "description": "API key authentication middleware. Generate, validate, hash, and revoke API keys.",
   "category": "auth",
-  "tags": ["api-key", "authentication", "middleware", "security", "auth"],
+  "tags": [
+    "api-key",
+    "authentication",
+    "middleware",
+    "security",
+    "auth"
+  ],
   "inputs": {
     "headerName": {
       "type": "string",
@@ -44,5 +50,13 @@
       "description": "Revoke an API key"
     }
   },
-  "languages": ["typescript", "python"]
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "composesWith": [
+    "rate-limiter",
+    "auth-oauth",
+    "cache-store"
+  ]
 }

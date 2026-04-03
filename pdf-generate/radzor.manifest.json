@@ -3,27 +3,81 @@
   "name": "@radzor/pdf-generate",
   "version": "0.1.0",
   "description": "PDF generation from HTML templates or raw content. Creates invoices, reports, and documents with configurable page size, margins, and headers/footers.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "storage",
-  "tags": ["pdf", "document", "invoice", "report", "generation", "html"],
+  "tags": [
+    "pdf",
+    "document",
+    "invoice",
+    "report",
+    "generation",
+    "html"
+  ],
   "inputs": [
-    { "name": "pageSize", "type": "'A4' | 'Letter' | 'Legal'", "default": "A4", "description": "Page size.", "required": false },
-    { "name": "margin", "type": "string", "default": "20mm", "description": "Page margins (CSS format).", "required": false },
-    { "name": "landscape", "type": "boolean", "default": false, "description": "Landscape orientation.", "required": false }
+    {
+      "name": "pageSize",
+      "type": "'A4' | 'Letter' | 'Legal'",
+      "default": "A4",
+      "description": "Page size.",
+      "required": false
+    },
+    {
+      "name": "margin",
+      "type": "string",
+      "default": "20mm",
+      "description": "Page margins (CSS format).",
+      "required": false
+    },
+    {
+      "name": "landscape",
+      "type": "boolean",
+      "default": false,
+      "description": "Landscape orientation.",
+      "required": false
+    }
   ],
   "outputs": [
-    { "name": "pdfBuffer", "type": "Buffer", "description": "Generated PDF as a buffer." }
+    {
+      "name": "pdfBuffer",
+      "type": "Buffer",
+      "description": "Generated PDF as a buffer."
+    }
   ],
   "events": [
-    { "name": "onGenerated", "payload": { "pages": "number", "size": "number" }, "description": "Fired when PDF is generated." },
-    { "name": "onError", "payload": { "code": "string", "message": "string" }, "description": "Fired on generation errors." }
+    {
+      "name": "onGenerated",
+      "payload": {
+        "pages": "number",
+        "size": "number"
+      },
+      "description": "Fired when PDF is generated."
+    },
+    {
+      "name": "onError",
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
+      "description": "Fired on generation errors."
+    }
   ],
   "actions": [
     {
       "name": "fromHtml",
       "params": [
-        { "name": "html", "type": "string", "description": "HTML content to convert to PDF." },
-        { "name": "options", "type": "PdfOptions", "description": "Optional page configuration." }
+        {
+          "name": "html",
+          "type": "string",
+          "description": "HTML content to convert to PDF."
+        },
+        {
+          "name": "options",
+          "type": "PdfOptions",
+          "description": "Optional page configuration."
+        }
       ],
       "returns": "Promise<Buffer>",
       "description": "Generate a PDF from HTML content."
@@ -31,8 +85,16 @@
     {
       "name": "fromTemplate",
       "params": [
-        { "name": "template", "type": "string", "description": "HTML template with {{variable}} placeholders." },
-        { "name": "data", "type": "Record<string, any>", "description": "Template variables." }
+        {
+          "name": "template",
+          "type": "string",
+          "description": "HTML template with {{variable}} placeholders."
+        },
+        {
+          "name": "data",
+          "type": "Record<string, any>",
+          "description": "Template variables."
+        }
       ],
       "returns": "Promise<Buffer>",
       "description": "Generate a PDF from an HTML template with variable substitution."
@@ -40,22 +102,44 @@
     {
       "name": "toFile",
       "params": [
-        { "name": "html", "type": "string", "description": "HTML content." },
-        { "name": "outputPath", "type": "string", "description": "Output file path." }
+        {
+          "name": "html",
+          "type": "string",
+          "description": "HTML content."
+        },
+        {
+          "name": "outputPath",
+          "type": "string",
+          "description": "Output file path."
+        }
       ],
       "returns": "Promise<void>",
       "description": "Generate a PDF and save to a file."
     }
   ],
-  "dependencies": { "packages": {}, "radzor": [] },
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
   "composability": {
     "connectsTo": [
-      { "output": "pdfBuffer", "compatibleWith": ["@radzor/file-upload.input.fileContent", "@radzor/email-send.input.attachments"] }
+      {
+        "output": "pdfBuffer",
+        "compatibleWith": [
+          "@radzor/file-upload.input.fileContent",
+          "@radzor/email-send.input.attachments"
+        ]
+      }
     ]
   },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Generates simple PDFs using raw PDF commands. For complex layouts, consider a headless browser approach. Python implementation creates basic text/table PDFs without HTML rendering."
-  }
+  },
+  "composesWith": [
+    "email-send",
+    "csv-export",
+    "queue-worker"
+  ]
 }

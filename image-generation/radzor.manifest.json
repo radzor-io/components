@@ -3,9 +3,20 @@
   "name": "@radzor/image-generation",
   "version": "0.1.0",
   "description": "Multi-provider image generation supporting OpenAI DALL-E, Stability AI, and Replicate. Handles prompt-based generation, size options, and base64/URL output formats.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "ai",
-  "tags": ["image", "dalle", "stability", "replicate", "generation", "ai", "art"],
+  "tags": [
+    "image",
+    "dalle",
+    "stability",
+    "replicate",
+    "generation",
+    "ai",
+    "art"
+  ],
   "inputs": [
     {
       "name": "provider",
@@ -50,12 +61,20 @@
   "events": [
     {
       "name": "onGenerated",
-      "payload": { "url": "string", "prompt": "string", "provider": "string" },
+      "payload": {
+        "url": "string",
+        "prompt": "string",
+        "provider": "string"
+      },
       "description": "Fired when an image has been generated successfully."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "provider": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "provider": "string"
+      },
       "description": "Fired when image generation fails."
     }
   ],
@@ -63,8 +82,16 @@
     {
       "name": "generate",
       "params": [
-        { "name": "prompt", "type": "string", "description": "Text description of the image to generate." },
-        { "name": "options", "type": "GenerateOptions", "description": "Optional overrides for size, format, and number of images." }
+        {
+          "name": "prompt",
+          "type": "string",
+          "description": "Text description of the image to generate."
+        },
+        {
+          "name": "options",
+          "type": "GenerateOptions",
+          "description": "Optional overrides for size, format, and number of images."
+        }
       ],
       "returns": "Promise<ImageGenerationResult>",
       "description": "Generate an image from a text prompt."
@@ -72,8 +99,16 @@
     {
       "name": "generateMultiple",
       "params": [
-        { "name": "prompt", "type": "string", "description": "Text description." },
-        { "name": "count", "type": "number", "description": "Number of images to generate." }
+        {
+          "name": "prompt",
+          "type": "string",
+          "description": "Text description."
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "description": "Number of images to generate."
+        }
       ],
       "returns": "Promise<ImageGenerationResult[]>",
       "description": "Generate multiple image variations from a single prompt."
@@ -87,7 +122,9 @@
     "connectsTo": [
       {
         "output": "generationResult",
-        "compatibleWith": ["@radzor/file-upload.input.fileContent"]
+        "compatibleWith": [
+          "@radzor/file-upload.input.fileContent"
+        ]
       }
     ]
   },
@@ -95,5 +132,10 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Requires API key for the selected provider. Provider rate limits apply. DALL-E 3 has content policy restrictions."
-  }
+  },
+  "composesWith": [
+    "image-resize",
+    "file-upload",
+    "cache-store"
+  ]
 }

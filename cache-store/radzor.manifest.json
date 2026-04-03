@@ -3,7 +3,14 @@
   "version": "0.1.0",
   "description": "In-memory cache with TTL, LRU eviction, and namespace support. No external dependencies.",
   "category": "data",
-  "tags": ["cache", "store", "ttl", "lru", "memory", "performance"],
+  "tags": [
+    "cache",
+    "store",
+    "ttl",
+    "lru",
+    "memory",
+    "performance"
+  ],
   "inputs": {
     "maxSize": {
       "type": "number",
@@ -48,5 +55,14 @@
       "description": "Clear all entries"
     }
   },
-  "languages": ["typescript", "python"]
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "composesWith": [
+    "rate-limiter",
+    "api-key-auth",
+    "llm-completion",
+    "web-scraper"
+  ]
 }

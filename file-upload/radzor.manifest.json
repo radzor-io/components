@@ -3,9 +3,20 @@
   "name": "@radzor/file-upload",
   "version": "0.1.0",
   "description": "Server-side file upload to S3-compatible storage, Cloudflare R2, or local disk. Includes MIME validation, size limits, pre-signed URL generation, and AWS v4 signing.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "storage",
-  "tags": ["upload", "s3", "r2", "cloudflare", "storage", "files", "aws"],
+  "tags": [
+    "upload",
+    "s3",
+    "r2",
+    "cloudflare",
+    "storage",
+    "files",
+    "aws"
+  ],
   "inputs": [
     {
       "name": "provider",
@@ -81,17 +92,28 @@
   "events": [
     {
       "name": "onProgress",
-      "payload": { "bytesUploaded": "number", "totalBytes": "number", "percent": "number" },
+      "payload": {
+        "bytesUploaded": "number",
+        "totalBytes": "number",
+        "percent": "number"
+      },
       "description": "Fired during upload with progress information."
     },
     {
       "name": "onComplete",
-      "payload": { "id": "string", "url": "string", "size": "number" },
+      "payload": {
+        "id": "string",
+        "url": "string",
+        "size": "number"
+      },
       "description": "Fired when upload completes successfully."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired when upload fails (invalid MIME type, file too large, storage error)."
     }
   ],
@@ -158,5 +180,10 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Node.js only (uses fs, crypto, stream modules). For S3/R2, requires access key credentials. Local provider creates directories automatically."
-  }
+  },
+  "composesWith": [
+    "image-resize",
+    "image-generation",
+    "pdf-generate"
+  ]
 }

@@ -3,9 +3,18 @@
   "name": "@radzor/auth-oauth",
   "version": "0.1.0",
   "description": "OAuth 2.0 authentication flow supporting multiple providers (Google, GitHub, Discord). Handles token exchange, session management, and user profile retrieval.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "auth",
-  "tags": ["oauth", "authentication", "login", "session", "jwt"],
+  "tags": [
+    "oauth",
+    "authentication",
+    "login",
+    "session",
+    "jwt"
+  ],
   "inputs": [
     {
       "name": "providers",
@@ -22,7 +31,11 @@
     {
       "name": "scopes",
       "type": "string[]",
-      "default": ["openid", "profile", "email"],
+      "default": [
+        "openid",
+        "profile",
+        "email"
+      ],
       "required": false,
       "description": "OAuth scopes to request from the provider."
     },
@@ -61,22 +74,32 @@
   "events": [
     {
       "name": "onLogin",
-      "payload": { "userId": "string", "provider": "string" },
+      "payload": {
+        "userId": "string",
+        "provider": "string"
+      },
       "description": "Fired when a user successfully authenticates."
     },
     {
       "name": "onLogout",
-      "payload": { "userId": "string" },
+      "payload": {
+        "userId": "string"
+      },
       "description": "Fired when a user logs out."
     },
     {
       "name": "onTokenRefresh",
-      "payload": { "expiresAt": "number" },
+      "payload": {
+        "expiresAt": "number"
+      },
       "description": "Fired when the access token is automatically refreshed."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired on authentication errors (invalid token, provider error, etc.)."
     }
   ],
@@ -172,5 +195,11 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Requires OAuth client credentials (client ID + secret) for each provider. Server-side token exchange requires a backend route."
-  }
+  },
+  "composesWith": [
+    "two-factor-auth",
+    "api-key-auth",
+    "captcha-verify",
+    "rate-limiter"
+  ]
 }

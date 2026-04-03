@@ -3,9 +3,20 @@
   "name": "@radzor/text-to-speech",
   "version": "0.1.0",
   "description": "Text-to-speech synthesis using OpenAI TTS or ElevenLabs. Produces audio from text with configurable voice, speed, and output format.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "ai",
-  "tags": ["tts", "speech", "voice", "elevenlabs", "openai", "audio", "synthesis"],
+  "tags": [
+    "tts",
+    "speech",
+    "voice",
+    "elevenlabs",
+    "openai",
+    "audio",
+    "synthesis"
+  ],
   "inputs": [
     {
       "name": "provider",
@@ -50,12 +61,19 @@
   "events": [
     {
       "name": "onSynthesized",
-      "payload": { "size": "number", "format": "string", "voice": "string" },
+      "payload": {
+        "size": "number",
+        "format": "string",
+        "voice": "string"
+      },
       "description": "Fired when audio synthesis is complete."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired when synthesis fails."
     }
   ],
@@ -63,8 +81,16 @@
     {
       "name": "synthesize",
       "params": [
-        { "name": "text", "type": "string", "description": "Text to convert to speech." },
-        { "name": "options", "type": "SynthesizeOptions", "description": "Optional overrides for voice, speed, format." }
+        {
+          "name": "text",
+          "type": "string",
+          "description": "Text to convert to speech."
+        },
+        {
+          "name": "options",
+          "type": "SynthesizeOptions",
+          "description": "Optional overrides for voice, speed, format."
+        }
       ],
       "returns": "Promise<Buffer>",
       "description": "Convert text to speech audio."
@@ -72,8 +98,16 @@
     {
       "name": "synthesizeToFile",
       "params": [
-        { "name": "text", "type": "string", "description": "Text to convert." },
-        { "name": "outputPath", "type": "string", "description": "File path to save audio." }
+        {
+          "name": "text",
+          "type": "string",
+          "description": "Text to convert."
+        },
+        {
+          "name": "outputPath",
+          "type": "string",
+          "description": "File path to save audio."
+        }
       ],
       "returns": "Promise<void>",
       "description": "Convert text to speech and save to a file."
@@ -87,7 +121,9 @@
     "connectsTo": [
       {
         "output": "audioData",
-        "compatibleWith": ["@radzor/file-upload.input.fileContent"]
+        "compatibleWith": [
+          "@radzor/file-upload.input.fileContent"
+        ]
       }
     ]
   },
@@ -95,5 +131,9 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Requires API key. OpenAI TTS input limit is 4096 characters per request. Server-side only."
-  }
+  },
+  "composesWith": [
+    "llm-completion",
+    "speech-to-text"
+  ]
 }

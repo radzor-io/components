@@ -3,7 +3,14 @@
   "version": "0.1.0",
   "description": "Interact with EVM smart contracts via JSON-RPC. Read state, call functions, and send transactions.",
   "category": "security",
-  "tags": ["smart-contract", "ethereum", "evm", "solidity", "web3", "blockchain"],
+  "tags": [
+    "smart-contract",
+    "ethereum",
+    "evm",
+    "solidity",
+    "web3",
+    "blockchain"
+  ],
   "inputs": {
     "rpcUrl": {
       "type": "string",
@@ -42,5 +49,11 @@
       "description": "Decode return data from a contract call"
     }
   },
-  "languages": ["typescript", "python"]
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "composesWith": [
+    "wallet-connect"
+  ]
 }

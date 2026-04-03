@@ -3,7 +3,13 @@
   "version": "0.1.0",
   "description": "Telegram bot component using the Bot API. Send messages, photos, reply keyboards, and inline keyboards.",
   "category": "chat",
-  "tags": ["telegram", "bot", "chat", "messaging", "social"],
+  "tags": [
+    "telegram",
+    "bot",
+    "chat",
+    "messaging",
+    "social"
+  ],
   "inputs": {
     "botToken": {
       "type": "string",
@@ -35,5 +41,13 @@
       "description": "Send a message with inline keyboard buttons"
     }
   },
-  "languages": ["typescript", "python"]
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "composesWith": [
+    "llm-completion",
+    "embeddings-store",
+    "queue-worker"
+  ]
 }
