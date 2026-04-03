@@ -78,6 +78,51 @@ const { url, fields, path } = await s3Uploader.getPresignedUrl(
 - `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` — for S3
 - `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` — for Cloudflare R2
 
+## Python Integration
+
+1. **Import and configure:**
+```python
+import os
+from file_upload import FileUpload, FileUploadConfig
+
+# Local storage
+uploader = FileUpload(FileUploadConfig(provider="local", local_dir="./uploads"))
+
+# S3
+s3_uploader = FileUpload(FileUploadConfig(
+    provider="s3",
+    bucket="my-bucket",
+    region="eu-west-1",
+    access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
+    secret_access_key=os.environ["AWS_SECRET_ACCESS_KEY"],
+))
+```
+
+2. **Upload a file:**
+```python
+with open("photo.jpg", "rb") as f:
+    result = uploader.upload(f, file_name="photo.jpg", mime_type="image/jpeg")
+
+print(result.url)   # "/uploads/uuid.jpg" or S3 URL
+print(result.size)  # bytes
+```
+
+3. **Upload from bytes:**
+```python
+result = uploader.upload(image_bytes, file_name="avatar.png", mime_type="image/png")
+```
+
+4. **Delete a file:**
+```python
+uploader.delete(result.path)
+```
+
+5. **Pre-signed URL (S3/R2):**
+```python
+presigned = s3_uploader.get_presigned_url("report.pdf", "application/pdf", expires_in=3600)
+print(presigned["url"])
+```
+
 ## Important Constraints
 - Node.js only (uses `fs`, `crypto`, `stream` modules)
 - Local provider auto-creates directories

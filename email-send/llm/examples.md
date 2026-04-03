@@ -59,10 +59,67 @@ email.on("onSent", ({ id, to }) => {
 email.on("onError", ({ code, message, provider }) => {
   console.error(`[${provider}] ${code}: ${message}`);
 });
+```
 
-try {
-  await email.send({ to: "user@example.com", subject: "Test", text: "Hello" });
-} catch (err) {
-  // Also throws for try/catch
-}
+---
+
+## Python Examples
+
+### Welcome email
+```python
+import os
+from email_send import EmailSend, EmailSendConfig, EmailMessage
+
+email = EmailSend(EmailSendConfig(
+    provider="resend",
+    api_key=os.environ["RESEND_API_KEY"],
+    from_addr="MyApp <welcome@myapp.com>",
+))
+
+email.send(EmailMessage(
+    to="newuser@example.com",
+    subject="Welcome to MyApp!",
+    html="<h1>Welcome aboard!</h1><p>Your account is ready.</p>",
+    text="Welcome aboard! Your account is ready.",
+))
+```
+
+### SMTP with attachment
+```python
+from email_send import EmailAttachment
+
+email = EmailSend(EmailSendConfig(
+    provider="smtp",
+    from_addr="billing@myapp.com",
+    smtp_host="smtp.example.com",
+    smtp_port=587,
+    smtp_user=os.environ["SMTP_USER"],
+    smtp_pass=os.environ["SMTP_PASS"],
+))
+
+with open("invoice.pdf", "rb") as f:
+    pdf = f.read()
+
+email.send(EmailMessage(
+    to="client@example.com",
+    cc="billing@myapp.com",
+    subject="Invoice #INV-001",
+    html="<p>Please find your invoice attached.</p>",
+    attachments=[EmailAttachment(filename="INV-001.pdf", content=pdf, content_type="application/pdf")],
+))
+```
+
+### Batch send
+```python
+results = email.send_batch(
+    ["user1@example.com", "user2@example.com"],
+    subject="Newsletter",
+    html="<h1>Monthly update</h1>",
+)
+```
+
+### Error handling
+```python
+email.on("onSent", lambda r: print(f"Sent {r.id} to {r.to}"))
+email.on("onError", lambda e: print(f"[{e['provider']}] {e['code']}: {e['message']}"))
 ```

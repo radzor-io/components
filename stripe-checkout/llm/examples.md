@@ -78,6 +78,77 @@ app.post("/api/cancel-subscription", async (req, res) => {
 ```typescript
 app.get("/api/payment-status/:sessionId", async (req, res) => {
   const status = await checkout.getPaymentStatus(req.params.sessionId);
-  res.json({ status }); // "paid", "unpaid", "no_payment_required"
+  res.json({ status });
 });
+```
+
+---
+
+## Python Examples
+
+### One-time payment (Flask)
+```python
+import os
+from flask import Flask, request, jsonify
+from stripe_checkout import StripeCheckout, StripeCheckoutConfig
+
+app = Flask(__name__)
+checkout = StripeCheckout(StripeCheckoutConfig(
+    secret_key=os.environ["STRIPE_SECRET_KEY"],
+    webhook_secret=os.environ["STRIPE_WEBHOOK_SECRET"],
+    price_id="price_abc123",
+    success_url="https://myapp.com/success?session_id={CHECKOUT_SESSION_ID}",
+    cancel_url="https://myapp.com/pricing",
+    mode="payment",
+))
+
+@app.route("/api/checkout", methods=["POST"])
+def create_checkout():
+    session = checkout.create_checkout(request.json.get("email"))
+    return jsonify(url=session.url)
+```
+
+### Subscription (FastAPI)
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+checkout = StripeCheckout(StripeCheckoutConfig(
+    secret_key=os.environ["STRIPE_SECRET_KEY"],
+    webhook_secret=os.environ["STRIPE_WEBHOOK_SECRET"],
+    price_id="price_monthly_pro",
+    success_url="https://myapp.com/dashboard",
+    cancel_url="https://myapp.com/pricing",
+    mode="subscription",
+))
+
+@app.post("/api/checkout")
+def create_checkout(email: str):
+    session = checkout.create_checkout(email)
+    return {"url": session.url}
+```
+
+### Webhook handler (Flask)
+```python
+@app.route("/webhooks/stripe", methods=["POST"])
+def webhook():
+    event = checkout.handle_webhook(request.data, request.headers["Stripe-Signature"])
+    print(f"Event: {event.type}")
+    return "", 200
+```
+
+### Event-driven fulfillment
+```python
+checkout.on("onPaymentSuccess", lambda e: db.orders.create(
+    stripe_session_id=e["sessionId"],
+    customer_id=e["customerId"],
+    amount=e["amount"],
+))
+checkout.on("onPaymentFailed", lambda e: print(f"Failed: {e['error']}"))
+```
+
+### Cancel subscription
+```python
+checkout.cancel_subscription("sub_123abc")
 ```

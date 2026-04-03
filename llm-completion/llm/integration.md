@@ -63,7 +63,48 @@ const local = new LLMCompletion({
 - `ANTHROPIC_API_KEY` — for Anthropic provider
 
 ## Important Constraints
-- Requires Node.js 18+ or a browser with native `fetch` support
-- Ollama must be running locally (or set `baseUrl` to remote instance)
+- **TypeScript**: Requires Node.js 18+ or a browser with native `fetch` support
+- **Python**: Uses `urllib.request` from stdlib — no external dependencies
+- Ollama must be running locally (or set `baseUrl`/`base_url` to remote instance)
 - Retries automatically on 429 (rate limit) and 5xx errors, up to 3 times with exponential backoff
 - Does NOT retry on 4xx client errors (except 429)
+
+## Python Integration
+
+1. **Import and create an instance:**
+```python
+from llm_completion import LLMCompletion, LLMCompletionConfig
+
+llm = LLMCompletion(LLMCompletionConfig(
+    provider="openai",
+    api_key=os.environ["OPENAI_API_KEY"],
+    model="gpt-4o",
+    system_prompt="You are a helpful assistant.",
+))
+```
+
+2. **Get a completion:**
+```python
+result = llm.complete("Explain quantum computing in one paragraph.")
+print(result.content)
+print(f"Tokens used: {result.usage['totalTokens']}")
+```
+
+3. **Stream a response:**
+```python
+llm.on("onChunk", lambda c: print(c.content, end="", flush=True))
+llm.stream("Write a haiku about Python.")
+```
+
+4. **Switch providers:**
+```python
+# Anthropic
+claude = LLMCompletion(LLMCompletionConfig(
+    provider="anthropic",
+    api_key=os.environ["ANTHROPIC_API_KEY"],
+    model="claude-sonnet-4-20250514",
+))
+
+# Ollama (local, no API key)
+local = LLMCompletion(LLMCompletionConfig(provider="ollama", model="llama3"))
+```

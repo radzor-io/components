@@ -5,14 +5,16 @@ In-memory rate limiter with two algorithms: token bucket (allows bursts) and sli
 
 ## Integration Steps
 
+### TypeScript
+
 1. **Import and configure:**
 ```typescript
 import { RateLimiter } from "@radzor/rate-limiter";
 
 const limiter = new RateLimiter({
-  algorithm: "sliding-window", // or "token-bucket"
-  maxRequests: 100,            // 100 requests
-  windowMs: 60_000,            // per minute
+  algorithm: "sliding-window",
+  maxRequests: 100,
+  windowMs: 60_000,
 });
 ```
 
@@ -22,7 +24,6 @@ function handleRequest(req, res) {
   const clientIp = req.headers["x-forwarded-for"] ?? req.socket.remoteAddress;
   const result = limiter.consume(clientIp);
 
-  // Set standard rate limit headers
   const headers = limiter.getHeaders(result);
   for (const [key, value] of Object.entries(headers)) {
     res.setHeader(key, value);
@@ -33,7 +34,6 @@ function handleRequest(req, res) {
     return;
   }
 
-  // Handle the request normally
   res.json({ ok: true });
 }
 ```
@@ -50,6 +50,46 @@ limiter.on("onBlocked", ({ key, retryAfterMs }) => {
 process.on("SIGTERM", () => {
   limiter.destroy();
 });
+```
+
+### Python
+
+1. **Import and configure:**
+```python
+from rate_limiter import RateLimiter, RateLimiterConfig
+
+limiter = RateLimiter(RateLimiterConfig(
+    algorithm="sliding-window",  # or "token-bucket"
+    max_requests=100,
+    window_ms=60_000,
+))
+```
+
+2. **Use in a Flask/FastAPI route:**
+```python
+from flask import request, jsonify
+
+@app.route("/api/data")
+def handle_request():
+    client_ip = request.remote_addr
+    result = limiter.consume(client_ip)
+
+    headers = limiter.get_headers(result)
+    if not result.allowed:
+        return jsonify(error="Too many requests"), 429, headers
+
+    return jsonify(ok=True), 200, headers
+```
+
+3. **Listen for events:**
+```python
+limiter.on("onBlocked", lambda e: print(f"Rate limited: {e['key']}"))
+```
+
+4. **Cleanup when shutting down:**
+```python
+import atexit
+atexit.register(limiter.destroy)
 ```
 
 ## Algorithm Choice
