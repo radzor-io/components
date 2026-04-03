@@ -1,0 +1,138 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/llm-completion",
+  "version": "0.1.0",
+  "description": "Universal LLM completion client supporting OpenAI, Anthropic, and Ollama. Provides chat completions, streaming, conversation history, and automatic retries with exponential backoff.",
+  "languages": ["typescript"],
+  "category": "ai",
+  "tags": ["llm", "openai", "anthropic", "ollama", "chat", "streaming", "ai", "completion"],
+  "inputs": [
+    {
+      "name": "provider",
+      "type": "'openai' | 'anthropic' | 'ollama'",
+      "description": "LLM provider to use.",
+      "required": true
+    },
+    {
+      "name": "apiKey",
+      "type": "string",
+      "description": "API key for the provider. Required for openai and anthropic, optional for ollama.",
+      "required": false
+    },
+    {
+      "name": "model",
+      "type": "string",
+      "description": "Model identifier (e.g. gpt-4o, claude-sonnet-4-20250514, llama3).",
+      "required": true
+    },
+    {
+      "name": "baseUrl",
+      "type": "string",
+      "description": "Override the API base URL. Useful for proxies or self-hosted instances.",
+      "required": false
+    },
+    {
+      "name": "maxTokens",
+      "type": "number",
+      "default": 4096,
+      "description": "Maximum tokens to generate in the response.",
+      "required": false
+    },
+    {
+      "name": "temperature",
+      "type": "number",
+      "default": 0.7,
+      "description": "Sampling temperature (0.0 = deterministic, 1.0 = creative).",
+      "required": false
+    },
+    {
+      "name": "systemPrompt",
+      "type": "string",
+      "description": "System prompt prepended to all conversations.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "completionResult",
+      "type": "CompletionResult",
+      "description": "The full completion response including content, usage stats, and finish reason."
+    }
+  ],
+  "events": [
+    {
+      "name": "onChunk",
+      "payload": { "content": "string", "done": "boolean" },
+      "description": "Fired for each streamed token. done=true signals the stream is complete."
+    },
+    {
+      "name": "onComplete",
+      "payload": { "content": "string", "model": "string", "finishReason": "string" },
+      "description": "Fired when a completion (streamed or non-streamed) finishes."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string", "provider": "string" },
+      "description": "Fired when an API call fails after all retries."
+    }
+  ],
+  "actions": [
+    {
+      "name": "complete",
+      "params": [
+        {
+          "name": "prompt",
+          "type": "string",
+          "description": "The user message to send."
+        }
+      ],
+      "returns": "Promise<CompletionResult>",
+      "description": "Send a prompt and get a complete response. Adds to conversation history."
+    },
+    {
+      "name": "stream",
+      "params": [
+        {
+          "name": "prompt",
+          "type": "string",
+          "description": "The user message to send."
+        }
+      ],
+      "returns": "Promise<string>",
+      "description": "Send a prompt and stream the response token by token via onChunk events."
+    },
+    {
+      "name": "getHistory",
+      "params": [],
+      "returns": "ChatMessage[]",
+      "description": "Get the full conversation history."
+    },
+    {
+      "name": "clearHistory",
+      "params": [],
+      "returns": "void",
+      "description": "Clear conversation history (preserves system prompt)."
+    },
+    {
+      "name": "setSystemPrompt",
+      "params": [
+        {
+          "name": "prompt",
+          "type": "string",
+          "description": "The new system prompt."
+        }
+      ],
+      "returns": "void",
+      "description": "Set or update the system prompt for future completions."
+    }
+  ],
+  "dependencies": {
+    "packages": {}
+  },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires an API key for OpenAI and Anthropic. Ollama requires a local instance running. Uses the native fetch API (Node.js 18+ or browser)."
+  }
+}

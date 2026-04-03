@@ -1,0 +1,162 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/file-upload",
+  "version": "0.1.0",
+  "description": "Server-side file upload to S3-compatible storage, Cloudflare R2, or local disk. Includes MIME validation, size limits, pre-signed URL generation, and AWS v4 signing.",
+  "languages": ["typescript"],
+  "category": "storage",
+  "tags": ["upload", "s3", "r2", "cloudflare", "storage", "files", "aws"],
+  "inputs": [
+    {
+      "name": "provider",
+      "type": "'s3' | 'local' | 'r2'",
+      "description": "Storage backend to use.",
+      "required": true
+    },
+    {
+      "name": "bucket",
+      "type": "string",
+      "description": "S3/R2 bucket name. Required for s3 and r2 providers.",
+      "required": false
+    },
+    {
+      "name": "region",
+      "type": "string",
+      "default": "us-east-1",
+      "description": "AWS region for S3.",
+      "required": false
+    },
+    {
+      "name": "accessKeyId",
+      "type": "string",
+      "description": "AWS/R2 access key ID. Required for s3 and r2 providers.",
+      "required": false
+    },
+    {
+      "name": "secretAccessKey",
+      "type": "string",
+      "description": "AWS/R2 secret access key. Required for s3 and r2 providers.",
+      "required": false
+    },
+    {
+      "name": "endpoint",
+      "type": "string",
+      "description": "Custom S3-compatible endpoint URL. Required for R2.",
+      "required": false
+    },
+    {
+      "name": "localDir",
+      "type": "string",
+      "default": "./uploads",
+      "description": "Local directory for file storage (local provider only).",
+      "required": false
+    },
+    {
+      "name": "maxSizeBytes",
+      "type": "number",
+      "default": 52428800,
+      "description": "Maximum file size in bytes (default: 50MB).",
+      "required": false
+    },
+    {
+      "name": "allowedMimeTypes",
+      "type": "string[]",
+      "description": "Allowed MIME types. Defaults to common image, document, and archive types.",
+      "required": false
+    },
+    {
+      "name": "pathPrefix",
+      "type": "string",
+      "description": "Prefix prepended to all storage paths (e.g. 'uploads/').",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "uploadResult",
+      "type": "UploadResult",
+      "description": "Upload result with id, url, path, size, mimeType, and originalName."
+    }
+  ],
+  "events": [
+    {
+      "name": "onProgress",
+      "payload": { "bytesUploaded": "number", "totalBytes": "number", "percent": "number" },
+      "description": "Fired during upload with progress information."
+    },
+    {
+      "name": "onComplete",
+      "payload": { "id": "string", "url": "string", "size": "number" },
+      "description": "Fired when upload completes successfully."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired when upload fails (invalid MIME type, file too large, storage error)."
+    }
+  ],
+  "actions": [
+    {
+      "name": "upload",
+      "params": [
+        {
+          "name": "data",
+          "type": "Buffer | ReadableStream | Readable",
+          "description": "File data as Buffer, Web ReadableStream, or Node.js Readable."
+        },
+        {
+          "name": "options",
+          "type": "{ fileName: string; mimeType: string }",
+          "description": "Original file name and MIME type."
+        }
+      ],
+      "returns": "Promise<UploadResult>",
+      "description": "Upload a file to the configured storage backend."
+    },
+    {
+      "name": "delete",
+      "params": [
+        {
+          "name": "path",
+          "type": "string",
+          "description": "Storage path of the file to delete."
+        }
+      ],
+      "returns": "Promise<void>",
+      "description": "Delete a previously uploaded file."
+    },
+    {
+      "name": "getPresignedUrl",
+      "params": [
+        {
+          "name": "fileName",
+          "type": "string",
+          "description": "Original file name."
+        },
+        {
+          "name": "mimeType",
+          "type": "string",
+          "description": "File MIME type."
+        },
+        {
+          "name": "expiresIn",
+          "type": "number",
+          "default": 3600,
+          "description": "URL expiration in seconds.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<{ url: string; fields: Record<string, string>; path: string }>",
+      "description": "Generate a pre-signed URL for direct browser upload (S3/R2 only)."
+    }
+  ],
+  "dependencies": {
+    "packages": {}
+  },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Node.js only (uses fs, crypto, stream modules). For S3/R2, requires access key credentials. Local provider creates directories automatically."
+  }
+}

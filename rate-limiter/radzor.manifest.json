@@ -1,0 +1,124 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/rate-limiter",
+  "version": "0.1.0",
+  "description": "In-memory rate limiting with token bucket and sliding window algorithms. Zero dependencies, automatic cleanup, and HTTP header generation.",
+  "languages": ["typescript"],
+  "category": "security",
+  "tags": ["rate-limit", "throttle", "api", "security", "token-bucket", "middleware"],
+  "inputs": [
+    {
+      "name": "algorithm",
+      "type": "'token-bucket' | 'sliding-window'",
+      "description": "Rate limiting algorithm. Token bucket allows bursts; sliding window is stricter.",
+      "required": true
+    },
+    {
+      "name": "maxRequests",
+      "type": "number",
+      "description": "Maximum number of requests allowed per window.",
+      "required": true
+    },
+    {
+      "name": "windowMs",
+      "type": "number",
+      "description": "Time window in milliseconds.",
+      "required": true
+    },
+    {
+      "name": "keyPrefix",
+      "type": "string",
+      "description": "Optional prefix for rate limit keys (useful to separate different endpoints).",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "rateLimitResult",
+      "type": "RateLimitResult",
+      "description": "Result including allowed, remaining, resetAt, and retryAfterMs."
+    }
+  ],
+  "events": [
+    {
+      "name": "onAllowed",
+      "payload": { "key": "string", "remaining": "number" },
+      "description": "Fired when a request is allowed through."
+    },
+    {
+      "name": "onBlocked",
+      "payload": { "code": "string", "message": "string", "key": "string", "retryAfterMs": "number" },
+      "description": "Fired when a request is rate-limited."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on internal errors."
+    }
+  ],
+  "actions": [
+    {
+      "name": "consume",
+      "params": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Unique identifier for the client (e.g. IP address, user ID, API key)."
+        }
+      ],
+      "returns": "RateLimitResult",
+      "description": "Consume a token and return whether the request is allowed."
+    },
+    {
+      "name": "check",
+      "params": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Unique identifier to check."
+        }
+      ],
+      "returns": "RateLimitResult",
+      "description": "Check rate limit status without consuming a token."
+    },
+    {
+      "name": "reset",
+      "params": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Key to reset."
+        }
+      ],
+      "returns": "void",
+      "description": "Reset the rate limit for a specific key."
+    },
+    {
+      "name": "getHeaders",
+      "params": [
+        {
+          "name": "result",
+          "type": "RateLimitResult",
+          "description": "A rate limit result to generate headers from."
+        }
+      ],
+      "returns": "Record<string, string>",
+      "description": "Generate standard HTTP rate limit headers (X-RateLimit-*, Retry-After)."
+    },
+    {
+      "name": "destroy",
+      "params": [],
+      "returns": "void",
+      "description": "Stop cleanup interval and clear all stored data."
+    }
+  ],
+  "dependencies": {
+    "packages": {}
+  },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "In-memory only — rate limits reset on process restart. For distributed systems, use an external store (Redis). Automatic cleanup prevents memory leaks."
+  }
+}

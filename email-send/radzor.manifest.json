@@ -1,0 +1,120 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/email-send",
+  "version": "0.1.0",
+  "description": "Send transactional emails via Resend, SendGrid, or raw SMTP. Supports HTML/text content, attachments, CC/BCC, reply-to, and batch sending.",
+  "languages": ["typescript"],
+  "category": "email",
+  "tags": ["email", "resend", "sendgrid", "smtp", "transactional", "notifications"],
+  "inputs": [
+    {
+      "name": "provider",
+      "type": "'resend' | 'sendgrid' | 'smtp'",
+      "description": "Email provider to use.",
+      "required": true
+    },
+    {
+      "name": "apiKey",
+      "type": "string",
+      "description": "API key for Resend or SendGrid. Not needed for SMTP.",
+      "required": false
+    },
+    {
+      "name": "from",
+      "type": "string",
+      "description": "Sender email address (e.g. 'hello@example.com' or 'App Name <hello@example.com>').",
+      "required": true
+    },
+    {
+      "name": "smtpHost",
+      "type": "string",
+      "description": "SMTP server hostname. Required for SMTP provider.",
+      "required": false
+    },
+    {
+      "name": "smtpPort",
+      "type": "number",
+      "default": 587,
+      "description": "SMTP server port.",
+      "required": false
+    },
+    {
+      "name": "smtpUser",
+      "type": "string",
+      "description": "SMTP username for authentication.",
+      "required": false
+    },
+    {
+      "name": "smtpPass",
+      "type": "string",
+      "description": "SMTP password for authentication.",
+      "required": false
+    },
+    {
+      "name": "smtpSecure",
+      "type": "boolean",
+      "default": false,
+      "description": "Use TLS for SMTP connection (true for port 465).",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "sendResult",
+      "type": "SendResult",
+      "description": "Result with message id, recipients, and send status."
+    }
+  ],
+  "events": [
+    {
+      "name": "onSent",
+      "payload": { "id": "string", "status": "string" },
+      "description": "Fired when an email is successfully sent or queued."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string", "provider": "string" },
+      "description": "Fired when sending fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "send",
+      "params": [
+        {
+          "name": "message",
+          "type": "EmailMessage",
+          "description": "Email message with to, subject, html/text, and optional cc/bcc/attachments."
+        }
+      ],
+      "returns": "Promise<SendResult>",
+      "description": "Send a single email."
+    },
+    {
+      "name": "sendBatch",
+      "params": [
+        {
+          "name": "recipients",
+          "type": "string[]",
+          "description": "List of recipient email addresses."
+        },
+        {
+          "name": "template",
+          "type": "Omit<EmailMessage, 'to'>",
+          "description": "Email template (subject, html/text) applied to each recipient."
+        }
+      ],
+      "returns": "Promise<SendResult[]>",
+      "description": "Send the same email to multiple recipients individually."
+    }
+  ],
+  "dependencies": {
+    "packages": {}
+  },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Node.js only. Resend and SendGrid require API keys. SMTP requires server credentials. The from address must be verified with your provider."
+  }
+}
