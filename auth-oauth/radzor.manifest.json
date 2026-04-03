@@ -3,7 +3,7 @@
   "name": "@radzor/auth-oauth",
   "version": "0.1.0",
   "description": "OAuth 2.0 authentication flow supporting multiple providers (Google, GitHub, Discord). Handles token exchange, session management, and user profile retrieval.",
-  "languages": ["typescript", "python"],
+  "languages": ["typescript"],
   "category": "auth",
   "tags": ["oauth", "authentication", "login", "session", "jwt"],
   "inputs": [

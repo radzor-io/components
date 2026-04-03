@@ -3,7 +3,7 @@
   "name": "@radzor/stripe-checkout",
   "version": "0.1.0",
   "description": "Simplified Stripe Checkout integration. Creates checkout sessions, handles payment webhooks, and manages subscription lifecycle.",
-  "languages": ["typescript", "python"],
+  "languages": ["typescript"],
   "category": "payment",
   "tags": ["stripe", "payment", "checkout", "subscription", "billing"],
   "inputs": [
