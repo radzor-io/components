@@ -3,7 +3,7 @@
   "name": "@radzor/email-send",
   "version": "0.1.0",
   "description": "Send transactional emails via Resend, SendGrid, or raw SMTP. Supports HTML/text content, attachments, CC/BCC, reply-to, and batch sending.",
-  "languages": ["typescript"],
+  "languages": ["typescript", "python"],
   "category": "email",
   "tags": ["email", "resend", "sendgrid", "smtp", "transactional", "notifications"],
   "inputs": [

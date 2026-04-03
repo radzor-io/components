@@ -3,7 +3,7 @@
   "name": "@radzor/rate-limiter",
   "version": "0.1.0",
   "description": "In-memory rate limiting with token bucket and sliding window algorithms. Zero dependencies, automatic cleanup, and HTTP header generation.",
-  "languages": ["typescript"],
+  "languages": ["typescript", "python"],
   "category": "security",
   "tags": ["rate-limit", "throttle", "api", "security", "token-bucket", "middleware"],
   "inputs": [

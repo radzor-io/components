@@ -3,7 +3,7 @@
   "name": "@radzor/llm-completion",
   "version": "0.1.0",
   "description": "Universal LLM completion client supporting OpenAI, Anthropic, and Ollama. Provides chat completions, streaming, conversation history, and automatic retries with exponential backoff.",
-  "languages": ["typescript"],
+  "languages": ["typescript", "python"],
   "category": "ai",
   "tags": ["llm", "openai", "anthropic", "ollama", "chat", "streaming", "ai", "completion"],
   "inputs": [

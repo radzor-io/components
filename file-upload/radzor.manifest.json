@@ -3,7 +3,7 @@
   "name": "@radzor/file-upload",
   "version": "0.1.0",
   "description": "Server-side file upload to S3-compatible storage, Cloudflare R2, or local disk. Includes MIME validation, size limits, pre-signed URL generation, and AWS v4 signing.",
-  "languages": ["typescript"],
+  "languages": ["typescript", "python"],
   "category": "storage",
   "tags": ["upload", "s3", "r2", "cloudflare", "storage", "files", "aws"],
   "inputs": [
