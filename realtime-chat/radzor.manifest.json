@@ -142,17 +142,7 @@
     },
     "radzor": ["@radzor/auth-oauth"]
   },
-  "composability": {
-    "connectsTo": [
-      {
-        "output": "messageStream",
-        "compatibleWith": [
-          "@radzor/ai-responder.input.messageStream",
-          "@radzor/message-logger.input.messageStream"
-        ]
-      }
-    ]
-  },
+  "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

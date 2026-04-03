@@ -136,16 +136,7 @@
     },
     "radzor": ["@radzor/auth-oauth"]
   },
-  "composability": {
-    "connectsTo": [
-      {
-        "output": "paymentStatus",
-        "compatibleWith": [
-          "@radzor/access-control.input.paymentStatus"
-        ]
-      }
-    ]
-  },
+  "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

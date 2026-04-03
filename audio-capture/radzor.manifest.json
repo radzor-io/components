@@ -93,17 +93,7 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {
-    "connectsTo": [
-      {
-        "output": "audioStream",
-        "compatibleWith": [
-          "@radzor/speech-to-text.input.audioStream",
-          "@radzor/audio-visualizer.input.audioStream"
-        ]
-      }
-    ]
-  },
+  "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
