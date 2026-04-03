@@ -1,0 +1,131 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/auth-oauth",
+  "version": "0.1.0",
+  "description": "OAuth 2.0 authentication flow supporting multiple providers (Google, GitHub, Discord). Handles token exchange, session management, and user profile retrieval.",
+  "languages": ["typescript", "python"],
+  "category": "auth",
+  "tags": ["oauth", "authentication", "login", "session", "jwt"],
+  "inputs": [
+    {
+      "name": "providers",
+      "type": "Array<'google' | 'github' | 'discord'>",
+      "description": "List of OAuth providers to enable.",
+      "required": true
+    },
+    {
+      "name": "redirectUrl",
+      "type": "string",
+      "description": "URL to redirect to after successful authentication.",
+      "required": true
+    },
+    {
+      "name": "scopes",
+      "type": "string[]",
+      "default": ["openid", "profile", "email"],
+      "required": false,
+      "description": "OAuth scopes to request from the provider."
+    },
+    {
+      "name": "sessionDuration",
+      "type": "number",
+      "default": 86400,
+      "required": false,
+      "description": "Session duration in seconds (default: 24 hours)."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "session",
+      "type": "AuthSession",
+      "description": "Current authentication session containing access token, refresh token, and expiry."
+    },
+    {
+      "name": "user",
+      "type": "UserProfile",
+      "description": "Authenticated user profile with id, email, name, and avatar."
+    }
+  ],
+  "events": [
+    {
+      "name": "onLogin",
+      "payload": { "userId": "string", "provider": "string" },
+      "description": "Fired when a user successfully authenticates."
+    },
+    {
+      "name": "onLogout",
+      "payload": { "userId": "string" },
+      "description": "Fired when a user logs out."
+    },
+    {
+      "name": "onTokenRefresh",
+      "payload": { "expiresAt": "number" },
+      "description": "Fired when the access token is automatically refreshed."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on authentication errors (invalid token, provider error, etc.)."
+    }
+  ],
+  "actions": [
+    {
+      "name": "login",
+      "params": [
+        {
+          "name": "provider",
+          "type": "string",
+          "description": "The OAuth provider to authenticate with."
+        }
+      ],
+      "returns": "Promise<AuthSession>",
+      "description": "Initiate the OAuth login flow with the specified provider."
+    },
+    {
+      "name": "logout",
+      "params": [],
+      "returns": "Promise<void>",
+      "description": "End the current session and revoke tokens."
+    },
+    {
+      "name": "getSession",
+      "params": [],
+      "returns": "AuthSession | null",
+      "description": "Get the current authentication session, or null if not authenticated."
+    },
+    {
+      "name": "refreshToken",
+      "params": [],
+      "returns": "Promise<AuthSession>",
+      "description": "Manually refresh the access token using the refresh token."
+    }
+  ],
+  "dependencies": {
+    "packages": {
+      "jose": "^5.0.0"
+    }
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "session",
+        "compatibleWith": [
+          "@radzor/realtime-chat.input.authSession",
+          "@radzor/stripe-checkout.input.authSession"
+        ]
+      },
+      {
+        "output": "user",
+        "compatibleWith": [
+          "@radzor/realtime-chat.input.userProfile",
+          "@radzor/stripe-checkout.input.userProfile"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires OAuth client credentials (client ID + secret) for each provider. Server-side token exchange requires a backend route."
+  }
+}

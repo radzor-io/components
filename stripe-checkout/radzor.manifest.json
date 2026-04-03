@@ -1,0 +1,154 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/stripe-checkout",
+  "version": "0.1.0",
+  "description": "Simplified Stripe Checkout integration. Creates checkout sessions, handles payment webhooks, and manages subscription lifecycle.",
+  "languages": ["typescript", "python"],
+  "category": "payment",
+  "tags": ["stripe", "payment", "checkout", "subscription", "billing"],
+  "inputs": [
+    {
+      "name": "priceId",
+      "type": "string",
+      "description": "Stripe Price ID for the product or subscription.",
+      "required": true
+    },
+    {
+      "name": "quantity",
+      "type": "number",
+      "default": 1,
+      "required": false,
+      "description": "Quantity of the item to purchase."
+    },
+    {
+      "name": "successUrl",
+      "type": "string",
+      "description": "URL to redirect to after successful payment.",
+      "required": true
+    },
+    {
+      "name": "cancelUrl",
+      "type": "string",
+      "description": "URL to redirect to if the user cancels checkout.",
+      "required": true
+    },
+    {
+      "name": "mode",
+      "type": "'payment' | 'subscription'",
+      "default": "payment",
+      "required": false,
+      "description": "Checkout mode: one-time payment or recurring subscription."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "checkoutSession",
+      "type": "StripeCheckoutSession",
+      "description": "The created Stripe Checkout session with URL and ID."
+    },
+    {
+      "name": "paymentStatus",
+      "type": "'pending' | 'succeeded' | 'failed' | 'canceled'",
+      "description": "Current payment status."
+    }
+  ],
+  "events": [
+    {
+      "name": "onPaymentSuccess",
+      "payload": { "sessionId": "string", "customerId": "string", "amount": "number" },
+      "description": "Fired when payment is successfully completed (via webhook)."
+    },
+    {
+      "name": "onPaymentFailed",
+      "payload": { "sessionId": "string", "error": "string" },
+      "description": "Fired when payment fails."
+    },
+    {
+      "name": "onSubscriptionCreated",
+      "payload": { "subscriptionId": "string", "customerId": "string", "priceId": "string" },
+      "description": "Fired when a new subscription is created."
+    },
+    {
+      "name": "onSubscriptionCanceled",
+      "payload": { "subscriptionId": "string" },
+      "description": "Fired when a subscription is canceled."
+    }
+  ],
+  "actions": [
+    {
+      "name": "createCheckout",
+      "params": [
+        {
+          "name": "customerEmail",
+          "type": "string",
+          "description": "Customer email for the checkout session.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<StripeCheckoutSession>",
+      "description": "Create a new Stripe Checkout session and return the session URL."
+    },
+    {
+      "name": "getPaymentStatus",
+      "params": [
+        {
+          "name": "sessionId",
+          "type": "string",
+          "description": "Stripe Checkout session ID."
+        }
+      ],
+      "returns": "Promise<string>",
+      "description": "Check the payment status of a checkout session."
+    },
+    {
+      "name": "cancelSubscription",
+      "params": [
+        {
+          "name": "subscriptionId",
+          "type": "string",
+          "description": "Stripe subscription ID to cancel."
+        }
+      ],
+      "returns": "Promise<void>",
+      "description": "Cancel an active subscription at the end of the current billing period."
+    },
+    {
+      "name": "handleWebhook",
+      "params": [
+        {
+          "name": "payload",
+          "type": "string",
+          "description": "Raw request body from Stripe webhook."
+        },
+        {
+          "name": "signature",
+          "type": "string",
+          "description": "Stripe-Signature header value."
+        }
+      ],
+      "returns": "Promise<WebhookEvent>",
+      "description": "Verify and parse a Stripe webhook event."
+    }
+  ],
+  "dependencies": {
+    "packages": {
+      "stripe": "^14.0.0"
+    },
+    "radzor": ["@radzor/auth-oauth"]
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "paymentStatus",
+        "compatibleWith": [
+          "@radzor/access-control.input.paymentStatus"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires Stripe secret key (server-side) and publishable key (client-side). Webhook endpoint must be publicly accessible. Use STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET environment variables."
+  }
+}

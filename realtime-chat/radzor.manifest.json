@@ -1,0 +1,161 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/realtime-chat",
+  "version": "0.1.0",
+  "description": "Real-time chat messaging via WebSocket. Supports rooms, typing indicators, message history, and user presence. Works in both browser and Node.js environments.",
+  "languages": ["typescript"],
+  "category": "chat",
+  "tags": ["websocket", "realtime", "messaging", "chat", "rooms"],
+  "inputs": [
+    {
+      "name": "roomId",
+      "type": "string",
+      "description": "Unique identifier for the chat room to join.",
+      "required": true
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "description": "Unique identifier for the current user.",
+      "required": true
+    },
+    {
+      "name": "maxMessages",
+      "type": "number",
+      "default": 100,
+      "required": false,
+      "description": "Maximum number of messages to keep in local buffer."
+    },
+    {
+      "name": "serverUrl",
+      "type": "string",
+      "description": "WebSocket server URL to connect to.",
+      "required": true
+    },
+    {
+      "name": "authSession",
+      "type": "AuthSession",
+      "description": "Authentication session for authorized connections (from @radzor/auth-oauth).",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "messageStream",
+      "type": "ReadableStream<ChatMessage>",
+      "description": "Stream of incoming chat messages."
+    },
+    {
+      "name": "connectionStatus",
+      "type": "'connecting' | 'connected' | 'disconnected' | 'error'",
+      "description": "Current WebSocket connection status."
+    }
+  ],
+  "events": [
+    {
+      "name": "onMessage",
+      "payload": { "id": "string", "userId": "string", "content": "string", "timestamp": "number" },
+      "description": "Fired when a new message is received in the room."
+    },
+    {
+      "name": "onUserJoin",
+      "payload": { "userId": "string", "username": "string" },
+      "description": "Fired when a user joins the room."
+    },
+    {
+      "name": "onUserLeave",
+      "payload": { "userId": "string" },
+      "description": "Fired when a user leaves the room."
+    },
+    {
+      "name": "onTyping",
+      "payload": { "userId": "string", "isTyping": "boolean" },
+      "description": "Fired when a user starts or stops typing."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on connection or messaging errors."
+    }
+  ],
+  "actions": [
+    {
+      "name": "sendMessage",
+      "params": [
+        {
+          "name": "content",
+          "type": "string",
+          "description": "The message text to send."
+        }
+      ],
+      "returns": "Promise<ChatMessage>",
+      "description": "Send a text message to the current room."
+    },
+    {
+      "name": "joinRoom",
+      "params": [
+        {
+          "name": "roomId",
+          "type": "string",
+          "description": "Room ID to join."
+        }
+      ],
+      "returns": "Promise<void>",
+      "description": "Join a chat room and start receiving messages."
+    },
+    {
+      "name": "leaveRoom",
+      "params": [],
+      "returns": "Promise<void>",
+      "description": "Leave the current room and disconnect."
+    },
+    {
+      "name": "getHistory",
+      "params": [
+        {
+          "name": "limit",
+          "type": "number",
+          "default": 50,
+          "description": "Number of past messages to retrieve.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<ChatMessage[]>",
+      "description": "Retrieve message history for the current room."
+    },
+    {
+      "name": "setTyping",
+      "params": [
+        {
+          "name": "isTyping",
+          "type": "boolean",
+          "description": "Whether the user is currently typing."
+        }
+      ],
+      "returns": "void",
+      "description": "Broadcast typing indicator to other users in the room."
+    }
+  ],
+  "dependencies": {
+    "packages": {
+      "ws": "^8.0.0"
+    },
+    "radzor": ["@radzor/auth-oauth"]
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "messageStream",
+        "compatibleWith": [
+          "@radzor/ai-responder.input.messageStream",
+          "@radzor/message-logger.input.messageStream"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires a WebSocket server. For production, use wss:// (TLS). The server component handles room state and message broadcasting."
+  }
+}
