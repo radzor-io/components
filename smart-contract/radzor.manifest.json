@@ -1,0 +1,46 @@
+{
+  "name": "smart-contract",
+  "version": "0.1.0",
+  "description": "Interact with EVM smart contracts via JSON-RPC. Read state, call functions, and send transactions.",
+  "category": "security",
+  "tags": ["smart-contract", "ethereum", "evm", "solidity", "web3", "blockchain"],
+  "inputs": {
+    "rpcUrl": {
+      "type": "string",
+      "required": true,
+      "description": "JSON-RPC endpoint (e.g. Infura, Alchemy)"
+    },
+    "contractAddress": {
+      "type": "string",
+      "required": true,
+      "description": "Deployed contract address"
+    },
+    "abi": {
+      "type": "array",
+      "required": true,
+      "description": "Contract ABI (JSON array)"
+    }
+  },
+  "outputs": {
+    "onCallResult": {
+      "type": "event",
+      "description": "Fired on successful contract call"
+    },
+    "onError": {
+      "type": "event",
+      "description": "Fired on error"
+    }
+  },
+  "actions": {
+    "call": {
+      "description": "Read-only call to a contract function"
+    },
+    "encodeFunctionData": {
+      "description": "Encode function call data for a transaction"
+    },
+    "decodeFunctionResult": {
+      "description": "Decode return data from a contract call"
+    }
+  },
+  "languages": ["typescript", "python"]
+}

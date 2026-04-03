@@ -1,0 +1,53 @@
+{
+  "name": "queue-worker",
+  "version": "0.1.0",
+  "description": "In-memory job queue with workers, retries, and dead-letter handling. No external dependencies.",
+  "category": "automation",
+  "tags": ["queue", "worker", "jobs", "background", "async", "task"],
+  "inputs": {
+    "concurrency": {
+      "type": "number",
+      "required": false,
+      "description": "Max concurrent workers (default: 1)"
+    },
+    "maxRetries": {
+      "type": "number",
+      "required": false,
+      "description": "Max retry attempts per job (default: 3)"
+    },
+    "retryDelay": {
+      "type": "number",
+      "required": false,
+      "description": "Delay between retries in ms (default: 1000)"
+    }
+  },
+  "outputs": {
+    "onJobComplete": {
+      "type": "event",
+      "description": "Fired when a job completes successfully"
+    },
+    "onJobFailed": {
+      "type": "event",
+      "description": "Fired when a job fails after all retries"
+    },
+    "onError": {
+      "type": "event",
+      "description": "Fired on queue error"
+    }
+  },
+  "actions": {
+    "addJob": {
+      "description": "Add a job to the queue"
+    },
+    "process": {
+      "description": "Register a worker function to process jobs"
+    },
+    "start": {
+      "description": "Start processing jobs"
+    },
+    "stop": {
+      "description": "Stop processing jobs"
+    }
+  },
+  "languages": ["typescript", "python"]
+}

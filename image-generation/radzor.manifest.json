@@ -1,0 +1,99 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/image-generation",
+  "version": "0.1.0",
+  "description": "Multi-provider image generation supporting OpenAI DALL-E, Stability AI, and Replicate. Handles prompt-based generation, size options, and base64/URL output formats.",
+  "languages": ["typescript", "python"],
+  "category": "ai",
+  "tags": ["image", "dalle", "stability", "replicate", "generation", "ai", "art"],
+  "inputs": [
+    {
+      "name": "provider",
+      "type": "'openai' | 'stability' | 'replicate'",
+      "description": "Image generation provider to use.",
+      "required": true
+    },
+    {
+      "name": "apiKey",
+      "type": "string",
+      "description": "API key for the selected provider.",
+      "required": true
+    },
+    {
+      "name": "model",
+      "type": "string",
+      "description": "Model identifier (e.g. dall-e-3, stable-diffusion-xl-1024-v1-0).",
+      "required": false
+    },
+    {
+      "name": "defaultSize",
+      "type": "string",
+      "default": "1024x1024",
+      "description": "Default output image dimensions (e.g. 1024x1024, 512x512).",
+      "required": false
+    },
+    {
+      "name": "responseFormat",
+      "type": "'url' | 'base64'",
+      "default": "url",
+      "description": "Whether to return a URL or base64-encoded image data.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "generationResult",
+      "type": "ImageGenerationResult",
+      "description": "Result containing image URL or base64 data, revised prompt, and metadata."
+    }
+  ],
+  "events": [
+    {
+      "name": "onGenerated",
+      "payload": { "url": "string", "prompt": "string", "provider": "string" },
+      "description": "Fired when an image has been generated successfully."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string", "provider": "string" },
+      "description": "Fired when image generation fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "generate",
+      "params": [
+        { "name": "prompt", "type": "string", "description": "Text description of the image to generate." },
+        { "name": "options", "type": "GenerateOptions", "description": "Optional overrides for size, format, and number of images." }
+      ],
+      "returns": "Promise<ImageGenerationResult>",
+      "description": "Generate an image from a text prompt."
+    },
+    {
+      "name": "generateMultiple",
+      "params": [
+        { "name": "prompt", "type": "string", "description": "Text description." },
+        { "name": "count", "type": "number", "description": "Number of images to generate." }
+      ],
+      "returns": "Promise<ImageGenerationResult[]>",
+      "description": "Generate multiple image variations from a single prompt."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "generationResult",
+        "compatibleWith": ["@radzor/file-upload.input.fileContent"]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires API key for the selected provider. Provider rate limits apply. DALL-E 3 has content policy restrictions."
+  }
+}

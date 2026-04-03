@@ -1,0 +1,41 @@
+{
+  "name": "csv-export",
+  "version": "0.1.0",
+  "description": "Generate and parse CSV files from data arrays. Supports custom delimiters, headers, and streaming.",
+  "category": "data",
+  "tags": ["csv", "export", "import", "parse", "data", "spreadsheet"],
+  "inputs": {
+    "delimiter": {
+      "type": "string",
+      "required": false,
+      "description": "Column delimiter (default: ',')"
+    },
+    "includeHeaders": {
+      "type": "boolean",
+      "required": false,
+      "description": "Include header row (default: true)"
+    }
+  },
+  "outputs": {
+    "onGenerated": {
+      "type": "event",
+      "description": "Fired when CSV is generated"
+    },
+    "onError": {
+      "type": "event",
+      "description": "Fired on error"
+    }
+  },
+  "actions": {
+    "generate": {
+      "description": "Generate CSV string from data array"
+    },
+    "parse": {
+      "description": "Parse CSV string into data array"
+    },
+    "toFile": {
+      "description": "Write CSV to a file"
+    }
+  },
+  "languages": ["typescript", "python"]
+}

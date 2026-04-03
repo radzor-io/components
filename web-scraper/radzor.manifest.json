@@ -1,0 +1,51 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/web-scraper",
+  "version": "0.1.0",
+  "description": "Web page scraping with CSS selector extraction, pagination support, and rate limiting. Fetches HTML content and extracts structured data using selectors.",
+  "languages": ["typescript", "python"],
+  "category": "data",
+  "tags": ["scraper", "web", "html", "css-selector", "extraction", "crawl"],
+  "inputs": [
+    { "name": "userAgent", "type": "string", "default": "RadzorBot/1.0", "description": "User-Agent string for requests.", "required": false },
+    { "name": "timeout", "type": "number", "default": 30000, "description": "Request timeout in milliseconds.", "required": false },
+    { "name": "rateLimit", "type": "number", "default": 1000, "description": "Minimum delay between requests in milliseconds.", "required": false }
+  ],
+  "outputs": [
+    { "name": "scrapeResult", "type": "ScrapeResult", "description": "Extracted data with selected elements and raw HTML." }
+  ],
+  "events": [
+    { "name": "onPageFetched", "payload": { "url": "string", "status": "number", "size": "number" }, "description": "Fired when a page is fetched." },
+    { "name": "onError", "payload": { "code": "string", "message": "string", "url": "string" }, "description": "Fired on fetch or parse errors." }
+  ],
+  "actions": [
+    {
+      "name": "scrape",
+      "params": [
+        { "name": "url", "type": "string", "description": "URL to scrape." },
+        { "name": "selectors", "type": "Record<string, string>", "description": "Named CSS selectors to extract (e.g. { title: 'h1', prices: '.price' })." }
+      ],
+      "returns": "Promise<ScrapeResult>",
+      "description": "Fetch a page and extract data using CSS selectors."
+    },
+    {
+      "name": "fetchHtml",
+      "params": [
+        { "name": "url", "type": "string", "description": "URL to fetch." }
+      ],
+      "returns": "Promise<string>",
+      "description": "Fetch raw HTML content from a URL."
+    }
+  ],
+  "dependencies": { "packages": {}, "radzor": [] },
+  "composability": {
+    "connectsTo": [
+      { "output": "scrapeResult", "compatibleWith": ["@radzor/embeddings-store.input.text"] }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Respects robots.txt conventions. Use responsibly — excessive scraping may violate ToS. Server-side only."
+  }
+}

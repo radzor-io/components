@@ -1,0 +1,46 @@
+{
+  "name": "two-factor-auth",
+  "version": "0.1.0",
+  "description": "TOTP-based two-factor authentication. Generate secrets, create QR URIs, and verify tokens (RFC 6238).",
+  "category": "auth",
+  "tags": ["2fa", "totp", "otp", "authentication", "security", "mfa"],
+  "inputs": {
+    "issuer": {
+      "type": "string",
+      "required": true,
+      "description": "App or service name shown in authenticator apps"
+    },
+    "digits": {
+      "type": "number",
+      "required": false,
+      "description": "Number of digits in OTP (default: 6)"
+    },
+    "period": {
+      "type": "number",
+      "required": false,
+      "description": "Time step in seconds (default: 30)"
+    }
+  },
+  "outputs": {
+    "onVerified": {
+      "type": "event",
+      "description": "Fired when a token is verified"
+    },
+    "onError": {
+      "type": "event",
+      "description": "Fired on verification error"
+    }
+  },
+  "actions": {
+    "generateSecret": {
+      "description": "Generate a new TOTP secret"
+    },
+    "generateQrUri": {
+      "description": "Generate an otpauth:// URI for QR code"
+    },
+    "verifyToken": {
+      "description": "Verify a TOTP token against a secret"
+    }
+  },
+  "languages": ["typescript", "python"]
+}

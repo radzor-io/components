@@ -1,0 +1,82 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/speech-to-text",
+  "version": "0.1.0",
+  "description": "Audio transcription using OpenAI Whisper or Deepgram APIs. Supports file upload, language detection, timestamps, and multiple output formats.",
+  "languages": ["typescript", "python"],
+  "category": "ai",
+  "tags": ["speech", "transcription", "whisper", "deepgram", "audio", "ai", "stt"],
+  "inputs": [
+    {
+      "name": "provider",
+      "type": "'openai' | 'deepgram'",
+      "description": "Transcription provider to use.",
+      "required": true
+    },
+    {
+      "name": "apiKey",
+      "type": "string",
+      "description": "API key for the selected provider.",
+      "required": true
+    },
+    {
+      "name": "model",
+      "type": "string",
+      "description": "Model identifier (e.g. whisper-1, nova-2).",
+      "required": false
+    },
+    {
+      "name": "language",
+      "type": "string",
+      "description": "ISO 639-1 language code (e.g. en, fr). Auto-detected if omitted.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "transcriptionResult",
+      "type": "TranscriptionResult",
+      "description": "Transcription text, detected language, duration, and optional word-level timestamps."
+    }
+  ],
+  "events": [
+    {
+      "name": "onTranscribed",
+      "payload": { "text": "string", "language": "string", "duration": "number" },
+      "description": "Fired when transcription completes."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired when transcription fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "transcribe",
+      "params": [
+        { "name": "audio", "type": "Buffer | Blob | string", "description": "Audio data as Buffer, Blob, or file path." },
+        { "name": "options", "type": "TranscribeOptions", "description": "Optional: language, timestamps, response format." }
+      ],
+      "returns": "Promise<TranscriptionResult>",
+      "description": "Transcribe audio to text."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "transcriptionResult",
+        "compatibleWith": ["@radzor/llm-completion.input.systemPrompt"]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires API key. Audio size limits: Whisper 25MB, Deepgram varies by plan. Server-side only."
+  }
+}

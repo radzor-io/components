@@ -1,0 +1,56 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/webhook-receiver",
+  "version": "0.1.0",
+  "description": "Secure webhook receiver with HMAC signature verification, replay protection, and event routing. Validates payloads from Stripe, GitHub, Shopify, and custom sources.",
+  "languages": ["typescript", "python"],
+  "category": "networking",
+  "tags": ["webhook", "hmac", "signature", "security", "api", "events"],
+  "inputs": [
+    { "name": "secret", "type": "string", "description": "Shared secret for HMAC signature verification.", "required": true },
+    { "name": "algorithm", "type": "'sha256' | 'sha1' | 'sha512'", "default": "sha256", "description": "Hash algorithm for signature verification.", "required": false },
+    { "name": "signatureHeader", "type": "string", "default": "x-signature-256", "description": "HTTP header containing the signature.", "required": false },
+    { "name": "tolerance", "type": "number", "default": 300, "description": "Maximum age in seconds for replay protection (0 to disable).", "required": false },
+    { "name": "timestampHeader", "type": "string", "description": "HTTP header containing the event timestamp.", "required": false }
+  ],
+  "outputs": [
+    { "name": "verifiedPayload", "type": "WebhookPayload", "description": "Parsed and verified webhook payload with event type and data." }
+  ],
+  "events": [
+    { "name": "onVerified", "payload": { "eventType": "string", "timestamp": "number" }, "description": "Fired when a webhook is verified." },
+    { "name": "onRejected", "payload": { "reason": "string", "code": "string" }, "description": "Fired when a webhook fails verification." },
+    { "name": "onError", "payload": { "code": "string", "message": "string" }, "description": "Fired on internal errors." }
+  ],
+  "actions": [
+    {
+      "name": "verify",
+      "params": [
+        { "name": "payload", "type": "string | Buffer", "description": "Raw request body." },
+        { "name": "signature", "type": "string", "description": "Signature from the request header." },
+        { "name": "timestamp", "type": "string", "description": "Optional timestamp for replay protection." }
+      ],
+      "returns": "WebhookPayload",
+      "description": "Verify a webhook signature and parse the payload."
+    },
+    {
+      "name": "verifyStripe",
+      "params": [
+        { "name": "payload", "type": "string", "description": "Raw request body." },
+        { "name": "signatureHeader", "type": "string", "description": "Stripe-Signature header value." }
+      ],
+      "returns": "WebhookPayload",
+      "description": "Verify a Stripe webhook using their specific signing scheme."
+    }
+  ],
+  "dependencies": { "packages": {}, "radzor": [] },
+  "composability": {
+    "connectsTo": [
+      { "output": "verifiedPayload", "compatibleWith": ["@radzor/queue-worker.input.jobData"] }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Must receive raw request body (not parsed JSON). Configure your framework to preserve the raw body for signature verification."
+  }
+}

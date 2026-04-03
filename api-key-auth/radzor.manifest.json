@@ -1,0 +1,48 @@
+{
+  "name": "api-key-auth",
+  "version": "0.1.0",
+  "description": "API key authentication middleware. Generate, validate, hash, and revoke API keys.",
+  "category": "auth",
+  "tags": ["api-key", "authentication", "middleware", "security", "auth"],
+  "inputs": {
+    "headerName": {
+      "type": "string",
+      "required": false,
+      "description": "HTTP header name for API key (default: 'x-api-key')"
+    },
+    "prefix": {
+      "type": "string",
+      "required": false,
+      "description": "API key prefix (default: 'rz_')"
+    }
+  },
+  "outputs": {
+    "onValidated": {
+      "type": "event",
+      "description": "Fired when an API key is validated"
+    },
+    "onRevoked": {
+      "type": "event",
+      "description": "Fired when an API key is revoked"
+    },
+    "onError": {
+      "type": "event",
+      "description": "Fired on auth error"
+    }
+  },
+  "actions": {
+    "generateKey": {
+      "description": "Generate a new API key"
+    },
+    "validateKey": {
+      "description": "Validate an API key"
+    },
+    "hashKey": {
+      "description": "Hash an API key for storage"
+    },
+    "revokeKey": {
+      "description": "Revoke an API key"
+    }
+  },
+  "languages": ["typescript", "python"]
+}

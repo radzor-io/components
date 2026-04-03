@@ -1,0 +1,51 @@
+{
+  "name": "reddit-post",
+  "version": "0.1.0",
+  "description": "Post to Reddit using the Reddit API. Submit text or link posts and manage comments.",
+  "category": "media",
+  "tags": ["reddit", "social", "post", "comments", "api"],
+  "inputs": {
+    "clientId": {
+      "type": "string",
+      "required": true,
+      "description": "Reddit app client ID"
+    },
+    "clientSecret": {
+      "type": "string",
+      "required": true,
+      "description": "Reddit app client secret"
+    },
+    "username": {
+      "type": "string",
+      "required": true,
+      "description": "Reddit username"
+    },
+    "password": {
+      "type": "string",
+      "required": true,
+      "description": "Reddit password"
+    }
+  },
+  "outputs": {
+    "onPostCreated": {
+      "type": "event",
+      "description": "Fired when a post is created"
+    },
+    "onError": {
+      "type": "event",
+      "description": "Fired on API error"
+    }
+  },
+  "actions": {
+    "submitText": {
+      "description": "Submit a text post to a subreddit"
+    },
+    "submitLink": {
+      "description": "Submit a link post to a subreddit"
+    },
+    "addComment": {
+      "description": "Add a comment to a post or reply to a comment"
+    }
+  },
+  "languages": ["typescript", "python"]
+}

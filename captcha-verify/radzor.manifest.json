@@ -1,0 +1,39 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/captcha-verify",
+  "version": "0.1.0",
+  "description": "Server-side CAPTCHA verification supporting Cloudflare Turnstile, Google reCAPTCHA, and hCaptcha. Validates tokens from client-side widgets.",
+  "languages": ["typescript", "python"],
+  "category": "auth",
+  "tags": ["captcha", "turnstile", "recaptcha", "hcaptcha", "security", "verification"],
+  "inputs": [
+    { "name": "provider", "type": "'turnstile' | 'recaptcha' | 'hcaptcha'", "description": "CAPTCHA provider.", "required": true },
+    { "name": "secretKey", "type": "string", "description": "Server-side secret key from the provider.", "required": true },
+    { "name": "scoreThreshold", "type": "number", "default": 0.5, "description": "Minimum score to pass (reCAPTCHA v3 only, 0.0-1.0).", "required": false }
+  ],
+  "outputs": [
+    { "name": "verificationResult", "type": "CaptchaResult", "description": "Verification result with success status, score, and error codes." }
+  ],
+  "events": [
+    { "name": "onVerified", "payload": { "success": "boolean", "score": "number" }, "description": "Fired after verification." },
+    { "name": "onError", "payload": { "code": "string", "message": "string" }, "description": "Fired on verification errors." }
+  ],
+  "actions": [
+    {
+      "name": "verify",
+      "params": [
+        { "name": "token", "type": "string", "description": "Token from the client-side CAPTCHA widget." },
+        { "name": "remoteIp", "type": "string", "description": "Optional client IP address for additional validation." }
+      ],
+      "returns": "Promise<CaptchaResult>",
+      "description": "Verify a CAPTCHA token."
+    }
+  ],
+  "dependencies": { "packages": {}, "radzor": [] },
+  "composability": { "connectsTo": [] },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Server-side only. Requires secret key from the CAPTCHA provider. Tokens are single-use."
+  }
+}

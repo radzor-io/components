@@ -1,0 +1,39 @@
+{
+  "name": "image-resize",
+  "version": "0.1.0",
+  "description": "Resize, crop, and transform images using raw pixel manipulation. No external dependencies.",
+  "category": "media",
+  "tags": ["image", "resize", "crop", "thumbnail", "transform", "media"],
+  "inputs": {
+    "quality": {
+      "type": "number",
+      "required": false,
+      "description": "Output quality 1-100 (default: 80)"
+    }
+  },
+  "outputs": {
+    "onProcessed": {
+      "type": "event",
+      "description": "Fired when an image is processed"
+    },
+    "onError": {
+      "type": "event",
+      "description": "Fired on error"
+    }
+  },
+  "actions": {
+    "resize": {
+      "description": "Resize an image to specified dimensions"
+    },
+    "crop": {
+      "description": "Crop a region from an image"
+    },
+    "thumbnail": {
+      "description": "Generate a thumbnail with aspect ratio preservation"
+    },
+    "getInfo": {
+      "description": "Get image dimensions and format info"
+    }
+  },
+  "languages": ["typescript", "python"]
+}

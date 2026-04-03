@@ -1,0 +1,61 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/embeddings-store",
+  "version": "0.1.0",
+  "description": "In-memory vector store for embeddings with cosine similarity search. Supports OpenAI and Ollama embedding providers. Ideal for RAG pipelines and semantic search.",
+  "languages": ["typescript", "python"],
+  "category": "ai",
+  "tags": ["embeddings", "vector", "rag", "similarity", "search", "openai", "semantic"],
+  "inputs": [
+    { "name": "provider", "type": "'openai' | 'ollama'", "description": "Embedding provider.", "required": true },
+    { "name": "apiKey", "type": "string", "description": "API key (required for OpenAI).", "required": false },
+    { "name": "model", "type": "string", "description": "Embedding model (e.g. text-embedding-3-small).", "required": false },
+    { "name": "baseUrl", "type": "string", "description": "Override base URL for self-hosted.", "required": false }
+  ],
+  "outputs": [
+    { "name": "searchResults", "type": "SearchResult[]", "description": "Ranked results with similarity scores." }
+  ],
+  "events": [
+    { "name": "onStored", "payload": { "id": "string", "dimensions": "number" }, "description": "Fired when an embedding is stored." },
+    { "name": "onSearchComplete", "payload": { "query": "string", "resultCount": "number" }, "description": "Fired after a search." },
+    { "name": "onError", "payload": { "code": "string", "message": "string" }, "description": "Fired on errors." }
+  ],
+  "actions": [
+    {
+      "name": "add",
+      "params": [
+        { "name": "id", "type": "string", "description": "Unique document ID." },
+        { "name": "text", "type": "string", "description": "Text to embed and store." },
+        { "name": "metadata", "type": "Record<string, any>", "description": "Optional metadata associated with the document." }
+      ],
+      "returns": "Promise<void>",
+      "description": "Embed text and store in the vector store."
+    },
+    {
+      "name": "search",
+      "params": [
+        { "name": "query", "type": "string", "description": "Search query text." },
+        { "name": "topK", "type": "number", "description": "Number of results to return." }
+      ],
+      "returns": "Promise<SearchResult[]>",
+      "description": "Search for similar documents."
+    },
+    {
+      "name": "remove",
+      "params": [{ "name": "id", "type": "string", "description": "Document ID to remove." }],
+      "returns": "void",
+      "description": "Remove a document from the store."
+    }
+  ],
+  "dependencies": { "packages": {}, "radzor": [] },
+  "composability": {
+    "connectsTo": [
+      { "output": "searchResults", "compatibleWith": ["@radzor/llm-completion.input.systemPrompt"] }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "In-memory store — data does not persist across restarts. For production, export/import the store or use a dedicated vector DB."
+  }
+}

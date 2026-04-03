@@ -1,0 +1,31 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/discord-bot",
+  "version": "0.1.0",
+  "description": "Discord bot framework with slash commands, embeds, and message handling. Uses the Discord REST API and Gateway for real-time events.",
+  "languages": ["typescript", "python"],
+  "category": "chat",
+  "tags": ["discord", "bot", "chat", "commands", "social", "messaging"],
+  "inputs": [
+    { "name": "botToken", "type": "string", "description": "Discord bot token.", "required": true },
+    { "name": "applicationId", "type": "string", "description": "Discord application ID for slash commands.", "required": false }
+  ],
+  "outputs": [
+    { "name": "messageResult", "type": "DiscordMessage", "description": "Sent message data." }
+  ],
+  "events": [
+    { "name": "onMessage", "payload": { "channelId": "string", "content": "string", "authorId": "string" }, "description": "Fired when a message is received." },
+    { "name": "onError", "payload": { "code": "string", "message": "string" }, "description": "Fired on API errors." }
+  ],
+  "actions": [
+    { "name": "sendMessage", "params": [{ "name": "channelId", "type": "string", "description": "Channel ID." }, { "name": "content", "type": "string", "description": "Message content." }], "returns": "Promise<DiscordMessage>", "description": "Send a message to a channel." },
+    { "name": "sendEmbed", "params": [{ "name": "channelId", "type": "string", "description": "Channel ID." }, { "name": "embed", "type": "DiscordEmbed", "description": "Rich embed object." }], "returns": "Promise<DiscordMessage>", "description": "Send a rich embed to a channel." }
+  ],
+  "dependencies": { "packages": {}, "radzor": [] },
+  "composability": { "connectsTo": [] },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires Discord bot token. Bot must be invited to server with appropriate permissions."
+  }
+}

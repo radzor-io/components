@@ -1,0 +1,38 @@
+{
+  "name": "push-notification",
+  "version": "0.1.0",
+  "description": "Send push notifications via Firebase Cloud Messaging (FCM) or Apple Push Notification service (APNs).",
+  "category": "messaging",
+  "tags": ["push", "notification", "fcm", "apns", "mobile", "messaging"],
+  "inputs": {
+    "provider": {
+      "type": "string",
+      "required": true,
+      "description": "Push provider: 'fcm' or 'apns'"
+    },
+    "credentials": {
+      "type": "object",
+      "required": true,
+      "description": "Provider credentials (FCM server key or APNs key/cert)"
+    }
+  },
+  "outputs": {
+    "onSent": {
+      "type": "event",
+      "description": "Fired when notification is sent"
+    },
+    "onError": {
+      "type": "event",
+      "description": "Fired on send error"
+    }
+  },
+  "actions": {
+    "sendToDevice": {
+      "description": "Send push notification to a single device token"
+    },
+    "sendToTopic": {
+      "description": "Send push notification to a topic (FCM only)"
+    }
+  },
+  "languages": ["typescript", "python"]
+}

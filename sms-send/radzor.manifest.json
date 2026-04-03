@@ -1,0 +1,50 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/sms-send",
+  "version": "0.1.0",
+  "description": "SMS sending via Twilio or Vonage APIs. Supports single and batch messages, delivery status tracking, and webhook-based delivery receipts.",
+  "languages": ["typescript", "python"],
+  "category": "messaging",
+  "tags": ["sms", "twilio", "vonage", "messaging", "notification", "text-message"],
+  "inputs": [
+    { "name": "provider", "type": "'twilio' | 'vonage'", "description": "SMS provider.", "required": true },
+    { "name": "accountSid", "type": "string", "description": "Twilio Account SID or Vonage API Key.", "required": true },
+    { "name": "authToken", "type": "string", "description": "Twilio Auth Token or Vonage API Secret.", "required": true },
+    { "name": "fromNumber", "type": "string", "description": "Sender phone number in E.164 format (+1234567890).", "required": true }
+  ],
+  "outputs": [
+    { "name": "sendResult", "type": "SmsSendResult", "description": "Result with message SID, status, and provider response." }
+  ],
+  "events": [
+    { "name": "onSent", "payload": { "to": "string", "messageSid": "string" }, "description": "Fired when an SMS is sent." },
+    { "name": "onError", "payload": { "code": "string", "message": "string", "to": "string" }, "description": "Fired when sending fails." }
+  ],
+  "actions": [
+    {
+      "name": "send",
+      "params": [
+        { "name": "to", "type": "string", "description": "Recipient phone number in E.164 format." },
+        { "name": "body", "type": "string", "description": "SMS message body (max 1600 chars for Twilio)." }
+      ],
+      "returns": "Promise<SmsSendResult>",
+      "description": "Send a single SMS message."
+    },
+    {
+      "name": "sendBatch",
+      "params": [
+        { "name": "messages", "type": "Array<{ to: string; body: string }>", "description": "Array of messages to send." }
+      ],
+      "returns": "Promise<SmsSendResult[]>",
+      "description": "Send multiple SMS messages."
+    }
+  ],
+  "dependencies": { "packages": {}, "radzor": [] },
+  "composability": {
+    "connectsTo": []
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires Twilio or Vonage account. Phone numbers must be in E.164 format. Content/rate limits apply per provider."
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "cache-store",
+  "version": "0.1.0",
+  "description": "In-memory cache with TTL, LRU eviction, and namespace support. No external dependencies.",
+  "category": "data",
+  "tags": ["cache", "store", "ttl", "lru", "memory", "performance"],
+  "inputs": {
+    "maxSize": {
+      "type": "number",
+      "required": false,
+      "description": "Maximum number of entries (default: 1000)"
+    },
+    "defaultTtl": {
+      "type": "number",
+      "required": false,
+      "description": "Default TTL in milliseconds (default: 0 = no expiry)"
+    }
+  },
+  "outputs": {
+    "onHit": {
+      "type": "event",
+      "description": "Fired on cache hit"
+    },
+    "onMiss": {
+      "type": "event",
+      "description": "Fired on cache miss"
+    },
+    "onEvicted": {
+      "type": "event",
+      "description": "Fired when an entry is evicted"
+    },
+    "onError": {
+      "type": "event",
+      "description": "Fired on error"
+    }
+  },
+  "actions": {
+    "get": {
+      "description": "Get a value from cache"
+    },
+    "set": {
+      "description": "Set a value in cache"
+    },
+    "delete": {
+      "description": "Delete a value from cache"
+    },
+    "clear": {
+      "description": "Clear all entries"
+    }
+  },
+  "languages": ["typescript", "python"]
+}
