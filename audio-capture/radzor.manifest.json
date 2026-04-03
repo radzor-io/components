@@ -31,11 +31,6 @@
   ],
   "outputs": [
     {
-      "name": "audioStream",
-      "type": "ReadableStream<Float32Array>",
-      "description": "Raw PCM audio stream from the microphone."
-    },
-    {
       "name": "audioBlob",
       "type": "Blob",
       "description": "Recorded audio as a Blob after stopRecording() is called."

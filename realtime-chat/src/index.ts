@@ -98,8 +98,11 @@ export class RealtimeChat {
         try {
           const data = JSON.parse(event.data as string);
           this.handleServerMessage(data);
-        } catch {
-          // Ignore malformed messages
+        } catch (err) {
+          this.emit("onError", {
+            code: "MALFORMED_MESSAGE",
+            message: err instanceof Error ? err.message : "Failed to parse server message",
+          });
         }
       };
 

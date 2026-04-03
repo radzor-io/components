@@ -32,6 +32,18 @@
       "default": 86400,
       "required": false,
       "description": "Session duration in seconds (default: 24 hours)."
+    },
+    {
+      "name": "clientCredentials",
+      "type": "Record<string, { clientId: string; clientSecret: string }>",
+      "description": "OAuth client credentials for each enabled provider. Keys must match the provider names.",
+      "required": true
+    },
+    {
+      "name": "jwtSecret",
+      "type": "string",
+      "description": "Secret key used to sign and verify JWT session tokens.",
+      "required": true
     }
   ],
   "outputs": [

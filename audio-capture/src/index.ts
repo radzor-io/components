@@ -47,6 +47,7 @@ export class AudioCapture {
   private listeners: { [K in keyof EventMap]?: Listener<EventMap[K]>[] } = {};
   private silenceTimer: ReturnType<typeof setTimeout> | null = null;
   private isSpeaking = false;
+  private speechStartTime: number | null = null;
   private animationFrameId: number | null = null;
 
   constructor(config: AudioCaptureConfig = {}) {
@@ -158,6 +159,7 @@ export class AudioCapture {
 
       if (volume > SILENCE_THRESHOLD && !this.isSpeaking) {
         this.isSpeaking = true;
+        this.speechStartTime = Date.now();
         if (this.silenceTimer) {
           clearTimeout(this.silenceTimer);
           this.silenceTimer = null;
@@ -166,13 +168,13 @@ export class AudioCapture {
       }
 
       if (volume <= SILENCE_THRESHOLD && this.isSpeaking && !this.silenceTimer) {
-        const speechStart = Date.now();
+        const silenceDetectedAt = Date.now();
         this.silenceTimer = setTimeout(() => {
           this.isSpeaking = false;
           this.silenceTimer = null;
           this.emit("onSpeechEnd", {
             timestamp: Date.now(),
-            duration: Date.now() - speechStart,
+            duration: silenceDetectedAt - (this.speechStartTime ?? silenceDetectedAt),
           });
         }, SILENCE_DURATION_MS);
       }

@@ -38,6 +38,18 @@
       "default": "payment",
       "required": false,
       "description": "Checkout mode: one-time payment or recurring subscription."
+    },
+    {
+      "name": "secretKey",
+      "type": "string",
+      "description": "Stripe secret API key (sk_live_... or sk_test_...). Server-side only.",
+      "required": true
+    },
+    {
+      "name": "webhookSecret",
+      "type": "string",
+      "description": "Stripe webhook signing secret (whsec_...) for verifying webhook events.",
+      "required": true
     }
   ],
   "outputs": [
@@ -133,8 +145,7 @@
   "dependencies": {
     "packages": {
       "stripe": "^14.0.0"
-    },
-    "radzor": ["@radzor/auth-oauth"]
+    }
   },
   "composability": {},
   "llm": {

@@ -41,11 +41,6 @@
   ],
   "outputs": [
     {
-      "name": "messageStream",
-      "type": "ReadableStream<ChatMessage>",
-      "description": "Stream of incoming chat messages."
-    },
-    {
       "name": "connectionStatus",
       "type": "'connecting' | 'connected' | 'disconnected' | 'error'",
       "description": "Current WebSocket connection status."
@@ -137,15 +132,12 @@
     }
   ],
   "dependencies": {
-    "packages": {
-      "ws": "^8.0.0"
-    },
-    "radzor": ["@radzor/auth-oauth"]
+    "packages": {}
   },
   "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Requires a WebSocket server. For production, use wss:// (TLS). The server component handles room state and message broadcasting."
+    "constraints": "Browser environment only. Uses native WebSocket API (not the ws npm package). Requires a WebSocket server. For production, use wss:// (TLS). The server component handles room state and message broadcasting."
   }
 }

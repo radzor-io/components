@@ -111,7 +111,7 @@ export class StripeCheckout {
         const session = event.data.object as Stripe.Checkout.Session;
         this.emit("onPaymentSuccess", {
           sessionId: session.id,
-          customerId: session.customer as string,
+          customerId: typeof session.customer === "string" ? session.customer : session.customer?.id ?? "",
           amount: session.amount_total ?? 0,
         });
         break;
@@ -131,7 +131,7 @@ export class StripeCheckout {
         const item = sub.items.data[0];
         this.emit("onSubscriptionCreated", {
           subscriptionId: sub.id,
-          customerId: sub.customer as string,
+          customerId: typeof sub.customer === "string" ? sub.customer : sub.customer?.id ?? "",
           priceId: item?.price?.id ?? "",
         });
         break;
