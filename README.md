@@ -6,10 +6,10 @@ Official AI-ready components with [RCS manifests](https://github.com/radzor-io/s
 
 | Component | Category | Description |
 |-----------|----------|-------------|
-| [audio-capture](./audio-capture) | media | Browser audio recording with MediaRecorder API |
+| [audio-capture](./audio-capture) | audio | Browser audio recording with MediaRecorder API |
 | [auth-oauth](./auth-oauth) | auth | Multi-provider OAuth authentication flow |
 | [stripe-checkout](./stripe-checkout) | payment | Payment processing with Stripe |
-| [realtime-chat](./realtime-chat) | communication | WebSocket-based real-time messaging |
+| [realtime-chat](./realtime-chat) | chat | WebSocket-based real-time messaging |
 
 Each component contains a `radzor.manifest.json` describing its inputs, outputs, actions, events, and composability — everything an LLM needs to integrate it.
 

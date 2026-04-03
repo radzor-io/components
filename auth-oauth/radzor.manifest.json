@@ -78,8 +78,25 @@
           "description": "The OAuth provider to authenticate with."
         }
       ],
+      "returns": "Promise<string>",
+      "description": "Get the authorization URL to redirect the user to for the specified provider."
+    },
+    {
+      "name": "handleCallback",
+      "params": [
+        {
+          "name": "provider",
+          "type": "string",
+          "description": "The OAuth provider that sent the callback."
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "description": "The authorization code from the OAuth callback."
+        }
+      ],
       "returns": "Promise<AuthSession>",
-      "description": "Initiate the OAuth login flow with the specified provider."
+      "description": "Exchange the authorization code for tokens and fetch the user profile."
     },
     {
       "name": "logout",
@@ -94,10 +111,34 @@
       "description": "Get the current authentication session, or null if not authenticated."
     },
     {
+      "name": "getUser",
+      "params": [],
+      "returns": "UserProfile | null",
+      "description": "Get the current authenticated user profile, or null if not authenticated."
+    },
+    {
       "name": "refreshToken",
       "params": [],
       "returns": "Promise<AuthSession>",
       "description": "Manually refresh the access token using the refresh token."
+    },
+    {
+      "name": "createSessionToken",
+      "params": [],
+      "returns": "Promise<string>",
+      "description": "Create a signed JWT for the current session (for server-side cookies)."
+    },
+    {
+      "name": "verifySessionToken",
+      "params": [
+        {
+          "name": "token",
+          "type": "string",
+          "description": "The JWT session token to verify."
+        }
+      ],
+      "returns": "Promise<JWTPayload>",
+      "description": "Verify and decode a session JWT."
     }
   ],
   "dependencies": {
@@ -110,15 +151,7 @@
       {
         "output": "session",
         "compatibleWith": [
-          "@radzor/realtime-chat.input.authSession",
-          "@radzor/stripe-checkout.input.authSession"
-        ]
-      },
-      {
-        "output": "user",
-        "compatibleWith": [
-          "@radzor/realtime-chat.input.userProfile",
-          "@radzor/stripe-checkout.input.userProfile"
+          "@radzor/realtime-chat.input.authToken"
         ]
       }
     ]

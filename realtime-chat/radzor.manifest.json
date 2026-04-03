@@ -33,9 +33,9 @@
       "required": true
     },
     {
-      "name": "authSession",
-      "type": "AuthSession",
-      "description": "Authentication session for authorized connections (from @radzor/auth-oauth).",
+      "name": "authToken",
+      "type": "string",
+      "description": "Authentication token for authorized connections (e.g. from @radzor/auth-oauth session.accessToken).",
       "required": false
     }
   ],

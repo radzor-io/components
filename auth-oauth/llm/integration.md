@@ -67,5 +67,4 @@ const payload = await auth.verifySessionToken(jwt);
 - Each provider needs OAuth app credentials configured in their developer console.
 
 ## Composability
-- `session` output connects to `@radzor/realtime-chat.input.authSession` and `@radzor/stripe-checkout.input.authSession`.
-- `user` output connects to `@radzor/realtime-chat.input.userProfile` and `@radzor/stripe-checkout.input.userProfile`.
+- `session.accessToken` can be passed as `@radzor/realtime-chat` `authToken` input for authenticated WebSocket connections.

@@ -53,5 +53,4 @@ checkout.on("onSubscriptionCreated", ({ subscriptionId, customerId }) => {
 - For subscriptions, create Products and Prices in the Stripe Dashboard first.
 
 ## Composability
-- Accepts `@radzor/auth-oauth.output.session` as `authSession` input.
 - `paymentStatus` output connects to `@radzor/access-control.input.paymentStatus`.
