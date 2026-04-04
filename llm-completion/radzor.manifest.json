@@ -157,13 +157,5 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Requires an API key for OpenAI and Anthropic. Ollama requires a local instance running. Uses the native fetch API (Node.js 18+ or browser)."
-  },
-  "composesWith": [
-    "embeddings-store",
-    "speech-to-text",
-    "text-to-speech",
-    "discord-bot",
-    "telegram-bot",
-    "cache-store"
-  ]
+  }
 }

@@ -163,9 +163,5 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Browser environment only. Uses native WebSocket API (not the ws npm package). Requires a WebSocket server. For production, use wss:// (TLS). The server component handles room state and message broadcasting."
-  },
-  "composesWith": [
-    "video-call",
-    "llm-completion"
-  ]
+  }
 }

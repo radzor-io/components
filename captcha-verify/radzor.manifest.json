@@ -85,16 +85,10 @@
     "packages": {},
     "radzor": []
   },
-  "composability": {
-    "connectsTo": []
-  },
+  "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Server-side only. Requires secret key from the CAPTCHA provider. Tokens are single-use."
-  },
-  "composesWith": [
-    "auth-oauth",
-    "rate-limiter"
-  ]
+  }
 }

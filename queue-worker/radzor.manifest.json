@@ -26,17 +26,61 @@
       "required": false
     }
   ],
-  "outputs": [],
+  "outputs": [
+    {
+      "name": "jobResult",
+      "type": "{ jobId: string; status: 'completed' | 'failed'; result?: unknown; error?: string }",
+      "description": "Result of a completed or failed job."
+    }
+  ],
   "events": [
-    { "name": "onJobComplete", "description": "Fired when a job completes successfully" },
-    { "name": "onJobFailed", "description": "Fired when a job fails after all retries" },
-    { "name": "onError", "description": "Fired on queue error" }
+    {
+      "name": "onJobComplete",
+      "payload": { "jobId": "string", "name": "string", "durationMs": "number" },
+      "description": "Fired when a job completes successfully."
+    },
+    {
+      "name": "onJobFailed",
+      "payload": { "jobId": "string", "name": "string", "error": "string", "attempts": "number" },
+      "description": "Fired when a job fails after all retries."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on queue error."
+    }
   ],
   "actions": [
-    { "name": "addJob", "description": "Add a job to the queue" },
-    { "name": "process", "description": "Register a worker function to process jobs" },
-    { "name": "start", "description": "Start processing jobs" },
-    { "name": "stop", "description": "Stop processing jobs" }
+    {
+      "name": "addJob",
+      "params": [
+        { "name": "name", "type": "string", "description": "Job queue name." },
+        { "name": "payload", "type": "unknown", "description": "Serializable job data." }
+      ],
+      "returns": "string",
+      "description": "Add a job to the queue. Returns the job ID."
+    },
+    {
+      "name": "process",
+      "params": [
+        { "name": "name", "type": "string", "description": "Queue name to process." },
+        { "name": "handler", "type": "(payload: unknown) => Promise<unknown>", "description": "Async handler function." }
+      ],
+      "returns": "void",
+      "description": "Register a worker handler for a queue. Call once at startup."
+    },
+    {
+      "name": "start",
+      "params": [],
+      "returns": "void",
+      "description": "Start processing queued jobs."
+    },
+    {
+      "name": "stop",
+      "params": [],
+      "returns": "void",
+      "description": "Stop processing and drain the queue gracefully."
+    }
   ],
   "dependencies": { "packages": {} },
   "composability": {}

@@ -174,10 +174,5 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Requires Stripe secret key (server-side) and publishable key (client-side). Webhook endpoint must be publicly accessible. Use STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET environment variables."
-  },
-  "composesWith": [
-    "webhook-receiver",
-    "email-send",
-    "queue-worker"
-  ]
+  }
 }

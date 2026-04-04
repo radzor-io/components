@@ -10,31 +10,69 @@
     {
       "name": "rpcUrl",
       "type": "string",
-      "description": "JSON-RPC endpoint (e.g. Infura, Alchemy)",
+      "description": "JSON-RPC endpoint URL (e.g. Infura, Alchemy, or local node).",
       "required": true
     },
     {
       "name": "contractAddress",
       "type": "string",
-      "description": "Deployed contract address",
+      "description": "Deployed contract address (0x...).",
       "required": true
     },
     {
       "name": "abi",
-      "type": "array",
-      "description": "Contract ABI (JSON array)",
+      "type": "object[]",
+      "description": "Contract ABI as JSON array.",
       "required": true
     }
   ],
-  "outputs": [],
+  "outputs": [
+    {
+      "name": "callResult",
+      "type": "unknown",
+      "description": "Decoded return value from the contract call."
+    }
+  ],
   "events": [
-    { "name": "onCallResult", "description": "Fired on successful contract call" },
-    { "name": "onError", "description": "Fired on error" }
+    {
+      "name": "onCallResult",
+      "payload": { "method": "string", "result": "string" },
+      "description": "Fired on successful contract read call."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string", "method": "string" },
+      "description": "Fired on JSON-RPC or ABI error."
+    }
   ],
   "actions": [
-    { "name": "call", "description": "Read-only call to a contract function" },
-    { "name": "encodeFunctionData", "description": "Encode function call data for a transaction" },
-    { "name": "decodeFunctionResult", "description": "Decode return data from a contract call" }
+    {
+      "name": "call",
+      "params": [
+        { "name": "method", "type": "string", "description": "Contract function name to call." },
+        { "name": "args", "type": "unknown[]", "description": "Arguments for the function.", "required": false }
+      ],
+      "returns": "Promise<unknown>",
+      "description": "Read-only call to a view/pure contract function."
+    },
+    {
+      "name": "encodeFunctionData",
+      "params": [
+        { "name": "method", "type": "string", "description": "Function name." },
+        { "name": "args", "type": "unknown[]", "description": "Function arguments." }
+      ],
+      "returns": "string",
+      "description": "ABI-encode a function call for use in a raw transaction."
+    },
+    {
+      "name": "decodeFunctionResult",
+      "params": [
+        { "name": "method", "type": "string", "description": "Function name." },
+        { "name": "data", "type": "string", "description": "Hex-encoded return data from the call." }
+      ],
+      "returns": "unknown[]",
+      "description": "ABI-decode return data from a contract call."
+    }
   ],
   "dependencies": { "packages": {} },
   "composability": {}

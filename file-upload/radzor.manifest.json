@@ -180,10 +180,5 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Node.js only (uses fs, crypto, stream modules). For S3/R2, requires access key credentials. Local provider creates directories automatically."
-  },
-  "composesWith": [
-    "image-resize",
-    "image-generation",
-    "pdf-generate"
-  ]
+  }
 }

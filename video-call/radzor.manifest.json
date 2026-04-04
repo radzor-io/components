@@ -10,30 +10,89 @@
     {
       "name": "iceServers",
       "type": "RTCIceServer[]",
-      "description": "ICE server configuration (default: Google STUN)",
+      "description": "ICE server configuration (default: Google STUN servers).",
       "required": false
     },
     {
       "name": "signalingUrl",
       "type": "string",
-      "description": "WebSocket signaling server URL",
+      "description": "WebSocket signaling server URL for exchanging offers and answers.",
       "required": false
     }
   ],
-  "outputs": [],
+  "outputs": [
+    {
+      "name": "localStream",
+      "type": "MediaStream",
+      "description": "Local audio/video stream from the user's camera/microphone."
+    },
+    {
+      "name": "remoteStream",
+      "type": "MediaStream",
+      "description": "Remote audio/video stream from the peer."
+    }
+  ],
   "events": [
-    { "name": "onLocalStream", "description": "Fired when local media stream is ready" },
-    { "name": "onRemoteStream", "description": "Fired when remote stream is received" },
-    { "name": "onCallEnded", "description": "Fired when call ends" },
-    { "name": "onError", "description": "Fired on error" }
+    {
+      "name": "onLocalStream",
+      "payload": { "trackCount": "number" },
+      "description": "Fired when local media stream is ready."
+    },
+    {
+      "name": "onRemoteStream",
+      "payload": { "trackCount": "number" },
+      "description": "Fired when remote stream arrives from the peer."
+    },
+    {
+      "name": "onCallEnded",
+      "payload": { "durationMs": "number" },
+      "description": "Fired when the call ends."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on ICE, media, or signaling error."
+    }
   ],
   "actions": [
-    { "name": "startCall", "description": "Initiate a video call (create offer)" },
-    { "name": "answerCall", "description": "Answer an incoming call (create answer)" },
-    { "name": "endCall", "description": "End the current call" },
-    { "name": "toggleAudio", "description": "Mute/unmute audio" },
-    { "name": "toggleVideo", "description": "Enable/disable video" }
+    {
+      "name": "startCall",
+      "params": [
+        { "name": "constraints", "type": "MediaStreamConstraints", "description": "Audio/video constraints for getUserMedia.", "required": false }
+      ],
+      "returns": "Promise<RTCSessionDescriptionInit>",
+      "description": "Start a call by capturing local media and creating an SDP offer."
+    },
+    {
+      "name": "answerCall",
+      "params": [
+        { "name": "offer", "type": "RTCSessionDescriptionInit", "description": "SDP offer from the remote peer." }
+      ],
+      "returns": "Promise<RTCSessionDescriptionInit>",
+      "description": "Answer an incoming call by setting the remote offer and creating an SDP answer."
+    },
+    {
+      "name": "endCall",
+      "params": [],
+      "returns": "void",
+      "description": "End the current call and release all media tracks."
+    },
+    {
+      "name": "toggleAudio",
+      "params": [],
+      "returns": "boolean",
+      "description": "Toggle microphone mute. Returns the new muted state."
+    },
+    {
+      "name": "toggleVideo",
+      "params": [],
+      "returns": "boolean",
+      "description": "Toggle camera on/off. Returns the new enabled state."
+    }
   ],
   "dependencies": { "packages": {} },
-  "composability": {}
+  "composability": {},
+  "llm": {
+    "constraints": "Browser-only — uses WebRTC and getUserMedia APIs not available in Node.js. Requires HTTPS in production. For peer discovery and signaling, a WebSocket server is needed."
+  }
 }

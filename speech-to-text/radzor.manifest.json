@@ -106,10 +106,5 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Requires API key. Audio size limits: Whisper 25MB, Deepgram varies by plan. Server-side only."
-  },
-  "composesWith": [
-    "llm-completion",
-    "text-to-speech",
-    "embeddings-store"
-  ]
+  }
 }

@@ -115,16 +115,10 @@
     "packages": {},
     "radzor": []
   },
-  "composability": {
-    "connectsTo": []
-  },
+  "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Requires Twitter API v2 access. Tweet text max 280 characters. API rate limits apply."
-  },
-  "composesWith": [
-    "queue-worker",
-    "llm-completion"
-  ]
+  }
 }

@@ -117,23 +117,10 @@
     "packages": {},
     "radzor": []
   },
-  "composability": {
-    "connectsTo": [
-      {
-        "output": "audioData",
-        "compatibleWith": [
-          "@radzor/file-upload.input.fileContent"
-        ]
-      }
-    ]
-  },
+  "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Requires API key. OpenAI TTS input limit is 4096 characters per request. Server-side only."
-  },
-  "composesWith": [
-    "llm-completion",
-    "speech-to-text"
-  ]
+  }
 }

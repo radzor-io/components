@@ -121,25 +121,10 @@
     "packages": {},
     "radzor": []
   },
-  "composability": {
-    "connectsTo": [
-      {
-        "output": "pdfBuffer",
-        "compatibleWith": [
-          "@radzor/file-upload.input.fileContent",
-          "@radzor/email-send.input.attachments"
-        ]
-      }
-    ]
-  },
+  "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Generates simple PDFs using raw PDF commands. For complex layouts, consider a headless browser approach. Python implementation creates basic text/table PDFs without HTML rendering."
-  },
-  "composesWith": [
-    "email-send",
-    "csv-export",
-    "queue-worker"
-  ]
+  }
 }

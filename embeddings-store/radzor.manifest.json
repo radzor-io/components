@@ -147,10 +147,5 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "In-memory store \u2014 data does not persist across restarts. For production, export/import the store or use a dedicated vector DB."
-  },
-  "composesWith": [
-    "llm-completion",
-    "web-scraper",
-    "speech-to-text"
-  ]
+  }
 }

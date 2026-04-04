@@ -118,24 +118,10 @@
     "packages": {},
     "radzor": []
   },
-  "composability": {
-    "connectsTo": [
-      {
-        "output": "generationResult",
-        "compatibleWith": [
-          "@radzor/file-upload.input.fileContent"
-        ]
-      }
-    ]
-  },
+  "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Requires API key for the selected provider. Provider rate limits apply. DALL-E 3 has content policy restrictions."
-  },
-  "composesWith": [
-    "image-resize",
-    "file-upload",
-    "cache-store"
-  ]
+  }
 }

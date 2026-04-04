@@ -129,23 +129,10 @@
     "packages": {},
     "radzor": []
   },
-  "composability": {
-    "connectsTo": [
-      {
-        "output": "verifiedPayload",
-        "compatibleWith": [
-          "@radzor/queue-worker.input.jobData"
-        ]
-      }
-    ]
-  },
+  "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Must receive raw request body (not parsed JSON). Configure your framework to preserve the raw body for signature verification."
-  },
-  "composesWith": [
-    "stripe-checkout",
-    "queue-worker"
-  ]
+  }
 }

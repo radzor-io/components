@@ -10,30 +10,86 @@
     {
       "name": "chainId",
       "type": "number",
-      "description": "Target chain ID (default: 1 for Ethereum mainnet)",
+      "description": "Target chain ID (default: 1 for Ethereum mainnet).",
       "required": false
     },
     {
       "name": "rpcUrl",
       "type": "string",
-      "description": "JSON-RPC endpoint URL",
+      "description": "Fallback JSON-RPC endpoint URL.",
       "required": false
     }
   ],
-  "outputs": [],
+  "outputs": [
+    {
+      "name": "walletInfo",
+      "type": "{ address: string; chainId: number; balance: string }",
+      "description": "Connected wallet address, current chain, and ETH balance."
+    }
+  ],
   "events": [
-    { "name": "onConnected", "description": "Fired when wallet is connected" },
-    { "name": "onDisconnected", "description": "Fired when wallet is disconnected" },
-    { "name": "onChainChanged", "description": "Fired when chain changes" },
-    { "name": "onError", "description": "Fired on error" }
+    {
+      "name": "onConnected",
+      "payload": { "address": "string", "chainId": "number" },
+      "description": "Fired when a wallet is connected."
+    },
+    {
+      "name": "onDisconnected",
+      "payload": { "address": "string" },
+      "description": "Fired when the wallet disconnects."
+    },
+    {
+      "name": "onChainChanged",
+      "payload": { "chainId": "number" },
+      "description": "Fired when the user switches chains."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on connection or transaction error."
+    }
   ],
   "actions": [
-    { "name": "connect", "description": "Request wallet connection" },
-    { "name": "disconnect", "description": "Disconnect wallet" },
-    { "name": "getBalance", "description": "Get ETH balance for connected address" },
-    { "name": "sendTransaction", "description": "Send an ETH transaction" },
-    { "name": "signMessage", "description": "Sign a message with the connected wallet" }
+    {
+      "name": "connect",
+      "params": [],
+      "returns": "Promise<{ address: string; chainId: number }>",
+      "description": "Request wallet connection via MetaMask or injected provider."
+    },
+    {
+      "name": "disconnect",
+      "params": [],
+      "returns": "Promise<void>",
+      "description": "Disconnect the current wallet."
+    },
+    {
+      "name": "getBalance",
+      "params": [
+        { "name": "address", "type": "string", "description": "Wallet address to query. Defaults to connected address.", "required": false }
+      ],
+      "returns": "Promise<string>",
+      "description": "Get ETH balance in wei as a hex string."
+    },
+    {
+      "name": "sendTransaction",
+      "params": [
+        { "name": "tx", "type": "{ to: string; value?: string; data?: string; gas?: string }", "description": "Transaction object." }
+      ],
+      "returns": "Promise<string>",
+      "description": "Send an ETH transaction. Returns the transaction hash."
+    },
+    {
+      "name": "signMessage",
+      "params": [
+        { "name": "message", "type": "string", "description": "Message to sign (displayed to the user in the wallet)." }
+      ],
+      "returns": "Promise<string>",
+      "description": "Sign a message with the connected wallet. Returns the hex signature."
+    }
   ],
   "dependencies": { "packages": {} },
-  "composability": {}
+  "composability": {},
+  "llm": {
+    "constraints": "Browser-only — requires window.ethereum injected by MetaMask or similar. Not available in Node.js or SSR. Always handle the case where no wallet is installed."
+  }
 }

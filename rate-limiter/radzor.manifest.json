@@ -141,10 +141,5 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "In-memory only \u2014 rate limits reset on process restart. For distributed systems, use an external store (Redis). Automatic cleanup prevents memory leaks."
-  },
-  "composesWith": [
-    "api-key-auth",
-    "auth-oauth",
-    "cache-store"
-  ]
+  }
 }

@@ -14,16 +14,65 @@
       "required": false
     }
   ],
-  "outputs": [],
+  "outputs": [
+    {
+      "name": "imageBuffer",
+      "type": "Buffer",
+      "description": "Processed image as raw bytes."
+    }
+  ],
   "events": [
-    { "name": "onProcessed", "description": "Fired when an image is processed" },
-    { "name": "onError", "description": "Fired on error" }
+    {
+      "name": "onProcessed",
+      "payload": { "width": "number", "height": "number", "bytes": "number" },
+      "description": "Fired when an image is processed."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on error."
+    }
   ],
   "actions": [
-    { "name": "resize", "description": "Resize an image to specified dimensions" },
-    { "name": "crop", "description": "Crop a region from an image" },
-    { "name": "thumbnail", "description": "Generate a thumbnail with aspect ratio preservation" },
-    { "name": "getInfo", "description": "Get image dimensions and format info" }
+    {
+      "name": "resize",
+      "params": [
+        { "name": "input", "type": "Buffer | string", "description": "Input image as Buffer or file path." },
+        { "name": "width", "type": "number", "description": "Target width in pixels." },
+        { "name": "height", "type": "number", "description": "Target height in pixels.", "required": false }
+      ],
+      "returns": "Promise<Buffer>",
+      "description": "Resize an image. Preserves aspect ratio if only width is provided."
+    },
+    {
+      "name": "crop",
+      "params": [
+        { "name": "input", "type": "Buffer | string", "description": "Input image." },
+        { "name": "x", "type": "number", "description": "Left offset in pixels." },
+        { "name": "y", "type": "number", "description": "Top offset in pixels." },
+        { "name": "width", "type": "number", "description": "Crop width in pixels." },
+        { "name": "height", "type": "number", "description": "Crop height in pixels." }
+      ],
+      "returns": "Promise<Buffer>",
+      "description": "Crop a region from an image."
+    },
+    {
+      "name": "thumbnail",
+      "params": [
+        { "name": "input", "type": "Buffer | string", "description": "Input image." },
+        { "name": "maxSize", "type": "number", "description": "Maximum dimension (width or height) in pixels." }
+      ],
+      "returns": "Promise<Buffer>",
+      "description": "Generate a thumbnail preserving aspect ratio."
+    },
+    {
+      "name": "getInfo",
+      "params": [
+        { "name": "input", "type": "Buffer | string", "description": "Input image." }
+      ],
+      "returns": "Promise<{ width: number; height: number; format: string }>",
+      "description": "Get image dimensions and format without transforming."
+    }
   ],
   "dependencies": { "packages": {} },
   "composability": {}

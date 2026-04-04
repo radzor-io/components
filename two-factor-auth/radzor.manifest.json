@@ -10,7 +10,7 @@
     {
       "name": "issuer",
       "type": "string",
-      "description": "App or service name shown in authenticator apps",
+      "description": "App or service name shown in authenticator apps.",
       "required": true
     },
     {
@@ -26,15 +26,50 @@
       "required": false
     }
   ],
-  "outputs": [],
+  "outputs": [
+    {
+      "name": "verificationResult",
+      "type": "{ valid: boolean; delta: number }",
+      "description": "Verification result with validity flag and time step delta."
+    }
+  ],
   "events": [
-    { "name": "onVerified", "description": "Fired when a token is verified" },
-    { "name": "onError", "description": "Fired on verification error" }
+    {
+      "name": "onVerified",
+      "payload": { "valid": "boolean", "accountName": "string" },
+      "description": "Fired when a TOTP token is verified."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on verification error."
+    }
   ],
   "actions": [
-    { "name": "generateSecret", "description": "Generate a new TOTP secret" },
-    { "name": "generateQrUri", "description": "Generate an otpauth:// URI for QR code" },
-    { "name": "verifyToken", "description": "Verify a TOTP token against a secret" }
+    {
+      "name": "generateSecret",
+      "params": [],
+      "returns": "{ secret: string; base32: string }",
+      "description": "Generate a new TOTP secret. Returns raw bytes and base32-encoded form."
+    },
+    {
+      "name": "generateQrUri",
+      "params": [
+        { "name": "secret", "type": "string", "description": "Base32-encoded secret." },
+        { "name": "accountName", "type": "string", "description": "User account name shown in the authenticator app." }
+      ],
+      "returns": "string",
+      "description": "Generate an otpauth:// URI suitable for QR code display."
+    },
+    {
+      "name": "verifyToken",
+      "params": [
+        { "name": "secret", "type": "string", "description": "Base32-encoded TOTP secret." },
+        { "name": "token", "type": "string", "description": "6-digit OTP token from the user." }
+      ],
+      "returns": "{ valid: boolean; delta: number }",
+      "description": "Verify a TOTP token. Checks current and adjacent time windows."
+    }
   ],
   "dependencies": { "packages": {} },
   "composability": {}

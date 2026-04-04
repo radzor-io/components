@@ -10,37 +10,77 @@
     {
       "name": "clientId",
       "type": "string",
-      "description": "Reddit app client ID",
+      "description": "Reddit app client ID.",
       "required": true
     },
     {
       "name": "clientSecret",
       "type": "string",
-      "description": "Reddit app client secret",
+      "description": "Reddit app client secret.",
       "required": true
     },
     {
       "name": "username",
       "type": "string",
-      "description": "Reddit username",
+      "description": "Reddit username.",
       "required": true
     },
     {
       "name": "password",
       "type": "string",
-      "description": "Reddit password",
+      "description": "Reddit password.",
       "required": true
     }
   ],
-  "outputs": [],
+  "outputs": [
+    {
+      "name": "postResult",
+      "type": "{ id: string; url: string; permalink: string }",
+      "description": "Result of the submitted post."
+    }
+  ],
   "events": [
-    { "name": "onPostCreated", "description": "Fired when a post is created" },
-    { "name": "onError", "description": "Fired on API error" }
+    {
+      "name": "onPostCreated",
+      "payload": { "id": "string", "subreddit": "string", "url": "string" },
+      "description": "Fired when a post is successfully created."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on API error."
+    }
   ],
   "actions": [
-    { "name": "submitText", "description": "Submit a text post to a subreddit" },
-    { "name": "submitLink", "description": "Submit a link post to a subreddit" },
-    { "name": "addComment", "description": "Add a comment to a post or reply to a comment" }
+    {
+      "name": "submitText",
+      "params": [
+        { "name": "subreddit", "type": "string", "description": "Subreddit name (without r/)." },
+        { "name": "title", "type": "string", "description": "Post title." },
+        { "name": "text", "type": "string", "description": "Post body text (Markdown)." }
+      ],
+      "returns": "Promise<{ id: string; url: string; permalink: string }>",
+      "description": "Submit a text post to a subreddit."
+    },
+    {
+      "name": "submitLink",
+      "params": [
+        { "name": "subreddit", "type": "string", "description": "Subreddit name (without r/)." },
+        { "name": "title", "type": "string", "description": "Post title." },
+        { "name": "url", "type": "string", "description": "URL to link to." }
+      ],
+      "returns": "Promise<{ id: string; url: string; permalink: string }>",
+      "description": "Submit a link post to a subreddit."
+    },
+    {
+      "name": "addComment",
+      "params": [
+        { "name": "thingId", "type": "string", "description": "Fullname of the post or comment to reply to (e.g. t3_abc123)." },
+        { "name": "text", "type": "string", "description": "Comment text (Markdown)." }
+      ],
+      "returns": "Promise<{ id: string; permalink: string }>",
+      "description": "Add a comment to a post or reply to an existing comment."
+    }
   ],
   "dependencies": { "packages": {} },
   "composability": {}

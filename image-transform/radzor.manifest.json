@@ -119,14 +119,7 @@
     },
     "radzor": ["@radzor/file-upload"]
   },
-  "composability": {
-    "connectsTo": [
-      {
-        "output": "imageBuffer",
-        "compatibleWith": ["@radzor/file-upload.input.file"]
-      }
-    ]
-  },
+  "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

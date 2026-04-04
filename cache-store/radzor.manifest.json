@@ -20,18 +20,68 @@
       "required": false
     }
   ],
-  "outputs": [],
+  "outputs": [
+    {
+      "name": "cacheStats",
+      "type": "{ size: number; hits: number; misses: number }",
+      "description": "Current cache statistics."
+    }
+  ],
   "events": [
-    { "name": "onHit", "description": "Fired on cache hit" },
-    { "name": "onMiss", "description": "Fired on cache miss" },
-    { "name": "onEvicted", "description": "Fired when an entry is evicted" },
-    { "name": "onError", "description": "Fired on error" }
+    {
+      "name": "onHit",
+      "payload": { "key": "string" },
+      "description": "Fired on cache hit."
+    },
+    {
+      "name": "onMiss",
+      "payload": { "key": "string" },
+      "description": "Fired on cache miss."
+    },
+    {
+      "name": "onEvicted",
+      "payload": { "key": "string", "reason": "string" },
+      "description": "Fired when an entry is evicted (TTL expired or LRU)."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on error."
+    }
   ],
   "actions": [
-    { "name": "get", "description": "Get a value from cache" },
-    { "name": "set", "description": "Set a value in cache" },
-    { "name": "delete", "description": "Delete a value from cache" },
-    { "name": "clear", "description": "Clear all entries" }
+    {
+      "name": "get",
+      "params": [
+        { "name": "key", "type": "string", "description": "Cache key." }
+      ],
+      "returns": "T | undefined",
+      "description": "Get a value from cache. Returns undefined on miss."
+    },
+    {
+      "name": "set",
+      "params": [
+        { "name": "key", "type": "string", "description": "Cache key." },
+        { "name": "value", "type": "T", "description": "Value to store." },
+        { "name": "ttl", "type": "number", "description": "TTL in milliseconds. Overrides defaultTtl.", "required": false }
+      ],
+      "returns": "void",
+      "description": "Set a value in cache with optional TTL."
+    },
+    {
+      "name": "delete",
+      "params": [
+        { "name": "key", "type": "string", "description": "Cache key to delete." }
+      ],
+      "returns": "boolean",
+      "description": "Delete a cache entry. Returns true if it existed."
+    },
+    {
+      "name": "clear",
+      "params": [],
+      "returns": "void",
+      "description": "Clear all entries in the cache."
+    }
   ],
   "dependencies": { "packages": {} },
   "composability": {}

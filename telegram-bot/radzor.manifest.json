@@ -10,20 +10,70 @@
     {
       "name": "botToken",
       "type": "string",
-      "description": "Telegram Bot API token from @BotFather",
+      "description": "Telegram Bot API token from @BotFather.",
       "required": true
     }
   ],
-  "outputs": [],
+  "outputs": [
+    {
+      "name": "messageResult",
+      "type": "{ messageId: number; chatId: number }",
+      "description": "Sent message ID and chat ID."
+    }
+  ],
   "events": [
-    { "name": "onMessageSent", "description": "Fired when a message is successfully sent" },
-    { "name": "onError", "description": "Fired on API error" }
+    {
+      "name": "onMessageSent",
+      "payload": { "messageId": "number", "chatId": "string" },
+      "description": "Fired when a message is successfully sent."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on API error."
+    }
   ],
   "actions": [
-    { "name": "sendMessage", "description": "Send a text message to a chat" },
-    { "name": "sendPhoto", "description": "Send a photo to a chat" },
-    { "name": "sendReplyKeyboard", "description": "Send a message with a reply keyboard" },
-    { "name": "sendInlineKeyboard", "description": "Send a message with inline keyboard buttons" }
+    {
+      "name": "sendMessage",
+      "params": [
+        { "name": "chatId", "type": "number | string", "description": "Target chat ID or @username." },
+        { "name": "text", "type": "string", "description": "Message text (supports Markdown or HTML)." },
+        { "name": "parseMode", "type": "'Markdown' | 'HTML'", "description": "Text formatting mode.", "required": false }
+      ],
+      "returns": "Promise<{ messageId: number; chatId: number }>",
+      "description": "Send a text message to a chat."
+    },
+    {
+      "name": "sendPhoto",
+      "params": [
+        { "name": "chatId", "type": "number | string", "description": "Target chat ID or @username." },
+        { "name": "photo", "type": "Buffer | string", "description": "Photo as Buffer or public URL." },
+        { "name": "caption", "type": "string", "description": "Optional caption text.", "required": false }
+      ],
+      "returns": "Promise<{ messageId: number; chatId: number }>",
+      "description": "Send a photo to a chat."
+    },
+    {
+      "name": "sendReplyKeyboard",
+      "params": [
+        { "name": "chatId", "type": "number | string", "description": "Target chat ID." },
+        { "name": "text", "type": "string", "description": "Message text." },
+        { "name": "keyboard", "type": "string[][]", "description": "2D array of button labels." }
+      ],
+      "returns": "Promise<{ messageId: number; chatId: number }>",
+      "description": "Send a message with a reply keyboard."
+    },
+    {
+      "name": "sendInlineKeyboard",
+      "params": [
+        { "name": "chatId", "type": "number | string", "description": "Target chat ID." },
+        { "name": "text", "type": "string", "description": "Message text." },
+        { "name": "keyboard", "type": "Array<Array<{ text: string; callbackData: string }>>", "description": "Inline keyboard button rows." }
+      ],
+      "returns": "Promise<{ messageId: number; chatId: number }>",
+      "description": "Send a message with inline keyboard buttons."
+    }
   ],
   "dependencies": { "packages": {} },
   "composability": {}

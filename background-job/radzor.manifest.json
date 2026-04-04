@@ -121,17 +121,7 @@
       "pg-boss": "^10.0.0"
     }
   },
-  "composability": {
-    "connectsTo": [
-      {
-        "output": "jobResult",
-        "compatibleWith": [
-          "@radzor/email-send.input.to",
-          "@radzor/push-notification.input.vapidPublicKey"
-        ]
-      }
-    ]
-  },
+  "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

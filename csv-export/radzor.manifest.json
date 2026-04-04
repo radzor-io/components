@@ -20,15 +20,52 @@
       "required": false
     }
   ],
-  "outputs": [],
+  "outputs": [
+    {
+      "name": "csvString",
+      "type": "string",
+      "description": "Generated CSV string."
+    }
+  ],
   "events": [
-    { "name": "onGenerated", "description": "Fired when CSV is generated" },
-    { "name": "onError", "description": "Fired on error" }
+    {
+      "name": "onGenerated",
+      "payload": { "rows": "number", "bytes": "number" },
+      "description": "Fired when CSV generation completes."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on error."
+    }
   ],
   "actions": [
-    { "name": "generate", "description": "Generate CSV string from data array" },
-    { "name": "parse", "description": "Parse CSV string into data array" },
-    { "name": "toFile", "description": "Write CSV to a file" }
+    {
+      "name": "generate",
+      "params": [
+        { "name": "data", "type": "Record<string, unknown>[]", "description": "Array of objects to serialize as CSV rows." },
+        { "name": "columns", "type": "string[]", "description": "Ordered column names. Inferred from first row if omitted.", "required": false }
+      ],
+      "returns": "string",
+      "description": "Generate a CSV string from a data array."
+    },
+    {
+      "name": "parse",
+      "params": [
+        { "name": "csv", "type": "string", "description": "CSV string to parse." }
+      ],
+      "returns": "Record<string, unknown>[]",
+      "description": "Parse a CSV string into an array of objects."
+    },
+    {
+      "name": "toFile",
+      "params": [
+        { "name": "data", "type": "Record<string, unknown>[]", "description": "Data to serialize." },
+        { "name": "outputPath", "type": "string", "description": "File path to write the CSV to." }
+      ],
+      "returns": "Promise<void>",
+      "description": "Generate CSV and write to a file."
+    }
   ],
   "dependencies": { "packages": {} },
   "composability": {}

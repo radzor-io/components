@@ -133,11 +133,5 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Node.js only. Resend and SendGrid require API keys. SMTP requires server credentials. The from address must be verified with your provider."
-  },
-  "composesWith": [
-    "queue-worker",
-    "pdf-generate",
-    "two-factor-auth",
-    "stripe-checkout"
-  ]
+  }
 }
