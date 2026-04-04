@@ -1,0 +1,103 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/zip-archive",
+  "version": "0.1.0",
+  "description": "Create, read, and extract ZIP archives. Supports streaming creation for large archives, per-file compression levels, and in-memory operations. No native dependencies — pure JavaScript implementation.",
+  "languages": ["typescript", "python"],
+  "category": "storage",
+  "tags": ["zip", "archive", "compress", "extract", "files", "bundle"],
+  "inputs": [
+    {
+      "name": "compression",
+      "type": "'deflate' | 'store'",
+      "default": "deflate",
+      "description": "Default compression method. store=no compression (fast), deflate=compressed.",
+      "required": false
+    },
+    {
+      "name": "level",
+      "type": "number",
+      "default": 6,
+      "description": "Deflate compression level 1-9. Higher = smaller file, slower.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "archiveBuffer",
+      "type": "Buffer",
+      "description": "ZIP archive as a Buffer."
+    },
+    {
+      "name": "fileList",
+      "type": "Array<{ name: string; size: number; compressedSize: number; isDirectory: boolean }>",
+      "description": "List of entries in an archive."
+    }
+  ],
+  "events": [
+    {
+      "name": "onFileAdded",
+      "payload": { "name": "string", "size": "number" },
+      "description": "Fired when a file is added to the archive."
+    },
+    {
+      "name": "onArchived",
+      "payload": { "files": "number", "bytes": "number" },
+      "description": "Fired when archive creation completes."
+    },
+    {
+      "name": "onExtracted",
+      "payload": { "files": "number", "outputDir": "string" },
+      "description": "Fired when an archive is extracted."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on archive or extraction error."
+    }
+  ],
+  "actions": [
+    {
+      "name": "create",
+      "params": [
+        { "name": "files", "type": "Array<{ name: string; content: Buffer | string }>", "description": "Files to include in the archive." }
+      ],
+      "returns": "Promise<Buffer>",
+      "description": "Create a ZIP archive from an array of file entries."
+    },
+    {
+      "name": "extract",
+      "params": [
+        { "name": "archive", "type": "Buffer | string", "description": "ZIP archive as Buffer or file path." },
+        { "name": "outputDir", "type": "string", "description": "Directory to extract files into.", "required": false }
+      ],
+      "returns": "Promise<Map<string, Buffer>>",
+      "description": "Extract all files from an archive. Returns a map of filename → content."
+    },
+    {
+      "name": "list",
+      "params": [
+        { "name": "archive", "type": "Buffer | string", "description": "ZIP archive to inspect." }
+      ],
+      "returns": "Promise<Array<{ name: string; size: number; compressedSize: number; isDirectory: boolean }>>",
+      "description": "List all entries in an archive without extracting."
+    },
+    {
+      "name": "addFile",
+      "params": [
+        { "name": "archive", "type": "Buffer", "description": "Existing archive buffer." },
+        { "name": "name", "type": "string", "description": "File name (with path) to add." },
+        { "name": "content", "type": "Buffer | string", "description": "File content." }
+      ],
+      "returns": "Promise<Buffer>",
+      "description": "Append a single file to an existing archive."
+    }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "In-memory operations — large archives require sufficient heap memory. For archives over 500MB, use streaming mode. Directory entries must end with /."
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/qr-code",
+  "version": "0.1.0",
+  "description": "QR code generation and decoding. Produces PNG/SVG/terminal output from any string. Decodes QR codes from image buffers. Zero native dependencies.",
+  "languages": ["typescript", "python"],
+  "category": "media",
+  "tags": ["qr-code", "barcode", "generate", "scan", "image", "encode"],
+  "inputs": [
+    {
+      "name": "errorCorrection",
+      "type": "'L' | 'M' | 'Q' | 'H'",
+      "default": "M",
+      "description": "Error correction level. L=7%, M=15%, Q=25%, H=30% recovery capacity.",
+      "required": false
+    },
+    {
+      "name": "size",
+      "type": "number",
+      "default": 300,
+      "description": "Output image size in pixels (square).",
+      "required": false
+    },
+    {
+      "name": "margin",
+      "type": "number",
+      "default": 4,
+      "description": "Quiet zone margin in modules.",
+      "required": false
+    },
+    {
+      "name": "darkColor",
+      "type": "string",
+      "default": "#000000",
+      "description": "Dark module color (hex).",
+      "required": false
+    },
+    {
+      "name": "lightColor",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Light module color (hex).",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "qrBuffer",
+      "type": "Buffer",
+      "description": "Generated QR code as PNG or SVG bytes."
+    },
+    {
+      "name": "dataUrl",
+      "type": "string",
+      "description": "Base64 data URL for direct use in <img> tags."
+    }
+  ],
+  "events": [
+    {
+      "name": "onGenerated",
+      "payload": { "format": "string", "bytes": "number" },
+      "description": "Fired when a QR code is generated."
+    },
+    {
+      "name": "onDecoded",
+      "payload": { "data": "string", "format": "string" },
+      "description": "Fired when a QR code is decoded from an image."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on generation or decode error."
+    }
+  ],
+  "actions": [
+    {
+      "name": "generate",
+      "params": [
+        { "name": "data", "type": "string", "description": "String to encode (URL, text, JSON, etc.)." },
+        { "name": "format", "type": "'png' | 'svg'", "description": "Output format.", "required": false }
+      ],
+      "returns": "Promise<Buffer>",
+      "description": "Generate a QR code as PNG or SVG buffer."
+    },
+    {
+      "name": "generateDataUrl",
+      "params": [
+        { "name": "data", "type": "string", "description": "String to encode." }
+      ],
+      "returns": "Promise<string>",
+      "description": "Generate a QR code as a base64 data URL (PNG). Ready for use in <img src=...>."
+    },
+    {
+      "name": "generateToFile",
+      "params": [
+        { "name": "data", "type": "string", "description": "String to encode." },
+        { "name": "outputPath", "type": "string", "description": "File path to write (extension determines format: .png or .svg)." }
+      ],
+      "returns": "Promise<void>",
+      "description": "Generate a QR code and write it to a file."
+    },
+    {
+      "name": "decode",
+      "params": [
+        { "name": "input", "type": "Buffer | string", "description": "Image as Buffer or file path containing a QR code." }
+      ],
+      "returns": "Promise<string>",
+      "description": "Decode a QR code from an image and return the encoded string."
+    }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Use error correction H when the QR code may be partially obscured (e.g. printed with a logo). Maximum data capacity varies by error correction level. For binary data, encode as base64 first."
+  }
+}

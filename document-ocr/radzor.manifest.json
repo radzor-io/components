@@ -1,0 +1,101 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/document-ocr",
+  "version": "0.1.0",
+  "description": "Extract text and structured data from PDFs, images, and scanned documents. Supports Tesseract (local), Google Vision, and Azure Document Intelligence. Handles multi-page PDFs, tables, and form fields.",
+  "languages": ["typescript", "python"],
+  "category": "ai",
+  "tags": ["ocr", "pdf", "document", "text-extraction", "vision", "google", "azure", "tesseract"],
+  "inputs": [
+    {
+      "name": "provider",
+      "type": "'tesseract' | 'google-vision' | 'azure'",
+      "default": "tesseract",
+      "description": "OCR provider. tesseract runs locally; google-vision and azure require API credentials.",
+      "required": false
+    },
+    {
+      "name": "apiKey",
+      "type": "string",
+      "description": "API key for Google Vision. Not required for tesseract.",
+      "required": false
+    },
+    {
+      "name": "azureEndpoint",
+      "type": "string",
+      "description": "Azure Document Intelligence endpoint URL.",
+      "required": false
+    },
+    {
+      "name": "azureKey",
+      "type": "string",
+      "description": "Azure Document Intelligence API key.",
+      "required": false
+    },
+    {
+      "name": "language",
+      "type": "string",
+      "default": "eng",
+      "description": "Language hint for OCR (ISO 639-3 for Tesseract, BCP-47 for cloud providers).",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "extractionResult",
+      "type": "{ text: string; pages: number; confidence: number }",
+      "description": "Extracted text, page count, and average confidence score."
+    },
+    {
+      "name": "structuredData",
+      "type": "{ tables: object[][]; fields: Record<string, string>; lines: string[] }",
+      "description": "Structured extraction result with tables, form fields, and individual text lines."
+    }
+  ],
+  "events": [
+    {
+      "name": "onPageExtracted",
+      "payload": { "page": "number", "confidence": "number", "chars": "number" },
+      "description": "Fired when a page is processed."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string", "page": "number" },
+      "description": "Fired on extraction error."
+    }
+  ],
+  "actions": [
+    {
+      "name": "extractText",
+      "params": [
+        { "name": "input", "type": "Buffer | string", "description": "Document as Buffer or file path (PDF, PNG, JPEG, TIFF)." }
+      ],
+      "returns": "Promise<{ text: string; pages: number; confidence: number }>",
+      "description": "Extract all text from a document or image."
+    },
+    {
+      "name": "extractStructured",
+      "params": [
+        { "name": "input", "type": "Buffer | string", "description": "Document as Buffer or file path." }
+      ],
+      "returns": "Promise<{ tables: object[][]; fields: Record<string, string>; lines: string[] }>",
+      "description": "Extract structured data including tables and form fields (cloud providers only)."
+    },
+    {
+      "name": "extractPage",
+      "params": [
+        { "name": "input", "type": "Buffer | string", "description": "PDF as Buffer or file path." },
+        { "name": "pageNumber", "type": "number", "description": "1-indexed page number to extract." }
+      ],
+      "returns": "Promise<{ text: string; confidence: number }>",
+      "description": "Extract text from a specific page of a PDF."
+    }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Tesseract requires a local installation (apt-get install tesseract-ocr). Cloud providers require API credentials and network access. extractStructured() is only available for google-vision and azure — tesseract returns plain text only. For large PDFs, process page by page to avoid memory issues."
+  }
+}

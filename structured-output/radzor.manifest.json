@@ -1,0 +1,109 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/structured-output",
+  "version": "0.1.0",
+  "description": "Force LLM responses to match a JSON schema. Wraps OpenAI and Anthropic with schema-validated generation, automatic retry on parse failure, and TypeScript type inference from the schema.",
+  "languages": ["typescript"],
+  "category": "ai",
+  "tags": ["llm", "structured", "json-schema", "extraction", "openai", "anthropic", "validation", "ai"],
+  "inputs": [
+    {
+      "name": "provider",
+      "type": "'openai' | 'anthropic'",
+      "description": "LLM provider to use.",
+      "required": true
+    },
+    {
+      "name": "apiKey",
+      "type": "string",
+      "description": "API key for the selected provider.",
+      "required": true
+    },
+    {
+      "name": "model",
+      "type": "string",
+      "description": "Model identifier (e.g. gpt-4o, claude-sonnet-4-20250514).",
+      "required": true
+    },
+    {
+      "name": "maxRetries",
+      "type": "number",
+      "default": 3,
+      "description": "Number of retry attempts if the output fails schema validation.",
+      "required": false
+    },
+    {
+      "name": "temperature",
+      "type": "number",
+      "default": 0,
+      "description": "Sampling temperature. Defaults to 0 for deterministic structured output.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "parsedResult",
+      "type": "T",
+      "description": "Validated and type-safe parsed output matching the provided schema."
+    },
+    {
+      "name": "rawText",
+      "type": "string",
+      "description": "Raw LLM response text before parsing."
+    }
+  ],
+  "events": [
+    {
+      "name": "onParsed",
+      "payload": { "model": "string", "attempts": "number" },
+      "description": "Fired when the output is successfully parsed and validated."
+    },
+    {
+      "name": "onRetry",
+      "payload": { "attempt": "number", "validationError": "string" },
+      "description": "Fired when validation fails and a retry is triggered."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string", "lastAttempt": "string" },
+      "description": "Fired when all retries are exhausted."
+    }
+  ],
+  "actions": [
+    {
+      "name": "generate",
+      "params": [
+        { "name": "prompt", "type": "string", "description": "User prompt to send to the LLM." },
+        { "name": "schema", "type": "Record<string, unknown>", "description": "JSON Schema object describing the expected output shape." },
+        { "name": "systemPrompt", "type": "string", "description": "Optional system instructions.", "required": false }
+      ],
+      "returns": "Promise<T>",
+      "description": "Generate a structured response matching the provided JSON schema."
+    },
+    {
+      "name": "extract",
+      "params": [
+        { "name": "text", "type": "string", "description": "Source text to extract structured data from." },
+        { "name": "schema", "type": "Record<string, unknown>", "description": "JSON Schema describing the fields to extract." }
+      ],
+      "returns": "Promise<T>",
+      "description": "Extract structured fields from unstructured text."
+    },
+    {
+      "name": "classify",
+      "params": [
+        { "name": "text", "type": "string", "description": "Text to classify." },
+        { "name": "labels", "type": "string[]", "description": "Possible classification labels." }
+      ],
+      "returns": "Promise<{ label: string; confidence: number; reasoning: string }>",
+      "description": "Classify text into one of the provided labels with a confidence score."
+    }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Uses OpenAI structured outputs (response_format: json_schema) or Anthropic tool use under the hood. Keep schemas flat where possible — nested objects increase failure rate. temperature defaults to 0 for reliability."
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/event-bus",
+  "version": "0.1.0",
+  "description": "In-process typed publish/subscribe event bus. Decouples components without external infrastructure. Supports wildcard patterns, async handlers, error isolation, and event history replay.",
+  "languages": ["typescript"],
+  "category": "automation",
+  "tags": ["event-bus", "pubsub", "events", "async", "decoupling", "observer", "messaging"],
+  "inputs": [
+    {
+      "name": "maxListeners",
+      "type": "number",
+      "default": 100,
+      "description": "Maximum listeners per event before emitting a warning.",
+      "required": false
+    },
+    {
+      "name": "historySize",
+      "type": "number",
+      "default": 0,
+      "description": "Number of past events to retain for late subscribers (0 = no history).",
+      "required": false
+    },
+    {
+      "name": "asyncHandlers",
+      "type": "boolean",
+      "default": true,
+      "description": "Await async handlers sequentially. Set to false for fire-and-forget.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "publishResult",
+      "type": "{ event: string; handlersInvoked: number }",
+      "description": "Publish result with the event name and number of handlers invoked."
+    }
+  ],
+  "events": [
+    {
+      "name": "onPublish",
+      "payload": { "event": "string", "handlersInvoked": "number" },
+      "description": "Fired after an event is published and all handlers complete."
+    },
+    {
+      "name": "onHandlerError",
+      "payload": { "event": "string", "error": "string" },
+      "description": "Fired when a handler throws. Other handlers continue to run."
+    }
+  ],
+  "actions": [
+    {
+      "name": "subscribe",
+      "params": [
+        { "name": "event", "type": "string", "description": "Event name or glob pattern (e.g. 'user.*')." },
+        { "name": "handler", "type": "(payload: unknown) => void | Promise<void>", "description": "Handler function invoked on publish." }
+      ],
+      "returns": "() => void",
+      "description": "Subscribe to an event. Returns an unsubscribe function."
+    },
+    {
+      "name": "once",
+      "params": [
+        { "name": "event", "type": "string", "description": "Event name to listen for once." },
+        { "name": "handler", "type": "(payload: unknown) => void | Promise<void>", "description": "Handler function." }
+      ],
+      "returns": "() => void",
+      "description": "Subscribe to an event for a single invocation, then auto-unsubscribe."
+    },
+    {
+      "name": "publish",
+      "params": [
+        { "name": "event", "type": "string", "description": "Event name to publish." },
+        { "name": "payload", "type": "unknown", "description": "Event payload passed to all handlers.", "required": false }
+      ],
+      "returns": "Promise<{ handlersInvoked: number }>",
+      "description": "Publish an event and invoke all matching handlers."
+    },
+    {
+      "name": "unsubscribeAll",
+      "params": [
+        { "name": "event", "type": "string", "description": "Event name to clear all handlers for.", "required": false }
+      ],
+      "returns": "void",
+      "description": "Remove all handlers for an event, or all handlers globally if no event given."
+    }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "In-process only — events do not cross process or service boundaries. For distributed systems, use a message queue (@radzor/queue-worker or @radzor/background-job). Handler errors are isolated — one failing handler does not prevent others from running."
+  }
+}

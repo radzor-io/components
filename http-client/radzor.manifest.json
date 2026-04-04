@@ -1,0 +1,130 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/http-client",
+  "version": "0.1.0",
+  "description": "Resilient HTTP client with automatic retry, exponential backoff, timeout, and request/response interceptors. Built on the native fetch API. No dependencies.",
+  "languages": ["typescript", "python"],
+  "category": "networking",
+  "tags": ["http", "fetch", "retry", "timeout", "backoff", "api", "client", "rest"],
+  "inputs": [
+    {
+      "name": "baseUrl",
+      "type": "string",
+      "description": "Base URL prepended to all requests (e.g. https://api.example.com).",
+      "required": false
+    },
+    {
+      "name": "timeout",
+      "type": "number",
+      "default": 30000,
+      "description": "Request timeout in milliseconds.",
+      "required": false
+    },
+    {
+      "name": "retries",
+      "type": "number",
+      "default": 3,
+      "description": "Maximum number of retry attempts on transient failures (5xx, network errors).",
+      "required": false
+    },
+    {
+      "name": "retryDelay",
+      "type": "number",
+      "default": 1000,
+      "description": "Initial retry delay in milliseconds. Doubles with each attempt (exponential backoff).",
+      "required": false
+    },
+    {
+      "name": "headers",
+      "type": "Record<string, string>",
+      "description": "Default headers added to every request (e.g. Authorization, Accept).",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "response",
+      "type": "{ status: number; headers: Record<string, string>; data: unknown }",
+      "description": "Parsed HTTP response with status, headers, and JSON-decoded body."
+    }
+  ],
+  "events": [
+    {
+      "name": "onRequest",
+      "payload": { "method": "string", "url": "string" },
+      "description": "Fired before each request attempt."
+    },
+    {
+      "name": "onResponse",
+      "payload": { "status": "number", "url": "string", "durationMs": "number" },
+      "description": "Fired on successful response."
+    },
+    {
+      "name": "onRetry",
+      "payload": { "attempt": "number", "delayMs": "number", "reason": "string" },
+      "description": "Fired when a request is retried."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string", "url": "string" },
+      "description": "Fired when all retry attempts are exhausted."
+    }
+  ],
+  "actions": [
+    {
+      "name": "get",
+      "params": [
+        { "name": "path", "type": "string", "description": "URL path or full URL." },
+        { "name": "options", "type": "RequestOptions", "description": "Per-request headers, params, timeout override.", "required": false }
+      ],
+      "returns": "Promise<{ status: number; data: unknown }>",
+      "description": "Perform a GET request."
+    },
+    {
+      "name": "post",
+      "params": [
+        { "name": "path", "type": "string", "description": "URL path or full URL." },
+        { "name": "body", "type": "unknown", "description": "Request body (serialized as JSON)." },
+        { "name": "options", "type": "RequestOptions", "description": "Per-request overrides.", "required": false }
+      ],
+      "returns": "Promise<{ status: number; data: unknown }>",
+      "description": "Perform a POST request with a JSON body."
+    },
+    {
+      "name": "put",
+      "params": [
+        { "name": "path", "type": "string", "description": "URL path or full URL." },
+        { "name": "body", "type": "unknown", "description": "Request body." },
+        { "name": "options", "type": "RequestOptions", "description": "Per-request overrides.", "required": false }
+      ],
+      "returns": "Promise<{ status: number; data: unknown }>",
+      "description": "Perform a PUT request with a JSON body."
+    },
+    {
+      "name": "delete",
+      "params": [
+        { "name": "path", "type": "string", "description": "URL path or full URL." },
+        { "name": "options", "type": "RequestOptions", "description": "Per-request overrides.", "required": false }
+      ],
+      "returns": "Promise<{ status: number; data: unknown }>",
+      "description": "Perform a DELETE request."
+    },
+    {
+      "name": "request",
+      "params": [
+        { "name": "method", "type": "string", "description": "HTTP method (GET, POST, PATCH, etc.)." },
+        { "name": "path", "type": "string", "description": "URL path or full URL." },
+        { "name": "options", "type": "RequestOptions", "description": "Body, headers, timeout, and other options.", "required": false }
+      ],
+      "returns": "Promise<{ status: number; headers: Record<string, string>; data: unknown }>",
+      "description": "Generic request method for any HTTP verb."
+    }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Retries only on 5xx responses and network errors — not on 4xx. Uses native fetch (Node.js 18+ or browser). For streaming responses, use request() with a custom handler."
+  }
+}

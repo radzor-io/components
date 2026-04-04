@@ -1,0 +1,104 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/magic-link-auth",
+  "version": "0.1.0",
+  "description": "Passwordless authentication via email magic links. Generates signed tokens, sends links via email, and verifies them on callback. Zero-dependency token management with configurable TTL and single-use enforcement.",
+  "languages": ["typescript", "python"],
+  "category": "auth",
+  "tags": ["magic-link", "passwordless", "auth", "email", "token", "security"],
+  "inputs": [
+    {
+      "name": "secret",
+      "type": "string",
+      "description": "Secret key used to sign and verify magic link tokens (HMAC-SHA256).",
+      "required": true
+    },
+    {
+      "name": "tokenTtl",
+      "type": "number",
+      "default": 900,
+      "description": "Token expiry in seconds (default: 15 minutes).",
+      "required": false
+    },
+    {
+      "name": "baseUrl",
+      "type": "string",
+      "description": "Base URL for magic link callback (e.g. https://app.example.com/auth/verify).",
+      "required": true
+    },
+    {
+      "name": "singleUse",
+      "type": "boolean",
+      "default": true,
+      "description": "Invalidate token after first successful verification.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "verifiedEmail",
+      "type": "string",
+      "description": "Email address of the successfully authenticated user."
+    },
+    {
+      "name": "tokenMeta",
+      "type": "{ email: string; expiresAt: number; used: boolean }",
+      "description": "Token metadata including email, expiry, and usage status."
+    }
+  ],
+  "events": [
+    {
+      "name": "onLinkSent",
+      "payload": { "email": "string", "expiresAt": "number" },
+      "description": "Fired when a magic link is generated and ready to send."
+    },
+    {
+      "name": "onVerified",
+      "payload": { "email": "string", "tokenId": "string" },
+      "description": "Fired when a magic link token is successfully verified."
+    },
+    {
+      "name": "onExpired",
+      "payload": { "email": "string" },
+      "description": "Fired when a token is used after its TTL has elapsed."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on token generation or verification error."
+    }
+  ],
+  "actions": [
+    {
+      "name": "generateLink",
+      "params": [
+        { "name": "email", "type": "string", "description": "Email address to authenticate." }
+      ],
+      "returns": "Promise<{ url: string; token: string; expiresAt: number }>",
+      "description": "Generate a signed magic link URL for the given email. Send this URL to the user via email."
+    },
+    {
+      "name": "verifyToken",
+      "params": [
+        { "name": "token", "type": "string", "description": "Token extracted from the magic link callback URL." }
+      ],
+      "returns": "Promise<{ email: string; valid: boolean }>",
+      "description": "Verify a magic link token. Returns the email if valid, throws if expired or already used."
+    },
+    {
+      "name": "revokeToken",
+      "params": [
+        { "name": "token", "type": "string", "description": "Token to invalidate." }
+      ],
+      "returns": "Promise<void>",
+      "description": "Manually invalidate a token before it expires."
+    }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "generateLink() only creates the URL — you must send it via @radzor/email-send or similar. Tokens are stored in-memory by default; restart clears all pending tokens. For multi-instance deployments, use an external store."
+  }
+}

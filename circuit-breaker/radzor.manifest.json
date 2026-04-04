@@ -1,0 +1,113 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/circuit-breaker",
+  "version": "0.1.0",
+  "description": "Circuit breaker pattern for fault-tolerant external service calls. Tracks failure rates, opens the circuit to fast-fail requests when a threshold is exceeded, and probes recovery with half-open state. Zero dependencies.",
+  "languages": ["typescript", "python"],
+  "category": "networking",
+  "tags": ["circuit-breaker", "resilience", "fault-tolerance", "retry", "availability", "pattern"],
+  "inputs": [
+    {
+      "name": "threshold",
+      "type": "number",
+      "default": 5,
+      "description": "Number of consecutive failures before the circuit opens.",
+      "required": false
+    },
+    {
+      "name": "timeout",
+      "type": "number",
+      "default": 60000,
+      "description": "Time in milliseconds the circuit stays open before moving to half-open.",
+      "required": false
+    },
+    {
+      "name": "halfOpenRequests",
+      "type": "number",
+      "default": 1,
+      "description": "Number of probe requests allowed in half-open state.",
+      "required": false
+    },
+    {
+      "name": "volumeThreshold",
+      "type": "number",
+      "default": 10,
+      "description": "Minimum number of requests in a window before the failure rate is evaluated.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "state",
+      "type": "'closed' | 'open' | 'half-open'",
+      "description": "Current circuit state."
+    },
+    {
+      "name": "metrics",
+      "type": "{ totalRequests: number; failures: number; successes: number; lastFailureAt: number | null }",
+      "description": "Cumulative circuit metrics."
+    }
+  ],
+  "events": [
+    {
+      "name": "onOpen",
+      "payload": { "failures": "number", "at": "number" },
+      "description": "Fired when the circuit opens due to too many failures."
+    },
+    {
+      "name": "onHalfOpen",
+      "payload": { "at": "number" },
+      "description": "Fired when the circuit transitions to half-open to probe recovery."
+    },
+    {
+      "name": "onClose",
+      "payload": { "at": "number" },
+      "description": "Fired when the circuit closes (service recovered)."
+    },
+    {
+      "name": "onRejected",
+      "payload": { "state": "string" },
+      "description": "Fired when a request is fast-failed because the circuit is open."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on unexpected internal error."
+    }
+  ],
+  "actions": [
+    {
+      "name": "execute",
+      "params": [
+        { "name": "fn", "type": "() => Promise<T>", "description": "Async function to protect with the circuit breaker." }
+      ],
+      "returns": "Promise<T>",
+      "description": "Execute a function through the circuit breaker. Throws CircuitOpenError if the circuit is open."
+    },
+    {
+      "name": "getState",
+      "params": [],
+      "returns": "'closed' | 'open' | 'half-open'",
+      "description": "Get the current circuit state."
+    },
+    {
+      "name": "getMetrics",
+      "params": [],
+      "returns": "{ totalRequests: number; failures: number; successes: number; lastFailureAt: number | null }",
+      "description": "Get cumulative request metrics."
+    },
+    {
+      "name": "reset",
+      "params": [],
+      "returns": "void",
+      "description": "Manually reset the circuit to closed state and clear metrics."
+    }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Create one circuit breaker instance per external dependency, not per request. State is in-memory — resets on process restart. Wrap @radzor/http-client calls or any external service call inside execute()."
+  }
+}

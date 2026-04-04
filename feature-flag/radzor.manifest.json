@@ -1,0 +1,98 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/feature-flag",
+  "version": "0.1.0",
+  "description": "Simple feature flag evaluation with per-user overrides, percentage rollouts, and environment-based defaults. No external service required — flags are defined in code or config files.",
+  "languages": ["typescript", "python"],
+  "category": "automation",
+  "tags": ["feature-flag", "rollout", "ab-test", "toggle", "configuration", "deployment"],
+  "inputs": [
+    {
+      "name": "flags",
+      "type": "Record<string, boolean | number | string>",
+      "description": "Default flag values. boolean=on/off, number=percentage rollout (0-100), string=variant name.",
+      "required": true
+    },
+    {
+      "name": "overrideEnv",
+      "type": "boolean",
+      "default": true,
+      "description": "Allow environment variables to override flag values (e.g. FF_MY_FLAG=true).",
+      "required": false
+    },
+    {
+      "name": "overrideHeader",
+      "type": "string",
+      "description": "HTTP header name for per-request overrides (e.g. X-Feature-Flags). Useful in testing.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "evaluation",
+      "type": "{ flag: string; value: boolean | string; reason: 'default' | 'env' | 'override' | 'rollout' }",
+      "description": "Flag evaluation result with the resolved value and reason."
+    }
+  ],
+  "events": [
+    {
+      "name": "onFlagEnabled",
+      "payload": { "flag": "string", "userId": "string", "reason": "string" },
+      "description": "Fired when a boolean flag evaluates to true."
+    },
+    {
+      "name": "onFlagDisabled",
+      "payload": { "flag": "string", "userId": "string" },
+      "description": "Fired when a boolean flag evaluates to false."
+    },
+    {
+      "name": "onOverride",
+      "payload": { "flag": "string", "source": "string", "value": "string" },
+      "description": "Fired when an env or header override changes the evaluated value."
+    }
+  ],
+  "actions": [
+    {
+      "name": "isEnabled",
+      "params": [
+        { "name": "flag", "type": "string", "description": "Flag name to evaluate." },
+        { "name": "userId", "type": "string", "description": "User ID for percentage rollout bucket assignment.", "required": false }
+      ],
+      "returns": "boolean",
+      "description": "Evaluate a boolean flag for a user. For percentage flags, deterministically bucketed by userId."
+    },
+    {
+      "name": "getValue",
+      "params": [
+        { "name": "flag", "type": "string", "description": "Flag name to read." },
+        { "name": "defaultValue", "type": "boolean | string | number", "description": "Value returned if flag is not defined.", "required": false }
+      ],
+      "returns": "boolean | string | number",
+      "description": "Get the raw value of a flag."
+    },
+    {
+      "name": "setOverride",
+      "params": [
+        { "name": "flag", "type": "string", "description": "Flag name to override." },
+        { "name": "value", "type": "boolean | string | number", "description": "Override value." }
+      ],
+      "returns": "void",
+      "description": "Set a runtime override for a flag (in-memory, not persisted)."
+    },
+    {
+      "name": "getAll",
+      "params": [
+        { "name": "userId", "type": "string", "description": "User ID for rollout evaluation.", "required": false }
+      ],
+      "returns": "Record<string, boolean | string | number>",
+      "description": "Get all evaluated flag values for a given user context."
+    }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Percentage rollout uses a deterministic hash of (flagName + userId) — same user always gets the same bucket. Overrides are in-memory and reset on restart. For persistent overrides and a UI, use a dedicated service like Unleash or LaunchDarkly."
+  }
+}

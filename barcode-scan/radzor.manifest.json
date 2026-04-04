@@ -1,0 +1,104 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/barcode-scan",
+  "version": "0.1.0",
+  "description": "Generate and scan 1D and 2D barcodes. Supports Code128, EAN-13, UPC-A, ITF, Code39, QR Code, and Data Matrix. Produces SVG/PNG output and decodes from image buffers.",
+  "languages": ["typescript"],
+  "category": "media",
+  "tags": ["barcode", "ean", "qr-code", "scan", "retail", "logistics", "encode"],
+  "inputs": [
+    {
+      "name": "format",
+      "type": "'code128' | 'ean13' | 'upca' | 'itf' | 'code39' | 'qrcode' | 'datamatrix'",
+      "default": "code128",
+      "description": "Default barcode format for generation.",
+      "required": false
+    },
+    {
+      "name": "width",
+      "type": "number",
+      "default": 200,
+      "description": "Barcode width in pixels.",
+      "required": false
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": 80,
+      "description": "Barcode height in pixels (ignored for 2D formats).",
+      "required": false
+    },
+    {
+      "name": "includeText",
+      "type": "boolean",
+      "default": true,
+      "description": "Render human-readable text below the barcode.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "barcodeBuffer",
+      "type": "Buffer",
+      "description": "Generated barcode as PNG or SVG bytes."
+    },
+    {
+      "name": "scanResult",
+      "type": "{ data: string; format: string; confidence: number }",
+      "description": "Decoded barcode data, format, and detection confidence."
+    }
+  ],
+  "events": [
+    {
+      "name": "onGenerated",
+      "payload": { "format": "string", "data": "string", "bytes": "number" },
+      "description": "Fired when a barcode is generated."
+    },
+    {
+      "name": "onScanned",
+      "payload": { "data": "string", "format": "string" },
+      "description": "Fired when a barcode is decoded from an image."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on generation or scan error."
+    }
+  ],
+  "actions": [
+    {
+      "name": "generate",
+      "params": [
+        { "name": "data", "type": "string", "description": "Data to encode." },
+        { "name": "format", "type": "string", "description": "Barcode format override.", "required": false },
+        { "name": "outputFormat", "type": "'png' | 'svg'", "description": "Image output format.", "required": false }
+      ],
+      "returns": "Promise<Buffer>",
+      "description": "Generate a barcode image from data."
+    },
+    {
+      "name": "generateDataUrl",
+      "params": [
+        { "name": "data", "type": "string", "description": "Data to encode." },
+        { "name": "format", "type": "string", "description": "Barcode format override.", "required": false }
+      ],
+      "returns": "Promise<string>",
+      "description": "Generate a barcode as a base64 data URL for use in <img> tags."
+    },
+    {
+      "name": "scan",
+      "params": [
+        { "name": "input", "type": "Buffer | string", "description": "Image as Buffer or file path containing a barcode." }
+      ],
+      "returns": "Promise<{ data: string; format: string; confidence: number }>",
+      "description": "Decode a barcode from an image."
+    }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "EAN-13 requires exactly 12 or 13 digits. UPC-A requires 12 digits. Code39 is uppercase alphanumeric only. For scanning, provide a high-contrast image with adequate resolution (>72 DPI)."
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/session-manager",
+  "version": "0.1.0",
+  "description": "Server-side session management with pluggable stores (memory, Redis, PostgreSQL). Handles session creation, rotation, expiry, and signed cookie generation. Framework-agnostic.",
+  "languages": ["typescript", "python"],
+  "category": "auth",
+  "tags": ["session", "auth", "cookie", "redis", "store", "security"],
+  "inputs": [
+    {
+      "name": "store",
+      "type": "'memory' | 'redis' | 'postgres'",
+      "default": "memory",
+      "description": "Backing store for session data.",
+      "required": false
+    },
+    {
+      "name": "connection",
+      "type": "string",
+      "description": "Redis URL or PostgreSQL connection string. Required for redis and postgres stores.",
+      "required": false
+    },
+    {
+      "name": "secret",
+      "type": "string",
+      "description": "Secret for signing session cookies (HMAC-SHA256).",
+      "required": true
+    },
+    {
+      "name": "ttl",
+      "type": "number",
+      "default": 86400,
+      "description": "Session lifetime in seconds (default: 24 hours).",
+      "required": false
+    },
+    {
+      "name": "cookieName",
+      "type": "string",
+      "default": "sid",
+      "description": "Name of the session cookie.",
+      "required": false
+    },
+    {
+      "name": "secure",
+      "type": "boolean",
+      "default": true,
+      "description": "Set Secure flag on cookie (HTTPS only). Disable in development.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "sessionData",
+      "type": "Record<string, unknown>",
+      "description": "Session payload associated with the session ID."
+    },
+    {
+      "name": "sessionId",
+      "type": "string",
+      "description": "Opaque session identifier."
+    }
+  ],
+  "events": [
+    {
+      "name": "onCreated",
+      "payload": { "sessionId": "string", "userId": "string" },
+      "description": "Fired when a new session is created."
+    },
+    {
+      "name": "onDestroyed",
+      "payload": { "sessionId": "string" },
+      "description": "Fired when a session is explicitly destroyed."
+    },
+    {
+      "name": "onExpired",
+      "payload": { "sessionId": "string" },
+      "description": "Fired when a session expires."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on store read/write errors."
+    }
+  ],
+  "actions": [
+    {
+      "name": "create",
+      "params": [
+        { "name": "data", "type": "Record<string, unknown>", "description": "Initial session payload (e.g. { userId, role })." }
+      ],
+      "returns": "Promise<{ sessionId: string; cookie: string }>",
+      "description": "Create a new session and return its ID and signed cookie value."
+    },
+    {
+      "name": "get",
+      "params": [
+        { "name": "sessionId", "type": "string", "description": "Session ID to retrieve." }
+      ],
+      "returns": "Promise<Record<string, unknown> | null>",
+      "description": "Retrieve session data by ID. Returns null if expired or not found."
+    },
+    {
+      "name": "set",
+      "params": [
+        { "name": "sessionId", "type": "string", "description": "Session ID to update." },
+        { "name": "data", "type": "Record<string, unknown>", "description": "Updated session payload (merged)." }
+      ],
+      "returns": "Promise<void>",
+      "description": "Update session data and reset its TTL."
+    },
+    {
+      "name": "destroy",
+      "params": [
+        { "name": "sessionId", "type": "string", "description": "Session ID to invalidate." }
+      ],
+      "returns": "Promise<void>",
+      "description": "Destroy a session immediately."
+    },
+    {
+      "name": "parseCookie",
+      "params": [
+        { "name": "cookieHeader", "type": "string", "description": "Raw Cookie header from the request." }
+      ],
+      "returns": "string | null",
+      "description": "Extract and verify the session ID from a Cookie header."
+    }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Memory store loses all sessions on restart — use redis or postgres for production. Set secure: false only in local development. Always use HTTPS in production to prevent session hijacking."
+  }
+}

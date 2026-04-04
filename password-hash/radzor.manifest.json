@@ -1,0 +1,102 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/password-hash",
+  "version": "0.1.0",
+  "description": "Secure password hashing with bcrypt or Argon2id. Includes strength validation, comparison timing-safe, and configurable cost parameters. Zero external dependencies for bcrypt (uses Node.js crypto).",
+  "languages": ["typescript", "python"],
+  "category": "security",
+  "tags": ["password", "hash", "bcrypt", "argon2", "security", "auth", "crypto"],
+  "inputs": [
+    {
+      "name": "algorithm",
+      "type": "'bcrypt' | 'argon2id'",
+      "default": "bcrypt",
+      "description": "Hashing algorithm. bcrypt is widely supported; argon2id is the current OWASP recommendation.",
+      "required": false
+    },
+    {
+      "name": "rounds",
+      "type": "number",
+      "default": 12,
+      "description": "bcrypt cost factor (rounds). Higher = slower = more secure. Recommended: 10-14.",
+      "required": false
+    },
+    {
+      "name": "memoryCost",
+      "type": "number",
+      "default": 65536,
+      "description": "Argon2id memory cost in KiB (default: 64MB).",
+      "required": false
+    },
+    {
+      "name": "timeCost",
+      "type": "number",
+      "default": 3,
+      "description": "Argon2id iteration count.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "hash",
+      "type": "string",
+      "description": "Formatted password hash string (includes algorithm and parameters)."
+    },
+    {
+      "name": "strengthReport",
+      "type": "{ score: number; feedback: string[]; strong: boolean }",
+      "description": "Password strength analysis result."
+    }
+  ],
+  "events": [
+    {
+      "name": "onHashed",
+      "payload": { "algorithm": "string", "durationMs": "number" },
+      "description": "Fired when a password is hashed."
+    },
+    {
+      "name": "onVerified",
+      "payload": { "match": "boolean" },
+      "description": "Fired when a password is compared against a hash."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on hashing or comparison error."
+    }
+  ],
+  "actions": [
+    {
+      "name": "hash",
+      "params": [
+        { "name": "password", "type": "string", "description": "Plain-text password to hash." }
+      ],
+      "returns": "Promise<string>",
+      "description": "Hash a plain-text password. Store the returned string in your database."
+    },
+    {
+      "name": "verify",
+      "params": [
+        { "name": "password", "type": "string", "description": "Plain-text password to check." },
+        { "name": "hash", "type": "string", "description": "Previously hashed password from your database." }
+      ],
+      "returns": "Promise<boolean>",
+      "description": "Timing-safe comparison of a password against its hash."
+    },
+    {
+      "name": "checkStrength",
+      "params": [
+        { "name": "password", "type": "string", "description": "Password to evaluate." }
+      ],
+      "returns": "{ score: number; feedback: string[]; strong: boolean }",
+      "description": "Evaluate password strength (0-4 score). Returns improvement suggestions."
+    }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Never log or transmit plain-text passwords. Always call checkStrength() before hash() to enforce minimum strength. bcrypt truncates passwords beyond 72 bytes — use argon2id for longer passphrases."
+  }
+}

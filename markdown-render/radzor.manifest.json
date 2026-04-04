@@ -1,0 +1,108 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/markdown-render",
+  "version": "0.1.0",
+  "description": "Convert Markdown to sanitized HTML with syntax highlighting, GFM extensions (tables, strikethrough, task lists), and frontmatter extraction. Safe for user-generated content.",
+  "languages": ["typescript", "python"],
+  "category": "data",
+  "tags": ["markdown", "html", "render", "sanitize", "syntax-highlight", "gfm", "content"],
+  "inputs": [
+    {
+      "name": "sanitize",
+      "type": "boolean",
+      "default": true,
+      "description": "Strip unsafe HTML tags and attributes. Disable only for trusted content.",
+      "required": false
+    },
+    {
+      "name": "syntaxHighlight",
+      "type": "boolean",
+      "default": true,
+      "description": "Apply syntax highlighting to fenced code blocks.",
+      "required": false
+    },
+    {
+      "name": "breaks",
+      "type": "boolean",
+      "default": false,
+      "description": "Convert single newlines to <br> tags (GitHub-style).",
+      "required": false
+    },
+    {
+      "name": "linkify",
+      "type": "boolean",
+      "default": true,
+      "description": "Auto-link plain URLs in text.",
+      "required": false
+    },
+    {
+      "name": "allowedTags",
+      "type": "string[]",
+      "description": "Extra HTML tags to allow when sanitize is true.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "html",
+      "type": "string",
+      "description": "Rendered and sanitized HTML string."
+    },
+    {
+      "name": "frontmatter",
+      "type": "Record<string, unknown>",
+      "description": "Parsed YAML frontmatter (if present in the input)."
+    },
+    {
+      "name": "plainText",
+      "type": "string",
+      "description": "Stripped plain-text version of the content."
+    }
+  ],
+  "events": [
+    {
+      "name": "onRendered",
+      "payload": { "inputBytes": "number", "outputBytes": "number" },
+      "description": "Fired when rendering completes."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string" },
+      "description": "Fired on parsing or sanitization error."
+    }
+  ],
+  "actions": [
+    {
+      "name": "render",
+      "params": [
+        { "name": "markdown", "type": "string", "description": "Markdown source string." },
+        { "name": "options", "type": "RenderOptions", "description": "Per-call overrides for sanitize, breaks, etc.", "required": false }
+      ],
+      "returns": "Promise<{ html: string; frontmatter: Record<string, unknown> }>",
+      "description": "Convert Markdown to sanitized HTML and extract frontmatter."
+    },
+    {
+      "name": "toPlainText",
+      "params": [
+        { "name": "markdown", "type": "string", "description": "Markdown source string." }
+      ],
+      "returns": "string",
+      "description": "Strip all Markdown formatting and return plain text."
+    },
+    {
+      "name": "extractFrontmatter",
+      "params": [
+        { "name": "markdown", "type": "string", "description": "Markdown source string with optional YAML frontmatter." }
+      ],
+      "returns": "{ data: Record<string, unknown>; content: string }",
+      "description": "Extract YAML frontmatter and return parsed metadata with body content."
+    }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "sanitize defaults to true — never disable for user-generated content. Frontmatter must be at the top of the document between --- delimiters."
+  }
+}
