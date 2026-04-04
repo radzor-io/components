@@ -1,67 +1,39 @@
 {
-  "name": "video-call",
+  "radzor": "1.0.0",
+  "name": "@radzor/video-call",
   "version": "0.1.0",
   "description": "WebRTC-based peer-to-peer video calling. Manage local/remote streams, signaling, and call lifecycle.",
+  "languages": ["typescript"],
   "category": "chat",
-  "tags": [
-    "video",
-    "call",
-    "webrtc",
-    "peer-to-peer",
-    "streaming",
-    "media"
-  ],
-  "inputs": {
-    "iceServers": {
-      "type": "array",
-      "required": false,
-      "description": "ICE server configuration (default: Google STUN)"
+  "tags": ["video", "call", "webrtc", "peer-to-peer", "streaming", "media"],
+  "inputs": [
+    {
+      "name": "iceServers",
+      "type": "RTCIceServer[]",
+      "description": "ICE server configuration (default: Google STUN)",
+      "required": false
     },
-    "signalingUrl": {
+    {
+      "name": "signalingUrl",
       "type": "string",
-      "required": false,
-      "description": "WebSocket signaling server URL"
+      "description": "WebSocket signaling server URL",
+      "required": false
     }
-  },
-  "outputs": {
-    "onLocalStream": {
-      "type": "event",
-      "description": "Fired when local media stream is ready"
-    },
-    "onRemoteStream": {
-      "type": "event",
-      "description": "Fired when remote stream is received"
-    },
-    "onCallEnded": {
-      "type": "event",
-      "description": "Fired when call ends"
-    },
-    "onError": {
-      "type": "event",
-      "description": "Fired on error"
-    }
-  },
-  "actions": {
-    "startCall": {
-      "description": "Initiate a video call (create offer)"
-    },
-    "answerCall": {
-      "description": "Answer an incoming call (create answer)"
-    },
-    "endCall": {
-      "description": "End the current call"
-    },
-    "toggleAudio": {
-      "description": "Mute/unmute audio"
-    },
-    "toggleVideo": {
-      "description": "Enable/disable video"
-    }
-  },
-  "languages": [
-    "typescript"
   ],
-  "composesWith": [
-    "realtime-chat"
-  ]
+  "outputs": [],
+  "events": [
+    { "name": "onLocalStream", "description": "Fired when local media stream is ready" },
+    { "name": "onRemoteStream", "description": "Fired when remote stream is received" },
+    { "name": "onCallEnded", "description": "Fired when call ends" },
+    { "name": "onError", "description": "Fired on error" }
+  ],
+  "actions": [
+    { "name": "startCall", "description": "Initiate a video call (create offer)" },
+    { "name": "answerCall", "description": "Answer an incoming call (create answer)" },
+    { "name": "endCall", "description": "End the current call" },
+    { "name": "toggleAudio", "description": "Mute/unmute audio" },
+    { "name": "toggleVideo", "description": "Enable/disable video" }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {}
 }

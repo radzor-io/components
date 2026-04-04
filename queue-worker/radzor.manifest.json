@@ -1,70 +1,43 @@
 {
-  "name": "queue-worker",
+  "radzor": "1.0.0",
+  "name": "@radzor/queue-worker",
   "version": "0.1.0",
   "description": "In-memory job queue with workers, retries, and dead-letter handling. No external dependencies.",
+  "languages": ["typescript", "python"],
   "category": "automation",
-  "tags": [
-    "queue",
-    "worker",
-    "jobs",
-    "background",
-    "async",
-    "task"
+  "tags": ["queue", "worker", "jobs", "background", "async", "task"],
+  "inputs": [
+    {
+      "name": "concurrency",
+      "type": "number",
+      "description": "Max concurrent workers (default: 1)",
+      "required": false
+    },
+    {
+      "name": "maxRetries",
+      "type": "number",
+      "description": "Max retry attempts per job (default: 3)",
+      "required": false
+    },
+    {
+      "name": "retryDelay",
+      "type": "number",
+      "description": "Delay between retries in ms (default: 1000)",
+      "required": false
+    }
   ],
-  "inputs": {
-    "concurrency": {
-      "type": "number",
-      "required": false,
-      "description": "Max concurrent workers (default: 1)"
-    },
-    "maxRetries": {
-      "type": "number",
-      "required": false,
-      "description": "Max retry attempts per job (default: 3)"
-    },
-    "retryDelay": {
-      "type": "number",
-      "required": false,
-      "description": "Delay between retries in ms (default: 1000)"
-    }
-  },
-  "outputs": {
-    "onJobComplete": {
-      "type": "event",
-      "description": "Fired when a job completes successfully"
-    },
-    "onJobFailed": {
-      "type": "event",
-      "description": "Fired when a job fails after all retries"
-    },
-    "onError": {
-      "type": "event",
-      "description": "Fired on queue error"
-    }
-  },
-  "actions": {
-    "addJob": {
-      "description": "Add a job to the queue"
-    },
-    "process": {
-      "description": "Register a worker function to process jobs"
-    },
-    "start": {
-      "description": "Start processing jobs"
-    },
-    "stop": {
-      "description": "Stop processing jobs"
-    }
-  },
-  "languages": [
-    "typescript",
-    "python"
+  "outputs": [],
+  "events": [
+    { "name": "onJobComplete", "description": "Fired when a job completes successfully" },
+    { "name": "onJobFailed", "description": "Fired when a job fails after all retries" },
+    { "name": "onError", "description": "Fired on queue error" }
   ],
-  "composesWith": [
-    "email-send",
-    "sms-send",
-    "push-notification",
-    "discord-bot",
-    "telegram-bot"
-  ]
+  "actions": [
+    { "name": "addJob", "description": "Add a job to the queue" },
+    { "name": "process", "description": "Register a worker function to process jobs" },
+    { "name": "start", "description": "Start processing jobs" },
+    { "name": "stop", "description": "Stop processing jobs" }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {}
 }

@@ -1,67 +1,39 @@
 {
-  "name": "wallet-connect",
+  "radzor": "1.0.0",
+  "name": "@radzor/wallet-connect",
   "version": "0.1.0",
   "description": "Connect to Ethereum wallets (MetaMask, WalletConnect) for Web3 dApps. Client-side only.",
-  "category": "security",
-  "tags": [
-    "wallet",
-    "ethereum",
-    "web3",
-    "metamask",
-    "crypto",
-    "blockchain"
-  ],
-  "inputs": {
-    "chainId": {
+  "languages": ["typescript"],
+  "category": "web3",
+  "tags": ["wallet", "ethereum", "web3", "metamask", "crypto", "blockchain"],
+  "inputs": [
+    {
+      "name": "chainId",
       "type": "number",
-      "required": false,
-      "description": "Target chain ID (default: 1 for Ethereum mainnet)"
+      "description": "Target chain ID (default: 1 for Ethereum mainnet)",
+      "required": false
     },
-    "rpcUrl": {
+    {
+      "name": "rpcUrl",
       "type": "string",
-      "required": false,
-      "description": "JSON-RPC endpoint URL"
+      "description": "JSON-RPC endpoint URL",
+      "required": false
     }
-  },
-  "outputs": {
-    "onConnected": {
-      "type": "event",
-      "description": "Fired when wallet is connected"
-    },
-    "onDisconnected": {
-      "type": "event",
-      "description": "Fired when wallet is disconnected"
-    },
-    "onChainChanged": {
-      "type": "event",
-      "description": "Fired when chain changes"
-    },
-    "onError": {
-      "type": "event",
-      "description": "Fired on error"
-    }
-  },
-  "actions": {
-    "connect": {
-      "description": "Request wallet connection"
-    },
-    "disconnect": {
-      "description": "Disconnect wallet"
-    },
-    "getBalance": {
-      "description": "Get ETH balance for connected address"
-    },
-    "sendTransaction": {
-      "description": "Send an ETH transaction"
-    },
-    "signMessage": {
-      "description": "Sign a message with the connected wallet"
-    }
-  },
-  "languages": [
-    "typescript"
   ],
-  "composesWith": [
-    "smart-contract"
-  ]
+  "outputs": [],
+  "events": [
+    { "name": "onConnected", "description": "Fired when wallet is connected" },
+    { "name": "onDisconnected", "description": "Fired when wallet is disconnected" },
+    { "name": "onChainChanged", "description": "Fired when chain changes" },
+    { "name": "onError", "description": "Fired on error" }
+  ],
+  "actions": [
+    { "name": "connect", "description": "Request wallet connection" },
+    { "name": "disconnect", "description": "Disconnect wallet" },
+    { "name": "getBalance", "description": "Get ETH balance for connected address" },
+    { "name": "sendTransaction", "description": "Send an ETH transaction" },
+    { "name": "signMessage", "description": "Sign a message with the connected wallet" }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {}
 }

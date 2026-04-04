@@ -1,64 +1,47 @@
 {
-  "name": "reddit-post",
+  "radzor": "1.0.0",
+  "name": "@radzor/reddit-post",
   "version": "0.1.0",
   "description": "Post to Reddit using the Reddit API. Submit text or link posts and manage comments.",
+  "languages": ["typescript", "python"],
   "category": "media",
-  "tags": [
-    "reddit",
-    "social",
-    "post",
-    "comments",
-    "api"
+  "tags": ["reddit", "social", "post", "comments", "api"],
+  "inputs": [
+    {
+      "name": "clientId",
+      "type": "string",
+      "description": "Reddit app client ID",
+      "required": true
+    },
+    {
+      "name": "clientSecret",
+      "type": "string",
+      "description": "Reddit app client secret",
+      "required": true
+    },
+    {
+      "name": "username",
+      "type": "string",
+      "description": "Reddit username",
+      "required": true
+    },
+    {
+      "name": "password",
+      "type": "string",
+      "description": "Reddit password",
+      "required": true
+    }
   ],
-  "inputs": {
-    "clientId": {
-      "type": "string",
-      "required": true,
-      "description": "Reddit app client ID"
-    },
-    "clientSecret": {
-      "type": "string",
-      "required": true,
-      "description": "Reddit app client secret"
-    },
-    "username": {
-      "type": "string",
-      "required": true,
-      "description": "Reddit username"
-    },
-    "password": {
-      "type": "string",
-      "required": true,
-      "description": "Reddit password"
-    }
-  },
-  "outputs": {
-    "onPostCreated": {
-      "type": "event",
-      "description": "Fired when a post is created"
-    },
-    "onError": {
-      "type": "event",
-      "description": "Fired on API error"
-    }
-  },
-  "actions": {
-    "submitText": {
-      "description": "Submit a text post to a subreddit"
-    },
-    "submitLink": {
-      "description": "Submit a link post to a subreddit"
-    },
-    "addComment": {
-      "description": "Add a comment to a post or reply to a comment"
-    }
-  },
-  "languages": [
-    "typescript",
-    "python"
+  "outputs": [],
+  "events": [
+    { "name": "onPostCreated", "description": "Fired when a post is created" },
+    { "name": "onError", "description": "Fired on API error" }
   ],
-  "composesWith": [
-    "queue-worker",
-    "llm-completion"
-  ]
+  "actions": [
+    { "name": "submitText", "description": "Submit a text post to a subreddit" },
+    { "name": "submitLink", "description": "Submit a link post to a subreddit" },
+    { "name": "addComment", "description": "Add a comment to a post or reply to a comment" }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {}
 }

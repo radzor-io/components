@@ -1,53 +1,30 @@
 {
-  "name": "telegram-bot",
+  "radzor": "1.0.0",
+  "name": "@radzor/telegram-bot",
   "version": "0.1.0",
   "description": "Telegram bot component using the Bot API. Send messages, photos, reply keyboards, and inline keyboards.",
+  "languages": ["typescript", "python"],
   "category": "chat",
-  "tags": [
-    "telegram",
-    "bot",
-    "chat",
-    "messaging",
-    "social"
-  ],
-  "inputs": {
-    "botToken": {
+  "tags": ["telegram", "bot", "chat", "messaging", "social"],
+  "inputs": [
+    {
+      "name": "botToken",
       "type": "string",
-      "required": true,
-      "description": "Telegram Bot API token from @BotFather"
+      "description": "Telegram Bot API token from @BotFather",
+      "required": true
     }
-  },
-  "outputs": {
-    "onMessageSent": {
-      "type": "event",
-      "description": "Fired when a message is successfully sent"
-    },
-    "onError": {
-      "type": "event",
-      "description": "Fired on API error"
-    }
-  },
-  "actions": {
-    "sendMessage": {
-      "description": "Send a text message to a chat"
-    },
-    "sendPhoto": {
-      "description": "Send a photo to a chat"
-    },
-    "sendReplyKeyboard": {
-      "description": "Send a message with a reply keyboard"
-    },
-    "sendInlineKeyboard": {
-      "description": "Send a message with inline keyboard buttons"
-    }
-  },
-  "languages": [
-    "typescript",
-    "python"
   ],
-  "composesWith": [
-    "llm-completion",
-    "embeddings-store",
-    "queue-worker"
-  ]
+  "outputs": [],
+  "events": [
+    { "name": "onMessageSent", "description": "Fired when a message is successfully sent" },
+    { "name": "onError", "description": "Fired on API error" }
+  ],
+  "actions": [
+    { "name": "sendMessage", "description": "Send a text message to a chat" },
+    { "name": "sendPhoto", "description": "Send a photo to a chat" },
+    { "name": "sendReplyKeyboard", "description": "Send a message with a reply keyboard" },
+    { "name": "sendInlineKeyboard", "description": "Send a message with inline keyboard buttons" }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {}
 }

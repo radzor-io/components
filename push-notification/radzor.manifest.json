@@ -1,51 +1,34 @@
 {
-  "name": "push-notification",
+  "radzor": "1.0.0",
+  "name": "@radzor/push-notification",
   "version": "0.1.0",
   "description": "Send push notifications via Firebase Cloud Messaging (FCM) or Apple Push Notification service (APNs).",
+  "languages": ["typescript", "python"],
   "category": "messaging",
-  "tags": [
-    "push",
-    "notification",
-    "fcm",
-    "apns",
-    "mobile",
-    "messaging"
-  ],
-  "inputs": {
-    "provider": {
-      "type": "string",
-      "required": true,
-      "description": "Push provider: 'fcm' or 'apns'"
+  "tags": ["push", "notification", "fcm", "apns", "mobile", "messaging"],
+  "inputs": [
+    {
+      "name": "provider",
+      "type": "'fcm' | 'apns'",
+      "description": "Push provider: 'fcm' or 'apns'",
+      "required": true
     },
-    "credentials": {
+    {
+      "name": "credentials",
       "type": "object",
-      "required": true,
-      "description": "Provider credentials (FCM server key or APNs key/cert)"
+      "description": "Provider credentials (FCM server key or APNs key/cert)",
+      "required": true
     }
-  },
-  "outputs": {
-    "onSent": {
-      "type": "event",
-      "description": "Fired when notification is sent"
-    },
-    "onError": {
-      "type": "event",
-      "description": "Fired on send error"
-    }
-  },
-  "actions": {
-    "sendToDevice": {
-      "description": "Send push notification to a single device token"
-    },
-    "sendToTopic": {
-      "description": "Send push notification to a topic (FCM only)"
-    }
-  },
-  "languages": [
-    "typescript",
-    "python"
   ],
-  "composesWith": [
-    "queue-worker"
-  ]
+  "outputs": [],
+  "events": [
+    { "name": "onSent", "description": "Fired when notification is sent" },
+    { "name": "onError", "description": "Fired on send error" }
+  ],
+  "actions": [
+    { "name": "sendToDevice", "description": "Send push notification to a single device token" },
+    { "name": "sendToTopic", "description": "Send push notification to a topic (FCM only)" }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {}
 }

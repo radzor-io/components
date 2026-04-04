@@ -1,68 +1,38 @@
 {
-  "name": "cache-store",
+  "radzor": "1.0.0",
+  "name": "@radzor/cache-store",
   "version": "0.1.0",
   "description": "In-memory cache with TTL, LRU eviction, and namespace support. No external dependencies.",
+  "languages": ["typescript", "python"],
   "category": "data",
-  "tags": [
-    "cache",
-    "store",
-    "ttl",
-    "lru",
-    "memory",
-    "performance"
-  ],
-  "inputs": {
-    "maxSize": {
+  "tags": ["cache", "store", "ttl", "lru", "memory", "performance"],
+  "inputs": [
+    {
+      "name": "maxSize",
       "type": "number",
-      "required": false,
-      "description": "Maximum number of entries (default: 1000)"
+      "description": "Maximum number of entries (default: 1000)",
+      "required": false
     },
-    "defaultTtl": {
+    {
+      "name": "defaultTtl",
       "type": "number",
-      "required": false,
-      "description": "Default TTL in milliseconds (default: 0 = no expiry)"
+      "description": "Default TTL in milliseconds (default: 0 = no expiry)",
+      "required": false
     }
-  },
-  "outputs": {
-    "onHit": {
-      "type": "event",
-      "description": "Fired on cache hit"
-    },
-    "onMiss": {
-      "type": "event",
-      "description": "Fired on cache miss"
-    },
-    "onEvicted": {
-      "type": "event",
-      "description": "Fired when an entry is evicted"
-    },
-    "onError": {
-      "type": "event",
-      "description": "Fired on error"
-    }
-  },
-  "actions": {
-    "get": {
-      "description": "Get a value from cache"
-    },
-    "set": {
-      "description": "Set a value in cache"
-    },
-    "delete": {
-      "description": "Delete a value from cache"
-    },
-    "clear": {
-      "description": "Clear all entries"
-    }
-  },
-  "languages": [
-    "typescript",
-    "python"
   ],
-  "composesWith": [
-    "rate-limiter",
-    "api-key-auth",
-    "llm-completion",
-    "web-scraper"
-  ]
+  "outputs": [],
+  "events": [
+    { "name": "onHit", "description": "Fired on cache hit" },
+    { "name": "onMiss", "description": "Fired on cache miss" },
+    { "name": "onEvicted", "description": "Fired when an entry is evicted" },
+    { "name": "onError", "description": "Fired on error" }
+  ],
+  "actions": [
+    { "name": "get", "description": "Get a value from cache" },
+    { "name": "set", "description": "Set a value in cache" },
+    { "name": "delete", "description": "Delete a value from cache" },
+    { "name": "clear", "description": "Clear all entries" }
+  ],
+  "dependencies": { "packages": {} },
+  "composability": {}
 }
