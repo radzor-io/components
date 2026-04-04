@@ -1,0 +1,138 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/csv-import",
+  "version": "0.1.0",
+  "description": "Parse, validate, and batch-import CSV files. Supports streaming for large files, schema validation with typed coercion, error row collection, and progress tracking. Works with file uploads, S3 streams, and local paths.",
+  "languages": ["typescript"],
+  "category": "data",
+  "tags": ["csv", "import", "parse", "batch", "data", "etl", "validation", "streaming"],
+  "inputs": [
+    {
+      "name": "delimiter",
+      "type": "string",
+      "default": ",",
+      "description": "Field delimiter character. Use '\\t' for TSV.",
+      "required": false
+    },
+    {
+      "name": "hasHeader",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the first row contains column headers.",
+      "required": false
+    },
+    {
+      "name": "encoding",
+      "type": "string",
+      "default": "utf-8",
+      "description": "File encoding (utf-8, latin1, utf-16le).",
+      "required": false
+    },
+    {
+      "name": "batchSize",
+      "type": "number",
+      "default": 100,
+      "description": "Number of rows to emit per onBatch event and database insert.",
+      "required": false
+    },
+    {
+      "name": "skipEmptyRows",
+      "type": "boolean",
+      "default": true,
+      "description": "Skip rows where all fields are empty.",
+      "required": false
+    },
+    {
+      "name": "schema",
+      "type": "Record<string, 'string' | 'number' | 'boolean' | 'date'>",
+      "description": "Column type map for coercion and validation. Keys are column names.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "rows",
+      "type": "Record<string, unknown>[]",
+      "description": "Parsed and validated rows."
+    },
+    {
+      "name": "parseStats",
+      "type": "ParseStats",
+      "description": "Total rows, valid rows, error rows, and processing duration."
+    }
+  ],
+  "events": [
+    {
+      "name": "onRow",
+      "payload": { "row": "Record<string, unknown>", "index": "number" },
+      "description": "Fired for each parsed row."
+    },
+    {
+      "name": "onBatch",
+      "payload": { "rows": "Record<string, unknown>[]", "batchNumber": "number" },
+      "description": "Fired when a batch of rows is ready for processing."
+    },
+    {
+      "name": "onComplete",
+      "payload": { "totalRows": "number", "errorRows": "number", "durationMs": "number" },
+      "description": "Fired when the entire file has been parsed."
+    },
+    {
+      "name": "onError",
+      "payload": { "line": "number", "message": "string", "raw": "string" },
+      "description": "Fired for each row that fails validation or parsing."
+    }
+  ],
+  "actions": [
+    {
+      "name": "parseBuffer",
+      "params": [
+        { "name": "buffer", "type": "Buffer", "description": "CSV file content as Buffer." }
+      ],
+      "returns": "Promise<Record<string, unknown>[]>",
+      "description": "Parse an in-memory CSV buffer and return all rows."
+    },
+    {
+      "name": "parseStream",
+      "params": [
+        { "name": "stream", "type": "ReadableStream | NodeJS.ReadableStream", "description": "Readable stream of CSV data." }
+      ],
+      "returns": "Promise<ParseStats>",
+      "description": "Stream-parse a CSV file, emitting onRow and onBatch events progressively."
+    },
+    {
+      "name": "validate",
+      "params": [
+        { "name": "rows", "type": "Record<string, unknown>[]", "description": "Pre-parsed rows to validate against the schema." }
+      ],
+      "returns": "ValidationResult",
+      "description": "Validate rows against the configured schema, returning valid rows and error details."
+    },
+    {
+      "name": "getHeaders",
+      "params": [
+        { "name": "buffer", "type": "Buffer", "description": "CSV content to inspect." }
+      ],
+      "returns": "Promise<string[]>",
+      "description": "Peek at the first row and return column header names."
+    }
+  ],
+  "dependencies": {
+    "packages": {
+      "csv-parse": "^5.5.0"
+    }
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "rows",
+        "compatibleWith": ["@radzor/background-job.input.payload"]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "For files over 50MB, always use parseStream() instead of parseBuffer() to avoid memory issues. The schema coercion casts strings to types but does not validate ranges or formats — add your own business logic after parsing. date fields are coerced with new Date() — ensure dates are in ISO 8601 or MM/DD/YYYY format."
+  }
+}

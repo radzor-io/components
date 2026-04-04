@@ -1,0 +1,147 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/vector-search",
+  "version": "0.1.0",
+  "description": "Vector embedding storage and semantic search. Supports Pinecone, Qdrant, and pgvector. Index documents with embeddings and query by semantic similarity for RAG pipelines, recommendation engines, and duplicate detection.",
+  "languages": ["typescript"],
+  "category": "ai",
+  "tags": ["vector", "embeddings", "semantic-search", "rag", "pinecone", "qdrant", "pgvector", "similarity"],
+  "inputs": [
+    {
+      "name": "provider",
+      "type": "'pinecone' | 'qdrant' | 'pgvector'",
+      "description": "Vector database provider.",
+      "required": true
+    },
+    {
+      "name": "apiKey",
+      "type": "string",
+      "description": "API key for Pinecone. Not required for Qdrant or pgvector.",
+      "required": false
+    },
+    {
+      "name": "host",
+      "type": "string",
+      "description": "Host URL for Qdrant or pgvector connection string. Not used for Pinecone.",
+      "required": false
+    },
+    {
+      "name": "indexName",
+      "type": "string",
+      "description": "Name of the index / collection / table to use.",
+      "required": true
+    },
+    {
+      "name": "dimensions",
+      "type": "number",
+      "description": "Embedding vector dimensions. Must match the embedding model (e.g. 1536 for text-embedding-3-small).",
+      "required": true
+    },
+    {
+      "name": "metric",
+      "type": "'cosine' | 'euclidean' | 'dotProduct'",
+      "default": "cosine",
+      "description": "Distance metric for similarity search.",
+      "required": false
+    },
+    {
+      "name": "topK",
+      "type": "number",
+      "default": 10,
+      "description": "Default number of results to return.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "searchResults",
+      "type": "SearchResult[]",
+      "description": "Array of matched documents with id, score, and metadata."
+    },
+    {
+      "name": "indexStats",
+      "type": "IndexStats",
+      "description": "Index statistics: total vectors, dimensions, fullness."
+    }
+  ],
+  "events": [
+    {
+      "name": "onIndexed",
+      "payload": { "id": "string", "dimensions": "number" },
+      "description": "Fired when a vector is successfully indexed."
+    },
+    {
+      "name": "onSearchComplete",
+      "payload": { "query": "string", "resultCount": "number", "durationMs": "number" },
+      "description": "Fired when a search query completes."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string", "provider": "string" },
+      "description": "Fired when an operation fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "index",
+      "params": [
+        { "name": "id", "type": "string", "description": "Unique identifier for the vector." },
+        { "name": "vector", "type": "number[]", "description": "Embedding vector." },
+        { "name": "metadata", "type": "Record<string, unknown>", "description": "Arbitrary metadata stored alongside the vector.", "required": false }
+      ],
+      "returns": "Promise<void>",
+      "description": "Store a vector with its metadata."
+    },
+    {
+      "name": "indexBatch",
+      "params": [
+        { "name": "items", "type": "Array<{ id: string; vector: number[]; metadata?: Record<string, unknown> }>", "description": "Batch of vectors to index." }
+      ],
+      "returns": "Promise<void>",
+      "description": "Index multiple vectors in a single request."
+    },
+    {
+      "name": "search",
+      "params": [
+        { "name": "vector", "type": "number[]", "description": "Query embedding vector." },
+        { "name": "topK", "type": "number", "description": "Number of results to return.", "required": false },
+        { "name": "filter", "type": "Record<string, unknown>", "description": "Metadata filter (provider-specific syntax).", "required": false }
+      ],
+      "returns": "Promise<SearchResult[]>",
+      "description": "Find the most semantically similar vectors."
+    },
+    {
+      "name": "delete",
+      "params": [
+        { "name": "id", "type": "string", "description": "ID of the vector to remove." }
+      ],
+      "returns": "Promise<void>",
+      "description": "Delete a vector by ID."
+    },
+    {
+      "name": "getStats",
+      "params": [],
+      "returns": "Promise<IndexStats>",
+      "description": "Get index statistics."
+    }
+  ],
+  "dependencies": {
+    "packages": {
+      "@pinecone-database/pinecone": "^3.0.0"
+    },
+    "radzor": ["@radzor/llm-completion"]
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "searchResults",
+        "compatibleWith": ["@radzor/llm-completion.input.systemPrompt"]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Vectors must be pre-computed — this component does not generate embeddings. Use @radzor/llm-completion or the OpenAI embeddings API to generate vectors before indexing. Dimensions must be set at index creation time and cannot be changed."
+  }
+}

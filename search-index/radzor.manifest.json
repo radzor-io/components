@@ -1,0 +1,138 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/search-index",
+  "version": "0.1.0",
+  "description": "Full-text search with facets, filters, and typo-tolerance. Supports Meilisearch and Typesense. Handles indexing, real-time updates, relevance tuning, and instant search queries.",
+  "languages": ["typescript"],
+  "category": "data",
+  "tags": ["search", "full-text", "meilisearch", "typesense", "facets", "filters", "instant-search"],
+  "inputs": [
+    {
+      "name": "provider",
+      "type": "'meilisearch' | 'typesense'",
+      "description": "Search provider.",
+      "required": true
+    },
+    {
+      "name": "host",
+      "type": "string",
+      "description": "Search server host URL (e.g. http://localhost:7700).",
+      "required": true
+    },
+    {
+      "name": "apiKey",
+      "type": "string",
+      "description": "Admin or search-only API key.",
+      "required": true
+    },
+    {
+      "name": "indexName",
+      "type": "string",
+      "description": "Index / collection name to operate on.",
+      "required": true
+    },
+    {
+      "name": "searchableFields",
+      "type": "string[]",
+      "description": "Fields to index for full-text search.",
+      "required": false
+    },
+    {
+      "name": "filterableFields",
+      "type": "string[]",
+      "description": "Fields available for filtering and faceting.",
+      "required": false
+    },
+    {
+      "name": "primaryKey",
+      "type": "string",
+      "default": "id",
+      "description": "Field used as the document unique identifier.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "searchResults",
+      "type": "SearchResults",
+      "description": "Search response with hits, total, processing time, and facet counts."
+    }
+  ],
+  "events": [
+    {
+      "name": "onIndexed",
+      "payload": { "documentCount": "number", "indexName": "string", "durationMs": "number" },
+      "description": "Fired when documents are successfully indexed."
+    },
+    {
+      "name": "onSearchComplete",
+      "payload": { "query": "string", "hits": "number", "processingMs": "number" },
+      "description": "Fired when a search query returns."
+    },
+    {
+      "name": "onError",
+      "payload": { "code": "string", "message": "string", "operation": "string" },
+      "description": "Fired when an indexing or search operation fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "index",
+      "params": [
+        { "name": "documents", "type": "Record<string, unknown>[]", "description": "Array of documents to index." }
+      ],
+      "returns": "Promise<void>",
+      "description": "Add or replace documents in the index."
+    },
+    {
+      "name": "search",
+      "params": [
+        { "name": "query", "type": "string", "description": "Search query string." },
+        { "name": "options", "type": "SearchOptions", "description": "filter, facets, limit, offset, sort.", "required": false }
+      ],
+      "returns": "Promise<SearchResults>",
+      "description": "Perform a full-text search with optional filtering and faceting."
+    },
+    {
+      "name": "update",
+      "params": [
+        { "name": "documents", "type": "Record<string, unknown>[]", "description": "Partial documents to merge into existing ones." }
+      ],
+      "returns": "Promise<void>",
+      "description": "Partially update existing documents (merge, not replace)."
+    },
+    {
+      "name": "delete",
+      "params": [
+        { "name": "ids", "type": "string[]", "description": "IDs of documents to remove." }
+      ],
+      "returns": "Promise<void>",
+      "description": "Delete documents by ID."
+    },
+    {
+      "name": "clearIndex",
+      "params": [],
+      "returns": "Promise<void>",
+      "description": "Delete all documents in the index without deleting the index settings."
+    },
+    {
+      "name": "configure",
+      "params": [
+        { "name": "settings", "type": "IndexSettings", "description": "searchableAttributes, filterableAttributes, rankingRules, etc." }
+      ],
+      "returns": "Promise<void>",
+      "description": "Update index settings (searchable fields, ranking, etc.)."
+    }
+  ],
+  "dependencies": {
+    "packages": {
+      "meilisearch": "^0.44.0"
+    }
+  },
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires a running Meilisearch or Typesense instance — not a managed SaaS. Indexing is async in Meilisearch (tasks complete in background). Always set searchableFields and filterableFields before indexing data to avoid full re-indexing."
+  }
+}

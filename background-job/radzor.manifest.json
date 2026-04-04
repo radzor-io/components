@@ -1,0 +1,140 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/background-job",
+  "version": "0.1.0",
+  "description": "Persistent background job queue with retries, scheduling, and concurrency control. Built on BullMQ (Redis) or pg-boss (PostgreSQL). Supports delayed jobs, cron-scheduled jobs, priority queues, and dead letter queues.",
+  "languages": ["typescript"],
+  "category": "automation",
+  "tags": ["queue", "jobs", "background", "bullmq", "pg-boss", "redis", "cron", "retry", "async"],
+  "inputs": [
+    {
+      "name": "driver",
+      "type": "'bullmq' | 'pg-boss'",
+      "default": "pg-boss",
+      "description": "Queue driver. bullmq requires Redis. pg-boss uses your existing PostgreSQL database.",
+      "required": false
+    },
+    {
+      "name": "connection",
+      "type": "string",
+      "description": "Redis URL (bullmq) or PostgreSQL connection string (pg-boss).",
+      "required": true
+    },
+    {
+      "name": "concurrency",
+      "type": "number",
+      "default": 5,
+      "description": "Maximum number of jobs processed in parallel.",
+      "required": false
+    },
+    {
+      "name": "maxAttempts",
+      "type": "number",
+      "default": 3,
+      "description": "Maximum retry attempts before a job moves to the dead letter queue.",
+      "required": false
+    },
+    {
+      "name": "backoffMs",
+      "type": "number",
+      "default": 1000,
+      "description": "Initial delay in milliseconds for exponential backoff between retries.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "jobResult",
+      "type": "JobResult",
+      "description": "Job execution result with id, status, output data, and attempt count."
+    },
+    {
+      "name": "queueStats",
+      "type": "QueueStats",
+      "description": "Queue statistics: waiting, active, completed, failed, delayed counts."
+    }
+  ],
+  "events": [
+    {
+      "name": "onJobCompleted",
+      "payload": { "jobId": "string", "queue": "string", "durationMs": "number" },
+      "description": "Fired when a job completes successfully."
+    },
+    {
+      "name": "onJobFailed",
+      "payload": { "jobId": "string", "queue": "string", "error": "string", "attempt": "number" },
+      "description": "Fired when a job fails after all retry attempts."
+    },
+    {
+      "name": "onJobRetry",
+      "payload": { "jobId": "string", "attempt": "number", "nextDelayMs": "number" },
+      "description": "Fired when a job is scheduled for retry."
+    }
+  ],
+  "actions": [
+    {
+      "name": "enqueue",
+      "params": [
+        { "name": "queue", "type": "string", "description": "Queue name." },
+        { "name": "payload", "type": "unknown", "description": "Serializable job data." },
+        { "name": "options", "type": "EnqueueOptions", "description": "delay (ms), priority, repeat (cron), jobId.", "required": false }
+      ],
+      "returns": "Promise<string>",
+      "description": "Add a job to the queue. Returns the job ID."
+    },
+    {
+      "name": "process",
+      "params": [
+        { "name": "queue", "type": "string", "description": "Queue name to process." },
+        { "name": "handler", "type": "(payload: unknown, jobId: string) => Promise<unknown>", "description": "Async function that processes the job payload." }
+      ],
+      "returns": "void",
+      "description": "Register a worker function for a queue. Call once at startup."
+    },
+    {
+      "name": "getJob",
+      "params": [
+        { "name": "jobId", "type": "string", "description": "Job ID to look up." }
+      ],
+      "returns": "Promise<JobResult | null>",
+      "description": "Get the current status and result of a specific job."
+    },
+    {
+      "name": "cancel",
+      "params": [
+        { "name": "jobId", "type": "string", "description": "ID of the job to cancel." }
+      ],
+      "returns": "Promise<boolean>",
+      "description": "Cancel a waiting or delayed job. Returns false if already active."
+    },
+    {
+      "name": "getStats",
+      "params": [
+        { "name": "queue", "type": "string", "description": "Queue name.", "required": false }
+      ],
+      "returns": "Promise<QueueStats>",
+      "description": "Get queue statistics."
+    }
+  ],
+  "dependencies": {
+    "packages": {
+      "pg-boss": "^10.0.0"
+    }
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "jobResult",
+        "compatibleWith": [
+          "@radzor/email-send.input.to",
+          "@radzor/push-notification.input.vapidPublicKey"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Call process() once per queue at application startup, not inside request handlers. Job payloads must be JSON-serializable. pg-boss creates its own schema in PostgreSQL — no migration needed. BullMQ requires a Redis 6.2+ instance."
+  }
+}
