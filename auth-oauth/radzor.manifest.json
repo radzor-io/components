@@ -195,5 +195,5 @@
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
     "constraints": "Requires OAuth client credentials (client ID + secret) for each provider. Server-side token exchange requires a backend route."
-  },
+  }
 }
