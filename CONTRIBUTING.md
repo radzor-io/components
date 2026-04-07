@@ -6,13 +6,13 @@ Want to add a component to the Radzor registry? Here's how.
 
 ```bash
 # 1. Scaffold your component
-npx radzor create @radzor/my-component -c audio
+npx radzor@latest create @radzor/my-component -c audio
 
 # 2. Implement it
 #    Edit src/index.ts, radzor.manifest.json, and llm/ docs
 
 # 3. Validate
-npx radzor validate radzor.manifest.json
+npx radzor@latest validate radzor.manifest.json
 
 # 4. Submit a PR to this repo
 ```
@@ -86,9 +86,9 @@ Provide 2–4 complete, copy-pasteable code examples:
 ## Submission Process
 
 1. **Fork** this repository
-2. **Create** your component directory (or use `npx radzor create`)
+2. **Create** your component directory (or use `npx radzor@latest create`)
 3. **Implement** source code, manifest, and LLM docs
-4. **Validate** with `npx radzor validate radzor.manifest.json`
+4. **Validate** with `npx radzor@latest validate radzor.manifest.json`
 5. **Test** your component works when imported
 6. **Open a PR** with:
    - Component name and category in the PR title

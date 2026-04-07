@@ -31,9 +31,9 @@ and use it to integrate Stripe checkout into my app.
 Want to add a component? See the [Contributing Guide](./CONTRIBUTING.md) for the full workflow:
 
 ```bash
-npx radzor create @radzor/my-component -c audio
+npx radzor@latest create @radzor/my-component -c audio
 # implement in src/index.ts
-npx radzor validate .
+npx radzor@latest validate .
 # open a PR
 ```
 
