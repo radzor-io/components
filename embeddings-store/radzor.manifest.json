@@ -29,7 +29,8 @@
       "name": "apiKey",
       "type": "string",
       "description": "API key (required for OpenAI).",
-      "required": false
+      "required": false,
+      "envVar": "OPENAI_API_KEY"
     },
     {
       "name": "model",
@@ -140,13 +141,14 @@
         "output": "searchResults",
         "compatibleWith": [
           "@radzor/llm-completion.action.complete.prompt"
-        ]
+        ],
+        "mapField": "content"
       }
     ]
   },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "In-memory store — data does not persist across restarts. For production, export/import the store or use a dedicated vector DB."
+    "constraints": "In-memory store \u2014 data does not persist across restarts. For production, export/import the store or use a dedicated vector DB."
   }
 }

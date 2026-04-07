@@ -42,13 +42,15 @@
       "name": "accessKeyId",
       "type": "string",
       "description": "AWS/R2 access key ID. Required for s3 and r2 providers.",
-      "required": false
+      "required": false,
+      "envVar": "AWS_ACCESS_KEY_ID"
     },
     {
       "name": "secretAccessKey",
       "type": "string",
       "description": "AWS/R2 secret access key. Required for s3 and r2 providers.",
-      "required": false
+      "required": false,
+      "envVar": "AWS_SECRET_ACCESS_KEY"
     },
     {
       "name": "endpoint",
@@ -87,7 +89,33 @@
     {
       "name": "uploadResult",
       "type": "UploadResult",
-      "description": "Upload result with id, url, path, size, mimeType, and originalName."
+      "description": "Upload result with id, url, path, size, mimeType, and originalName.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "url",
+          "type": "string"
+        },
+        {
+          "name": "path",
+          "type": "string"
+        },
+        {
+          "name": "size",
+          "type": "number"
+        },
+        {
+          "name": "mimeType",
+          "type": "string"
+        },
+        {
+          "name": "originalName",
+          "type": "string"
+        }
+      ]
     }
   ],
   "events": [

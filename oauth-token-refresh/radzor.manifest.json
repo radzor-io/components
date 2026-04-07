@@ -29,7 +29,8 @@
       "name": "clientSecret",
       "type": "string",
       "description": "OAuth application client secret.",
-      "required": true
+      "required": true,
+      "envVar": "GOOGLE_CLIENT_SECRET"
     },
     {
       "name": "tokenEndpoint",
@@ -61,7 +62,25 @@
     {
       "name": "tokenMeta",
       "type": "TokenMeta",
-      "description": "Token metadata: expiresAt, scope, tokenType."
+      "description": "Token metadata: expiresAt, scope, tokenType.",
+      "fields": [
+        {
+          "name": "accessToken",
+          "type": "string"
+        },
+        {
+          "name": "expiresAt",
+          "type": "number"
+        },
+        {
+          "name": "scope",
+          "type": "string"
+        },
+        {
+          "name": "tokenType",
+          "type": "string"
+        }
+      ]
     }
   ],
   "events": [

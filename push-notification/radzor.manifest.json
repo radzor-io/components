@@ -28,7 +28,8 @@
       "name": "fcmServerKey",
       "type": "string",
       "description": "FCM server key from Firebase console. Required for FCM provider.",
-      "required": false
+      "required": false,
+      "envVar": "FCM_SERVER_KEY"
     },
     {
       "name": "apnsKeyId",

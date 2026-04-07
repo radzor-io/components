@@ -59,12 +59,70 @@
     {
       "name": "jobResult",
       "type": "JobResult",
-      "description": "Job execution result with id, status, output data, and attempt count."
+      "description": "Job execution result with id, status, output data, and attempt count.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "queue",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "type": "\"active\" | \"completed\" | \"failed\" | \"cancelled\" | \"retry\" | \"created\""
+        },
+        {
+          "name": "data",
+          "type": "unknown"
+        },
+        {
+          "name": "output",
+          "type": "unknown",
+          "required": false
+        },
+        {
+          "name": "attempt",
+          "type": "number"
+        },
+        {
+          "name": "createdOn",
+          "type": "Date"
+        },
+        {
+          "name": "completedOn",
+          "type": "Date",
+          "required": false
+        }
+      ]
     },
     {
       "name": "queueStats",
       "type": "QueueStats",
-      "description": "Queue statistics: waiting, active, completed, failed, delayed counts."
+      "description": "Queue statistics: waiting, active, completed, failed, delayed counts.",
+      "fields": [
+        {
+          "name": "waiting",
+          "type": "number"
+        },
+        {
+          "name": "active",
+          "type": "number"
+        },
+        {
+          "name": "completed",
+          "type": "number"
+        },
+        {
+          "name": "failed",
+          "type": "number"
+        },
+        {
+          "name": "delayed",
+          "type": "number"
+        }
+      ]
     }
   ],
   "events": [
@@ -185,6 +243,6 @@
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Call process() once per queue at application startup, not inside request handlers. Job payloads must be JSON-serializable. pg-boss creates its own schema in PostgreSQL — no migration needed. BullMQ requires a Redis 6.2+ instance."
+    "constraints": "Call process() once per queue at application startup, not inside request handlers. Job payloads must be JSON-serializable. pg-boss creates its own schema in PostgreSQL \u2014 no migration needed. BullMQ requires a Redis 6.2+ instance."
   }
 }

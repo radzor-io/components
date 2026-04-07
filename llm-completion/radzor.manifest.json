@@ -30,7 +30,8 @@
       "name": "apiKey",
       "type": "string",
       "description": "API key for the provider. Required for openai and anthropic, optional for ollama.",
-      "required": false
+      "required": false,
+      "envVar": "OPENAI_API_KEY"
     },
     {
       "name": "model",
@@ -69,7 +70,39 @@
     {
       "name": "completionResult",
       "type": "CompletionResult",
-      "description": "The full completion response including content, usage stats, and finish reason."
+      "description": "The full completion response including content, usage stats, and finish reason.",
+      "fields": [
+        {
+          "name": "content",
+          "type": "string"
+        },
+        {
+          "name": "model",
+          "type": "string"
+        },
+        {
+          "name": "usage",
+          "type": "object",
+          "fields": [
+            {
+              "name": "promptTokens",
+              "type": "number"
+            },
+            {
+              "name": "completionTokens",
+              "type": "number"
+            },
+            {
+              "name": "totalTokens",
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "name": "finishReason",
+          "type": "string"
+        }
+      ]
     }
   ],
   "events": [
@@ -161,7 +194,8 @@
           "@radzor/text-to-speech.action.synthesize.text",
           "@radzor/structured-output.action.parse.text",
           "@radzor/markdown-render.action.render.markdown"
-        ]
+        ],
+        "mapField": "content"
       }
     ]
   },

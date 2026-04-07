@@ -29,7 +29,8 @@
       "name": "apiKey",
       "type": "string",
       "description": "API key for the selected provider.",
-      "required": true
+      "required": true,
+      "envVar": "OPENAI_API_KEY"
     },
     {
       "name": "voice",

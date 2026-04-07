@@ -29,7 +29,8 @@
       "name": "apiKey",
       "type": "string",
       "description": "API key for the selected provider.",
-      "required": true
+      "required": true,
+      "envVar": "OPENAI_API_KEY"
     },
     {
       "name": "model",
@@ -143,6 +144,6 @@
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Tool handler functions must be synchronous-safe or return Promises. maxIterations prevents infinite agentic loops — set conservatively. Tool schemas must be valid JSON Schema. For Anthropic, uses tool_use blocks; for OpenAI, uses function_calling or tool_choice."
+    "constraints": "Tool handler functions must be synchronous-safe or return Promises. maxIterations prevents infinite agentic loops \u2014 set conservatively. Tool schemas must be valid JSON Schema. For Anthropic, uses tool_use blocks; for OpenAI, uses function_calling or tool_choice."
   }
 }

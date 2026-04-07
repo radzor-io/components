@@ -127,13 +127,30 @@ for (const dir of dirs) {
       errors.push(`${prefix} ${section} must be an array`);
       continue;
     }
-    const allowedParam = ["name", "type", "description", "default", "required"];
+    const allowedParam = ["name", "type", "description", "default", "required", "envVar", "fields"];
     manifest[section].forEach((item, i) => {
       if (!item.name) errors.push(`${prefix} ${section}[${i}] missing name`);
       if (!item.type) errors.push(`${prefix} ${section}[${i}] missing type`);
       if (!item.description) errors.push(`${prefix} ${section}[${i}] missing description`);
       if (item.name && !/^[a-zA-Z][a-zA-Z0-9]*$/.test(item.name)) {
         errors.push(`${prefix} ${section}[${i}] invalid name: "${item.name}"`);
+      }
+      if (item.envVar && !/^[A-Z][A-Z0-9_]*$/.test(item.envVar)) {
+        errors.push(`${prefix} ${section}[${i}] invalid envVar: "${item.envVar}"`);
+      }
+      if (item.fields) {
+        if (!Array.isArray(item.fields)) {
+          errors.push(`${prefix} ${section}[${i}] fields must be an array`);
+        } else {
+          const allowedField = ["name", "type", "description", "required", "fields"];
+          item.fields.forEach((f, fi) => {
+            if (!f.name) errors.push(`${prefix} ${section}[${i}].fields[${fi}] missing name`);
+            if (!f.type) errors.push(`${prefix} ${section}[${i}].fields[${fi}] missing type`);
+            for (const k of Object.keys(f)) {
+              if (!allowedField.includes(k)) errors.push(`${prefix} ${section}[${i}].fields[${fi}] unknown property: "${k}"`);
+            }
+          });
+        }
       }
       for (const k of Object.keys(item)) {
         if (!allowedParam.includes(k)) errors.push(`${prefix} ${section}[${i}] unknown property: "${k}"`);
@@ -166,7 +183,7 @@ for (const dir of dirs) {
       errors.push(`${prefix} actions must be an array`);
     } else {
       const allowedAct = ["name", "params", "returns", "description"];
-      const allowedParam = ["name", "type", "description", "default", "required"];
+      const allowedParam = ["name", "type", "description", "default", "required", "envVar", "fields"];
       manifest.actions.forEach((act, i) => {
         if (!act.name) errors.push(`${prefix} actions[${i}] missing name`);
         if (!act.description) errors.push(`${prefix} actions[${i}] missing description`);
@@ -225,7 +242,7 @@ for (const dir of dirs) {
     if (!Array.isArray(manifest.composability.connectsTo)) {
       errors.push(`${prefix} composability.connectsTo must be an array`);
     } else {
-      const allowedConn = ["output", "compatibleWith", "runtime", "note"];
+      const allowedConn = ["output", "compatibleWith", "runtime", "note", "mapField"];
       manifest.composability.connectsTo.forEach((conn, i) => {
         if (!conn.output) errors.push(`${prefix} composability.connectsTo[${i}] missing output`);
         if (!conn.compatibleWith) errors.push(`${prefix} composability.connectsTo[${i}] missing compatibleWith`);

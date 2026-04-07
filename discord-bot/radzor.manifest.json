@@ -22,7 +22,8 @@
       "name": "botToken",
       "type": "string",
       "description": "Discord bot token.",
-      "required": true
+      "required": true,
+      "envVar": "DISCORD_BOT_TOKEN"
     },
     {
       "name": "applicationId",
@@ -35,7 +36,25 @@
     {
       "name": "messageResult",
       "type": "DiscordMessage",
-      "description": "Sent message data."
+      "description": "Sent message data.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "channelId",
+          "type": "string"
+        },
+        {
+          "name": "content",
+          "type": "string"
+        },
+        {
+          "name": "authorId",
+          "type": "string"
+        }
+      ]
     }
   ],
   "events": [

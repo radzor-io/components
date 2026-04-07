@@ -29,7 +29,8 @@
       "name": "apiKey",
       "type": "string",
       "description": "API key for Pinecone. Not required for Qdrant or pgvector.",
-      "required": false
+      "required": false,
+      "envVar": "PINECONE_API_KEY"
     },
     {
       "name": "host",
@@ -73,7 +74,26 @@
     {
       "name": "indexStats",
       "type": "IndexStats",
-      "description": "Index statistics: total vectors, dimensions, fullness."
+      "description": "Index statistics: total vectors, dimensions, fullness.",
+      "fields": [
+        {
+          "name": "totalVectors",
+          "type": "number"
+        },
+        {
+          "name": "dimensions",
+          "type": "number"
+        },
+        {
+          "name": "fullness",
+          "type": "number",
+          "required": false
+        },
+        {
+          "name": "indexName",
+          "type": "string"
+        }
+      ]
     }
   ],
   "events": [
@@ -197,13 +217,14 @@
         "output": "searchResults",
         "compatibleWith": [
           "@radzor/llm-completion.action.complete.prompt"
-        ]
+        ],
+        "mapField": "content"
       }
     ]
   },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Vectors must be pre-computed — this component does not generate embeddings. Use @radzor/llm-completion or the OpenAI embeddings API to generate vectors before indexing. Dimensions must be set at index creation time and cannot be changed."
+    "constraints": "Vectors must be pre-computed \u2014 this component does not generate embeddings. Use @radzor/llm-completion or the OpenAI embeddings API to generate vectors before indexing. Dimensions must be set at index creation time and cannot be changed."
   }
 }

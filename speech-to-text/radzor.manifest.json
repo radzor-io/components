@@ -29,7 +29,8 @@
       "name": "apiKey",
       "type": "string",
       "description": "API key for the selected provider.",
-      "required": true
+      "required": true,
+      "envVar": "OPENAI_API_KEY"
     },
     {
       "name": "model",
@@ -48,7 +49,30 @@
     {
       "name": "transcriptionResult",
       "type": "TranscriptionResult",
-      "description": "Transcription text, detected language, duration, and optional word-level timestamps."
+      "description": "Transcription text, detected language, duration, and optional word-level timestamps.",
+      "fields": [
+        {
+          "name": "text",
+          "type": "string"
+        },
+        {
+          "name": "language",
+          "type": "string"
+        },
+        {
+          "name": "duration",
+          "type": "number"
+        },
+        {
+          "name": "words",
+          "type": "WordTimestamp[]",
+          "required": false
+        },
+        {
+          "name": "provider",
+          "type": "string"
+        }
+      ]
     }
   ],
   "events": [
@@ -100,7 +124,8 @@
         "compatibleWith": [
           "@radzor/llm-completion.action.complete.prompt",
           "@radzor/search-index.action.search.query"
-        ]
+        ],
+        "mapField": "text"
       }
     ]
   },

@@ -34,7 +34,8 @@
       "name": "authToken",
       "type": "string",
       "description": "Twilio Auth Token or Vonage API Secret.",
-      "required": true
+      "required": true,
+      "envVar": "TWILIO_AUTH_TOKEN"
     },
     {
       "name": "fromNumber",
@@ -47,7 +48,25 @@
     {
       "name": "sendResult",
       "type": "SmsSendResult",
-      "description": "Result with message SID, status, and provider response."
+      "description": "Result with message SID, status, and provider response.",
+      "fields": [
+        {
+          "name": "messageSid",
+          "type": "string"
+        },
+        {
+          "name": "to",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "type": "string"
+        },
+        {
+          "name": "provider",
+          "type": "string"
+        }
+      ]
     }
   ],
   "events": [

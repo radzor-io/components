@@ -22,7 +22,8 @@
       "name": "secret",
       "type": "string",
       "description": "Shared secret for HMAC signature verification.",
-      "required": true
+      "required": true,
+      "envVar": "WEBHOOK_SECRET"
     },
     {
       "name": "algorithm",
@@ -56,7 +57,25 @@
     {
       "name": "verifiedPayload",
       "type": "WebhookPayload",
-      "description": "Parsed and verified webhook payload with event type and data."
+      "description": "Parsed and verified webhook payload with event type and data.",
+      "fields": [
+        {
+          "name": "eventType",
+          "type": "string"
+        },
+        {
+          "name": "data",
+          "type": "any"
+        },
+        {
+          "name": "timestamp",
+          "type": "number"
+        },
+        {
+          "name": "raw",
+          "type": "string"
+        }
+      ]
     }
   ],
   "events": [

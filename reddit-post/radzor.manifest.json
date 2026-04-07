@@ -27,7 +27,8 @@
       "name": "clientSecret",
       "type": "string",
       "description": "Reddit app client secret.",
-      "required": true
+      "required": true,
+      "envVar": "REDDIT_CLIENT_SECRET"
     },
     {
       "name": "username",
@@ -39,7 +40,8 @@
       "name": "password",
       "type": "string",
       "description": "Reddit password.",
-      "required": true
+      "required": true,
+      "envVar": "REDDIT_PASSWORD"
     }
   ],
   "outputs": [

@@ -22,7 +22,8 @@
       "name": "bearerToken",
       "type": "string",
       "description": "Twitter API v2 Bearer Token or OAuth 2.0 access token.",
-      "required": true
+      "required": true,
+      "envVar": "TWITTER_BEARER_TOKEN"
     },
     {
       "name": "apiKey",
@@ -53,7 +54,17 @@
     {
       "name": "tweetResult",
       "type": "TweetResult",
-      "description": "Posted tweet ID, text, and metadata."
+      "description": "Posted tweet ID, text, and metadata.",
+      "fields": [
+        {
+          "name": "tweetId",
+          "type": "string"
+        },
+        {
+          "name": "text",
+          "type": "string"
+        }
+      ]
     }
   ],
   "events": [

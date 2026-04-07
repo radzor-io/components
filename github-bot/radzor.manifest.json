@@ -24,7 +24,8 @@
       "name": "token",
       "type": "string",
       "description": "GitHub Personal Access Token (ghp_...) or GitHub App installation token.",
-      "required": true
+      "required": true,
+      "envVar": "GITHUB_TOKEN"
     },
     {
       "name": "owner",

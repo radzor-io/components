@@ -28,7 +28,8 @@
       "name": "secretKey",
       "type": "string",
       "description": "Server-side secret key from the provider.",
-      "required": true
+      "required": true,
+      "envVar": "TURNSTILE_SECRET_KEY"
     },
     {
       "name": "scoreThreshold",
@@ -42,7 +43,31 @@
     {
       "name": "verificationResult",
       "type": "CaptchaResult",
-      "description": "Verification result with success status, score, and error codes."
+      "description": "Verification result with success status, score, and error codes.",
+      "fields": [
+        {
+          "name": "success",
+          "type": "boolean"
+        },
+        {
+          "name": "score",
+          "type": "number",
+          "required": false
+        },
+        {
+          "name": "hostname",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "errorCodes",
+          "type": "string[]"
+        },
+        {
+          "name": "provider",
+          "type": "string"
+        }
+      ]
     }
   ],
   "events": [

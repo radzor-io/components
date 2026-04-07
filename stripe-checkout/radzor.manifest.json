@@ -53,20 +53,36 @@
       "name": "secretKey",
       "type": "string",
       "description": "Stripe secret API key (sk_live_... or sk_test_...). Server-side only.",
-      "required": true
+      "required": true,
+      "envVar": "STRIPE_SECRET_KEY"
     },
     {
       "name": "webhookSecret",
       "type": "string",
       "description": "Stripe webhook signing secret (whsec_...) for verifying webhook events.",
-      "required": true
+      "required": true,
+      "envVar": "STRIPE_WEBHOOK_SECRET"
     }
   ],
   "outputs": [
     {
       "name": "checkoutSession",
       "type": "StripeCheckoutSession",
-      "description": "The created Stripe Checkout session with URL and ID."
+      "description": "The created Stripe Checkout session with URL and ID.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "url",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "type": "string"
+        }
+      ]
     },
     {
       "name": "paymentStatus",

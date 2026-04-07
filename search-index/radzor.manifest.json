@@ -34,7 +34,8 @@
       "name": "apiKey",
       "type": "string",
       "description": "Admin or search-only API key.",
-      "required": true
+      "required": true,
+      "envVar": "MEILISEARCH_KEY"
     },
     {
       "name": "indexName",
@@ -66,7 +67,26 @@
     {
       "name": "searchResults",
       "type": "SearchResults",
-      "description": "Search response with hits, total, processing time, and facet counts."
+      "description": "Search response with hits, total, processing time, and facet counts.",
+      "fields": [
+        {
+          "name": "hits",
+          "type": "unknown[]"
+        },
+        {
+          "name": "total",
+          "type": "number"
+        },
+        {
+          "name": "processingTimeMs",
+          "type": "number"
+        },
+        {
+          "name": "facets",
+          "type": "Record<string, unknown>",
+          "required": false
+        }
+      ]
     }
   ],
   "events": [
@@ -181,6 +201,6 @@
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Requires a running Meilisearch or Typesense instance — not a managed SaaS. Indexing is async in Meilisearch (tasks complete in background). Always set searchableFields and filterableFields before indexing data to avoid full re-indexing."
+    "constraints": "Requires a running Meilisearch or Typesense instance \u2014 not a managed SaaS. Indexing is async in Meilisearch (tasks complete in background). Always set searchableFields and filterableFields before indexing data to avoid full re-indexing."
   }
 }

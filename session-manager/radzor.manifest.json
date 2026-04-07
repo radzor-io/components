@@ -35,7 +35,8 @@
       "name": "secret",
       "type": "string",
       "description": "Secret for signing session cookies (HMAC-SHA256).",
-      "required": true
+      "required": true,
+      "envVar": "SESSION_SECRET"
     },
     {
       "name": "ttl",
@@ -177,6 +178,6 @@
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Memory store loses all sessions on restart — use redis or postgres for production. Set secure: false only in local development. Always use HTTPS in production to prevent session hijacking."
+    "constraints": "Memory store loses all sessions on restart \u2014 use redis or postgres for production. Set secure: false only in local development. Always use HTTPS in production to prevent session hijacking."
   }
 }

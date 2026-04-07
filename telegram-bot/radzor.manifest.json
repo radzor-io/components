@@ -21,7 +21,8 @@
       "name": "botToken",
       "type": "string",
       "description": "Telegram Bot API token from @BotFather.",
-      "required": true
+      "required": true,
+      "envVar": "TELEGRAM_BOT_TOKEN"
     }
   ],
   "outputs": [

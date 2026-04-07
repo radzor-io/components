@@ -31,7 +31,8 @@
       "name": "apiKey",
       "type": "string",
       "description": "API key for Google Vision. Not required for tesseract.",
-      "required": false
+      "required": false,
+      "envVar": "GOOGLE_API_KEY"
     },
     {
       "name": "azureEndpoint",
@@ -135,6 +136,6 @@
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Tesseract requires a local installation (apt-get install tesseract-ocr). Cloud providers require API credentials and network access. extractStructured() is only available for google-vision and azure — tesseract returns plain text only. For large PDFs, process page by page to avoid memory issues."
+    "constraints": "Tesseract requires a local installation (apt-get install tesseract-ocr). Cloud providers require API credentials and network access. extractStructured() is only available for google-vision and azure \u2014 tesseract returns plain text only. For large PDFs, process page by page to avoid memory issues."
   }
 }

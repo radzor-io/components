@@ -28,7 +28,8 @@
       "name": "apiKey",
       "type": "string",
       "description": "API key for Resend or SendGrid. Not needed for SMTP.",
-      "required": false
+      "required": false,
+      "envVar": "RESEND_API_KEY"
     },
     {
       "name": "from",
@@ -73,7 +74,21 @@
     {
       "name": "sendResult",
       "type": "SendResult",
-      "description": "Result with message id, recipients, and send status."
+      "description": "Result with message id, recipients, and send status.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "to",
+          "type": "string[]"
+        },
+        {
+          "name": "status",
+          "type": "\"sent\" | \"queued\""
+        }
+      ]
     }
   ],
   "events": [

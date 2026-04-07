@@ -47,7 +47,25 @@
     {
       "name": "rateLimitResult",
       "type": "RateLimitResult",
-      "description": "Result including allowed, remaining, resetAt, and retryAfterMs."
+      "description": "Result including allowed, remaining, resetAt, and retryAfterMs.",
+      "fields": [
+        {
+          "name": "allowed",
+          "type": "boolean"
+        },
+        {
+          "name": "remaining",
+          "type": "number"
+        },
+        {
+          "name": "resetAt",
+          "type": "number"
+        },
+        {
+          "name": "retryAfterMs",
+          "type": "number"
+        }
+      ]
     }
   ],
   "events": [
@@ -141,6 +159,6 @@
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "In-memory only — rate limits reset on process restart. For distributed systems, use an external store (Redis). Automatic cleanup prevents memory leaks."
+    "constraints": "In-memory only \u2014 rate limits reset on process restart. For distributed systems, use an external store (Redis). Automatic cleanup prevents memory leaks."
   }
 }

@@ -23,7 +23,8 @@
       "name": "botToken",
       "type": "string",
       "description": "Slack Bot OAuth token (xoxb-...). Required for API methods.",
-      "required": false
+      "required": false,
+      "envVar": "SLACK_BOT_TOKEN"
     },
     {
       "name": "webhookUrl",
@@ -35,7 +36,8 @@
       "name": "signingSecret",
       "type": "string",
       "description": "Slack app signing secret for verifying incoming event payloads.",
-      "required": false
+      "required": false,
+      "envVar": "SLACK_BOT_SIGNING_SECRET"
     }
   ],
   "outputs": [

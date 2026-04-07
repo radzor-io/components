@@ -29,7 +29,8 @@
       "name": "apiKey",
       "type": "string",
       "description": "API key for the selected provider.",
-      "required": true
+      "required": true,
+      "envVar": "OPENAI_API_KEY"
     },
     {
       "name": "model",
@@ -157,6 +158,6 @@
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Uses OpenAI structured outputs (response_format: json_schema) or Anthropic tool use under the hood. Keep schemas flat where possible — nested objects increase failure rate. temperature defaults to 0 for reliability."
+    "constraints": "Uses OpenAI structured outputs (response_format: json_schema) or Anthropic tool use under the hood. Keep schemas flat where possible \u2014 nested objects increase failure rate. temperature defaults to 0 for reliability."
   }
 }

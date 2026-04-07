@@ -57,19 +57,60 @@
       "name": "jwtSecret",
       "type": "string",
       "description": "Secret key used to sign and verify JWT session tokens.",
-      "required": true
+      "required": true,
+      "envVar": "JWT_SECRET"
     }
   ],
   "outputs": [
     {
       "name": "session",
       "type": "AuthSession",
-      "description": "Current authentication session containing access token, refresh token, and expiry."
+      "description": "Current authentication session containing access token, refresh token, and expiry.",
+      "fields": [
+        {
+          "name": "accessToken",
+          "type": "string"
+        },
+        {
+          "name": "refreshToken",
+          "type": "string"
+        },
+        {
+          "name": "expiresAt",
+          "type": "number"
+        },
+        {
+          "name": "provider",
+          "type": "string"
+        }
+      ]
     },
     {
       "name": "user",
       "type": "UserProfile",
-      "description": "Authenticated user profile with id, email, name, and avatar."
+      "description": "Authenticated user profile with id, email, name, and avatar.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "email",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "avatar",
+          "type": "string | null"
+        },
+        {
+          "name": "provider",
+          "type": "string"
+        }
+      ]
     }
   ],
   "events": [
@@ -188,7 +229,8 @@
         "output": "session",
         "compatibleWith": [
           "@radzor/realtime-chat.input.authToken"
-        ]
+        ],
+        "mapField": "accessToken"
       }
     ]
   },

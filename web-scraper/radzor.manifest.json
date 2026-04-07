@@ -44,7 +44,25 @@
     {
       "name": "scrapeResult",
       "type": "ScrapeResult",
-      "description": "Extracted data with selected elements and raw HTML."
+      "description": "Extracted data with selected elements and raw HTML.",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "type": "number"
+        },
+        {
+          "name": "data",
+          "type": "Record<string, string[]>"
+        },
+        {
+          "name": "html",
+          "type": "string"
+        }
+      ]
     }
   ],
   "events": [
@@ -106,6 +124,6 @@
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Respects robots.txt conventions. Use responsibly — excessive scraping may violate ToS. Server-side only."
+    "constraints": "Respects robots.txt conventions. Use responsibly \u2014 excessive scraping may violate ToS. Server-side only."
   }
 }

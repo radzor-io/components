@@ -70,7 +70,25 @@
     {
       "name": "parseStats",
       "type": "ParseStats",
-      "description": "Total rows, valid rows, error rows, and processing duration."
+      "description": "Total rows, valid rows, error rows, and processing duration.",
+      "fields": [
+        {
+          "name": "totalRows",
+          "type": "number"
+        },
+        {
+          "name": "validRows",
+          "type": "number"
+        },
+        {
+          "name": "errorRows",
+          "type": "number"
+        },
+        {
+          "name": "durationMs",
+          "type": "number"
+        }
+      ]
     }
   ],
   "events": [
@@ -177,6 +195,6 @@
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "For files over 50MB, always use parseStream() instead of parseBuffer() to avoid memory issues. The schema coercion casts strings to types but does not validate ranges or formats — add your own business logic after parsing. date fields are coerced with new Date() — ensure dates are in ISO 8601 or MM/DD/YYYY format."
+    "constraints": "For files over 50MB, always use parseStream() instead of parseBuffer() to avoid memory issues. The schema coercion casts strings to types but does not validate ranges or formats \u2014 add your own business logic after parsing. date fields are coerced with new Date() \u2014 ensure dates are in ISO 8601 or MM/DD/YYYY format."
   }
 }

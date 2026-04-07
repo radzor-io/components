@@ -29,7 +29,8 @@
       "name": "apiKey",
       "type": "string",
       "description": "API key for the selected provider.",
-      "required": true
+      "required": true,
+      "envVar": "OPENAI_API_KEY"
     },
     {
       "name": "model",
@@ -56,7 +57,32 @@
     {
       "name": "generationResult",
       "type": "ImageGenerationResult",
-      "description": "Result containing image URL or base64 data, revised prompt, and metadata."
+      "description": "Result containing image URL or base64 data, revised prompt, and metadata.",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "base64",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "revisedPrompt",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "provider",
+          "type": "string"
+        },
+        {
+          "name": "model",
+          "type": "string"
+        }
+      ]
     }
   ],
   "events": [
