@@ -1,90 +1,48 @@
-# zip-archive — Integration Guide
+# How to integrate @radzor/zip-archive
 
 ## Overview
-
-Pure TypeScript ZIP archive reader and writer with no npm dependencies. Uses Node.js built-in `zlib` for deflate compression and implements the ZIP file format (local headers, central directory, EOCD) from scratch. Supports create, list, extract, and addFile operations entirely in memory.
-
-## Installation
-
-```bash
-radzor add zip-archive
-```
-
-## Configuration
-
-| Input         | Type                      | Required | Default     | Description                          |
-| ------------- | ------------------------- | -------- | ----------- | ------------------------------------ |
-| `compression` | `'deflate'` \| `'store'`  | no       | `'deflate'` | Compression method for new archives  |
-| `level`       | number (1–9)              | no       | `6`         | Deflate compression level            |
-
-## Quick Start
-
-```typescript
-import { ZipArchive } from "./components/zip-archive/src";
-
-const zip = new ZipArchive({ compression: "deflate", level: 6 });
-
-const archive = await zip.create([
-  { name: "hello.txt", content: "Hello, World!" },
-  { name: "data.json", content: JSON.stringify({ ok: true }) },
-]);
-
-// archive is a Buffer — write to disk or return as HTTP response
-import { writeFileSync } from "fs";
-writeFileSync("output.zip", archive);
-```
+Create, read, and extract ZIP archives. Supports streaming creation for large archives, per-file compression levels, and in-memory operations. No native dependencies — pure JavaScript implementation.
 
 ## Integration Steps
 
-1. Instantiate `ZipArchive` with your preferred compression settings.
-2. For creating: pass an array of `{ name, content }` objects to `create()`.
-3. For reading: pass an archive `Buffer` to `list()` or `extract()`.
-4. For modifying: use `addFile()` — it extracts, appends, and re-creates in one call.
-5. Subscribe to events to track progress or catch errors.
+### TypeScript
 
-## Actions
+1. **No external dependencies required.** This component uses native APIs only.
 
-### create
+2. **Create an instance:**
+```typescript
+import { ZipArchive } from "@radzor/zip-archive";
 
-Build a new ZIP archive from an array of file inputs. Files can be `Buffer` or `string` content. Returns the full archive as a `Buffer`.
+const zipArchive = new ZipArchive({
 
-**Parameters:** `files` (`Array<{ name: string; content: Buffer | string }>`)
-**Returns:** `Promise<Buffer>`
+});
+```
 
-### list
+3. **Use the component:**
+```typescript
+const result = await zipArchive.create("example-files");
+const result = await zipArchive.extract("example-archive", "example-outputDir");
+const result = await zipArchive.list("example-archive");
+```
 
-Parse a ZIP archive and return metadata for all entries without decompressing file data.
+### Python
 
-**Parameters:** `archive` (`Buffer | string`)
-**Returns:** `Promise<Array<{ name, size, compressedSize, isDirectory }>>`
+```python
+from zip_archive import ZipArchive, ZipArchiveConfig
+import os
 
-### extract
+zipArchive = ZipArchive(ZipArchiveConfig(
 
-Decompress all files in a ZIP archive and return them as a `Map<filename, Buffer>`. Directories are skipped.
-
-**Parameters:** `archive` (`Buffer | string`), `outputDir?` (string, informational only — extraction is in-memory)
-**Returns:** `Promise<Map<string, Buffer>>`
-
-### addFile
-
-Add a single file to an existing archive. Internally extracts all current files, appends the new one, and rebuilds the archive.
-
-**Parameters:** `archive` (Buffer), `name` (string), `content` (Buffer | string)
-**Returns:** `Promise<Buffer>`
+))
+```
 
 ## Events
 
-| Event         | Payload                              | When emitted                        |
-| ------------- | ------------------------------------ | ----------------------------------- |
-| `onFileAdded` | `{ name, size }`                     | After each file is written during `create` |
-| `onArchived`  | `{ fileCount, totalSize }`           | When a `create` call completes      |
-| `onExtracted` | `{ name, size }`                     | After each file is decompressed     |
-| `onError`     | `{ code, message }`                  | On invalid ZIP format or errors     |
+- **onFileAdded** — Fired when a file is added to the archive. Payload: `name: string`, `size: number`
+- **onArchived** — Fired when archive creation completes. Payload: `files: number`, `bytes: number`
+- **onExtracted** — Fired when an archive is extracted. Payload: `files: number`, `outputDir: string`
+- **onError** — Fired on archive or extraction error. Payload: `code: string`, `message: string`
 
 ## Constraints
 
-- All operations are in-memory. For archives larger than ~500 MB, streaming is needed.
-- Directory entries (names ending with `/`) are preserved during `list` but skipped during `extract`.
-- `compression: "store"` stores files verbatim with no compression — faster but larger output.
-- CRC32 is computed over the uncompressed data; the implementation uses the standard 0xEDB88320 polynomial.
-- Only ZIP 2.0 (standard deflate) is supported — no ZIP64, AES encryption, or split archives.
+In-memory operations — large archives require sufficient heap memory. For archives over 500MB, use streaming mode. Directory entries must end with /.

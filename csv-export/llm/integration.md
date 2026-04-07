@@ -1,59 +1,42 @@
-# csv-export — Integration Guide
+# How to integrate @radzor/csv-export
 
 ## Overview
+Generate and parse CSV files from data arrays. Supports custom delimiters, headers, and streaming.
 
-Generate and parse CSV files from data arrays. Supports custom delimiters, quoted fields, and file output. RFC 4180 compliant parsing.
-
-## Installation
-
-```bash
-radzor add csv-export
-```
-
-## Configuration
-
-| Input            | Type    | Required | Description                      |
-| ---------------- | ------- | -------- | -------------------------------- |
-| `delimiter`      | string  | no       | Column delimiter (default: `,`)  |
-| `includeHeaders` | boolean | no       | Include header row (default: true)|
-| `quoteAll`       | boolean | no       | Quote all fields (default: false)|
-
-## Quick Start
+## Integration Steps
 
 ### TypeScript
 
+1. **No external dependencies required.** This component uses native APIs only.
+
+2. **Create an instance:**
 ```typescript
-import { CsvExport } from "./components/csv-export/src";
+import { CSVExport } from "@radzor/csv-export";
 
-const csv = new CsvExport();
+const csvExport = new CSVExport({
 
-const output = csv.generate([
-  { name: "Alice", age: "30", city: "Paris" },
-  { name: "Bob", age: "25", city: "London" },
-]);
-// name,age,city\nAlice,30,Paris\nBob,25,London
+});
+```
+
+3. **Use the component:**
+```typescript
+csvExport.generate("example-data", "example-columns");
+csvExport.parse("example-csv");
+const result = await csvExport.toFile("example-data", "example-outputPath");
 ```
 
 ### Python
 
 ```python
-from components.csv_export.src import CsvExport
+from csv_export import CSVExport, CSVExportConfig
+import os
 
-csv = CsvExport()
+csvExport = CSVExport(CSVExportConfig(
 
-output = csv.generate([
-    {"name": "Alice", "age": "30", "city": "Paris"},
-    {"name": "Bob", "age": "25", "city": "London"},
-])
+))
 ```
 
-## Actions
+## Events
 
-### generate — Generate CSV from array of objects
-### generateFromArrays / generate_from_arrays — Generate CSV from headers + 2D array
-### parse — Parse CSV string into array of objects
-### toFile / to_file — Write CSV directly to a file
-
-## Requirements
-
-- No external dependencies — uses stdlib only
+- **onGenerated** — Fired when CSV generation completes. Payload: `rows: number`, `bytes: number`
+- **onError** — Fired on error. Payload: `code: string`, `message: string`

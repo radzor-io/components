@@ -1,70 +1,43 @@
-# api-key-auth — Integration Guide
+# How to integrate @radzor/api-key-auth
 
 ## Overview
+API key authentication middleware. Generate, validate, hash, and revoke API keys.
 
-API key authentication middleware. Generate, validate, hash, and revoke API keys with timing-safe comparison and SHA-256 hashing.
-
-## Installation
-
-```bash
-radzor add api-key-auth
-```
-
-## Configuration
-
-| Input        | Type   | Required | Description                                 |
-| ------------ | ------ | -------- | ------------------------------------------- |
-| `headerName` | string | no       | HTTP header name (default: `x-api-key`)     |
-| `prefix`     | string | no       | API key prefix (default: `rz_`)             |
-
-## Quick Start
+## Integration Steps
 
 ### TypeScript
 
+1. **No external dependencies required.** This component uses native APIs only.
+
+2. **Create an instance:**
 ```typescript
-import { ApiKeyAuth } from "./components/api-key-auth/src";
+import { APIKeyAuth } from "@radzor/api-key-auth";
 
-const auth = new ApiKeyAuth();
+const apiKeyAuth = new APIKeyAuth({
 
-// Generate a key
-const apiKey = auth.generateKey({ userId: "user-123" });
-console.log("Key:", apiKey.key);
-console.log("Hash:", apiKey.hash);
+});
+```
 
-// Validate
-const result = auth.validateKey(apiKey.key);
-console.log(result.valid); // true
+3. **Use the component:**
+```typescript
+const result = await apiKeyAuth.generateKey();
+const result = await apiKeyAuth.validateKey("example-key", "example-storedHash");
+apiKeyAuth.hashKey("example-key");
 ```
 
 ### Python
 
 ```python
-from components.api_key_auth.src import ApiKeyAuth
+from api_key_auth import APIKeyAuth, APIKeyAuthConfig
+import os
 
-auth = ApiKeyAuth()
+apiKeyAuth = APIKeyAuth(APIKeyAuthConfig(
 
-api_key = auth.generate_key({"userId": "user-123"})
-print("Key:", api_key.key)
-print("Hash:", api_key.hash)
-
-result = auth.validate_key(api_key.key)
-print(result.valid)  # True
+))
 ```
 
-## Actions
+## Events
 
-### generateKey / generate_key — Generate a new prefixed API key
-### validateKey / validate_key — Validate an API key (timing-safe)
-### validateRequest / validate_request — Extract and validate key from HTTP headers
-### hashKey / hash_key — SHA-256 hash a key for storage
-### revokeKey / revoke_key — Revoke an API key
-
-## Security
-
-- Keys are hashed with SHA-256 before storage
-- Validation uses timing-safe comparison to prevent timing attacks
-- Revoked keys are tracked and rejected
-
-## Requirements
-
-- No external dependencies — uses stdlib only
+- **onValidated** — Fired when an API key is successfully validated. Payload: `keyId: string`, `prefix: string`
+- **onRevoked** — Fired when an API key is revoked. Payload: `keyId: string`
+- **onError** — Fired on auth error. Payload: `code: string`, `message: string`

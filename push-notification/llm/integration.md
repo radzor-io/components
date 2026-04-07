@@ -1,76 +1,41 @@
-# push-notification — Integration Guide
+# How to integrate @radzor/push-notification
 
 ## Overview
+Send push notifications via Firebase Cloud Messaging (FCM) or Apple Push Notification service (APNs).
 
-Send push notifications to mobile devices via Firebase Cloud Messaging (FCM) or Apple Push Notification service (APNs).
-
-## Installation
-
-```bash
-radzor add push-notification
-```
-
-## Configuration
-
-| Input         | Type   | Required | Description                               |
-| ------------- | ------ | -------- | ----------------------------------------- |
-| `provider`    | string | yes      | `"fcm"` or `"apns"`                       |
-| `credentials` | object | yes      | Provider-specific credentials (see below) |
-
-### FCM Credentials
-
-| Field       | Type   | Description              |
-| ----------- | ------ | ------------------------ |
-| `serverKey` | string | FCM server key           |
-
-### APNs Credentials
-
-| Field        | Type    | Description                     |
-| ------------ | ------- | ------------------------------- |
-| `keyId`      | string  | APNs key ID                     |
-| `teamId`     | string  | Apple Team ID                   |
-| `privateKey` | string  | APNs private key (PEM)          |
-| `bundleId`   | string  | App bundle identifier           |
-| `production` | boolean | Use production APNs (default: false) |
-
-## Quick Start
+## Integration Steps
 
 ### TypeScript
 
+1. **No external dependencies required.** This component uses native APIs only.
+
+2. **Create an instance:**
 ```typescript
-import { PushNotification } from "./components/push-notification/src";
+import { PushNotification } from "@radzor/push-notification";
 
-const push = new PushNotification({
+const pushNotification = new PushNotification({
   provider: "fcm",
-  credentials: { serverKey: process.env.FCM_SERVER_KEY! },
 });
+```
 
-await push.sendToDevice("device-token", {
-  title: "New Message",
-  body: "You have a new notification",
-});
+3. **Use the component:**
+```typescript
+const result = await pushNotification.sendToDevice("example-token", "example-notification");
+const result = await pushNotification.sendToTopic("example-topic", "example-notification");
 ```
 
 ### Python
 
 ```python
-from components.push_notification.src import PushNotification, FcmCredentials, PushPayload
+from push_notification import PushNotification, PushNotificationConfig
+import os
 
-push = PushNotification("fcm", FcmCredentials(server_key=os.environ["FCM_SERVER_KEY"]))
-push.send_to_device("device-token", PushPayload(title="New Message", body="You have a new notification"))
+pushNotification = PushNotification(PushNotificationConfig(
+    provider="fcm",
+))
 ```
 
-## Actions
+## Events
 
-### sendToDevice / send_to_device
-
-Send a notification to a specific device token. Works with both FCM and APNs.
-
-### sendToTopic / send_to_topic
-
-Send a notification to all subscribers of a topic. FCM only.
-
-## Requirements
-
-- FCM server key or APNs credentials
-- No external dependencies — uses stdlib only
+- **onSent** — Fired when a notification is successfully sent. Payload: `messageId: string`, `token: string`
+- **onError** — Fired on send error. Payload: `code: string`, `message: string`, `token: string`

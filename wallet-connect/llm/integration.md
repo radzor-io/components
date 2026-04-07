@@ -1,68 +1,37 @@
-# wallet-connect — Integration Guide
+# How to integrate @radzor/wallet-connect
 
 ## Overview
+Connect to Ethereum wallets (MetaMask, WalletConnect) for Web3 dApps. Client-side only.
 
-Client-side Ethereum wallet connection using EIP-1193 (MetaMask and compatible wallets). Connect wallets, get balances, send transactions, and sign messages.
+## Integration Steps
 
-**TypeScript only** — this component runs in the browser and relies on `window.ethereum`.
+### TypeScript
 
-## Installation
+1. **No external dependencies required.** This component uses native APIs only.
 
-```bash
-radzor add wallet-connect
-```
-
-## Configuration
-
-| Input     | Type   | Required | Description                                |
-| --------- | ------ | -------- | ------------------------------------------ |
-| `chainId` | number | no       | Target chain ID (default: 1 = Ethereum)    |
-| `rpcUrl`  | string | no       | JSON-RPC endpoint URL                      |
-
-## Quick Start
-
+2. **Create an instance:**
 ```typescript
-import { WalletConnect } from "./components/wallet-connect/src";
+import { WalletConnect } from "@radzor/wallet-connect";
 
-const wallet = new WalletConnect({ chainId: 1 });
+const walletConnect = new WalletConnect({
 
-const state = await wallet.connect();
-console.log("Connected:", state.address);
-
-const balance = await wallet.getBalance();
-console.log("Balance (wei):", balance);
+});
 ```
 
-## Actions
-
-### connect
-
-Request wallet connection. Prompts user to approve. Returns `WalletState` with `address`, `chainId`, `connected`.
-
-### disconnect
-
-Disconnect the wallet (resets local state).
-
-### getBalance
-
-Get ETH balance in wei for the connected address (or a specified address).
-
-### sendTransaction
-
-Send an ETH transaction. Parameters: `to`, `value` (hex wei), optional `data` and `gasLimit`.
-
-### signMessage
-
-Sign a message with `personal_sign`. Returns hex signature.
+3. **Use the component:**
+```typescript
+const result = await walletConnect.connect();
+const result = await walletConnect.disconnect();
+const result = await walletConnect.getBalance("example-address");
+```
 
 ## Events
 
-- `onConnected` — wallet connected with `WalletState`
-- `onDisconnected` — wallet disconnected
-- `onChainChanged` — user switched chain
-- `onError` — error with `{ code, message }`
+- **onConnected** — Fired when a wallet is connected. Payload: `address: string`, `chainId: number`
+- **onDisconnected** — Fired when the wallet disconnects. Payload: `address: string`
+- **onChainChanged** — Fired when the user switches chains. Payload: `chainId: number`
+- **onError** — Fired on connection or transaction error. Payload: `code: string`, `message: string`
 
-## Requirements
+## Constraints
 
-- Browser environment with MetaMask or EIP-1193 compatible wallet
-- No external dependencies
+Browser-only — requires window.ethereum injected by MetaMask or similar. Not available in Node.js or SSR. Always handle the case where no wallet is installed.

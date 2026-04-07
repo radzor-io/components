@@ -1,89 +1,49 @@
-# discord-bot — Integration Guide
+# How to integrate @radzor/discord-bot
 
 ## Overview
+Discord bot framework with slash commands, embeds, and message handling. Uses the Discord REST API and Gateway for real-time events.
 
-Server-side Discord bot component using Discord REST API v10. Send messages, embeds, reply to messages, and delete messages in Discord channels.
-
-## Installation
-
-```bash
-radzor add discord-bot
-```
-
-## Configuration
-
-| Input          | Type   | Required | Description                        |
-| -------------- | ------ | -------- | ---------------------------------- |
-| `botToken`     | string | yes      | Discord bot token from dev portal  |
-| `applicationId`| string | no       | Discord application ID             |
-
-Get your bot token from https://discord.com/developers/applications.
-
-## Quick Start
+## Integration Steps
 
 ### TypeScript
 
+1. **No external dependencies required.** This component uses native APIs only.
+
+2. **Create an instance:**
 ```typescript
-import { DiscordBot } from "./components/discord-bot/src";
+import { DiscordBot } from "@radzor/discord-bot";
 
-const bot = new DiscordBot({
+const discordBot = new DiscordBot({
   botToken: process.env.DISCORD_BOT_TOKEN!,
-  applicationId: process.env.DISCORD_APP_ID,
 });
+```
 
-const msg = await bot.sendMessage("channel-id", "Hello from Radzor!");
-console.log(msg.id);
+3. **Use the component:**
+```typescript
+const result = await discordBot.sendMessage("example-channelId", "example-content");
+const result = await discordBot.sendEmbed("example-channelId", /* embed */);
 ```
 
 ### Python
 
 ```python
-from components.discord_bot.src import DiscordBot, DiscordBotConfig
+from discord_bot import DiscordBot, DiscordBotConfig
+import os
 
-bot = DiscordBot(DiscordBotConfig(
+discordBot = DiscordBot(DiscordBotConfig(
     bot_token=os.environ["DISCORD_BOT_TOKEN"],
 ))
-
-msg = bot.send_message("channel-id", "Hello from Radzor!")
-print(msg.id)
 ```
 
-## Actions
+## Events
 
-### sendMessage / send_message
+- **onMessage** — Fired when a message is received. Payload: `channelId: string`, `content: string`, `authorId: string`
+- **onError** — Fired on API errors. Payload: `code: string`, `message: string`
 
-Send a text message to a channel.
+## Environment Variables
 
-**Parameters:** `channel_id` (str), `content` (str)
-**Returns:** `DiscordMessage` with `id`, `channel_id`, `content`, `author_id`
+- `DISCORD_BOT_TOKEN`
 
-### sendEmbed / send_embed
+## Constraints
 
-Send a rich embed to a channel.
-
-**Parameters:** `channel_id` (str), `embed` (DiscordEmbed)
-**Returns:** `DiscordMessage`
-
-### replyTo / reply_to
-
-Reply to a specific message.
-
-**Parameters:** `channel_id` (str), `message_id` (str), `content` (str)
-**Returns:** `DiscordMessage`
-
-### deleteMessage / delete_message
-
-Delete a message from a channel.
-
-**Parameters:** `channel_id` (str), `message_id` (str)
-**Returns:** `void` / `None`
-
-## Error handling
-
-The component emits `onError` events with `{ code, message }` payload. Wrap calls in try/catch or subscribe to the error event.
-
-## Requirements
-
-- Discord bot token with `bot` scope and `Send Messages` permission
-- Bot must be invited to the server with correct permissions
-- No external dependencies — uses stdlib only
+Requires Discord bot token. Bot must be invited to server with appropriate permissions.

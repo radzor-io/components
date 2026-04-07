@@ -1,55 +1,42 @@
-# image-resize — Integration Guide
+# How to integrate @radzor/image-resize
 
 ## Overview
+Resize, crop, and transform images using raw pixel manipulation. No external dependencies.
 
-Resize, crop, and create thumbnails from images. Reads PNG, JPEG, and BMP dimensions. Outputs BMP format (zero external dependencies).
-
-## Installation
-
-```bash
-radzor add image-resize
-```
-
-## Configuration
-
-| Input     | Type   | Required | Description                    |
-| --------- | ------ | -------- | ------------------------------ |
-| `quality` | number | no       | Output quality 1-100 (default: 80) |
-
-## Quick Start
+## Integration Steps
 
 ### TypeScript
 
+1. **No external dependencies required.** This component uses native APIs only.
+
+2. **Create an instance:**
 ```typescript
-import { ImageResize } from "./components/image-resize/src";
+import { ImageResize } from "@radzor/image-resize";
 
-const img = new ImageResize();
-const info = img.getInfo("./photo.jpg");
-console.log(`${info.width}x${info.height} ${info.format}`);
+const imageResize = new ImageResize({
 
-img.thumbnail("./photo.jpg", "./thumb.bmp", 200);
+});
+```
+
+3. **Use the component:**
+```typescript
+const result = await imageResize.resize("example-input", 100);
+const result = await imageResize.crop("example-input", 100);
+const result = await imageResize.thumbnail("example-input", 100);
 ```
 
 ### Python
 
 ```python
-from components.image_resize.src import ImageResize
+from image_resize import ImageResize, ImageResizeConfig
+import os
 
-img = ImageResize()
-info = img.get_info("./photo.jpg")
-print(f"{info.width}x{info.height} {info.format}")
+imageResize = ImageResize(ImageResizeConfig(
 
-img.thumbnail("./photo.jpg", "./thumb.bmp", 200)
+))
 ```
 
-## Actions
+## Events
 
-### getInfo / get_info — Get image dimensions and format
-### resize — Resize to specific dimensions (fill, contain, cover)
-### crop — Crop a region from an image
-### thumbnail — Generate thumbnail preserving aspect ratio
-
-## Requirements
-
-- No external dependencies — uses stdlib only
-- Output format is BMP (most universal uncompressed format)
+- **onProcessed** — Fired when an image is processed. Payload: `width: number`, `height: number`, `bytes: number`
+- **onError** — Fired on error. Payload: `code: string`, `message: string`

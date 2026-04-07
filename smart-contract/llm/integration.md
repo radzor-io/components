@@ -1,75 +1,46 @@
-# smart-contract — Integration Guide
+# How to integrate @radzor/smart-contract
 
 ## Overview
+Interact with EVM smart contracts via JSON-RPC. Read state, call functions, and send transactions.
 
-Interact with EVM smart contracts via JSON-RPC. Read contract state, encode function calls, and decode return values. Works with any EVM chain (Ethereum, Polygon, Arbitrum, etc.).
-
-## Installation
-
-```bash
-radzor add smart-contract
-```
-
-## Configuration
-
-| Input             | Type   | Required | Description                          |
-| ----------------- | ------ | -------- | ------------------------------------ |
-| `rpcUrl`          | string | yes      | JSON-RPC endpoint (Infura, Alchemy)  |
-| `contractAddress` | string | yes      | Deployed contract address            |
-| `abi`             | array  | yes      | Contract ABI (JSON array)            |
-
-## Quick Start
+## Integration Steps
 
 ### TypeScript
 
+1. **No external dependencies required.** This component uses native APIs only.
+
+2. **Create an instance:**
 ```typescript
-import { SmartContract } from "./components/smart-contract/src";
+import { SmartContract } from "@radzor/smart-contract";
 
-const contract = new SmartContract({
-  rpcUrl: "https://mainnet.infura.io/v3/YOUR_KEY",
-  contractAddress: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-  abi: [
-    { name: "balanceOf", type: "function", inputs: [{ name: "owner", type: "address" }], outputs: [{ name: "", type: "uint256" }], stateMutability: "view" },
-  ],
+const smartContract = new SmartContract({
+  rpcUrl: "your-rpcUrl",
+  contractAddress: "your-contractAddress",
+  abi: "your-abi",
 });
+```
 
-const balance = await contract.call("balanceOf", ["0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18"]);
+3. **Use the component:**
+```typescript
+const result = await smartContract.call("example-method", /* args */);
+smartContract.encodeFunctionData("example-method", /* args */);
+smartContract.decodeFunctionResult("example-method", "example-data");
 ```
 
 ### Python
 
 ```python
-from components.smart_contract.src import SmartContract, SmartContractConfig
+from smart_contract import SmartContract, SmartContractConfig
+import os
 
-contract = SmartContract(SmartContractConfig(
-    rpc_url="https://mainnet.infura.io/v3/YOUR_KEY",
-    contract_address="0xdAC17F958D2ee523a2206206994597C13D831ec7",
-    abi=[{"name": "balanceOf", "type": "function", "inputs": [{"name": "owner", "type": "address"}], "outputs": [{"name": "", "type": "uint256"}], "stateMutability": "view"}],
+smartContract = SmartContract(SmartContractConfig(
+    rpc_url="your-rpc_url",
+    contract_address="your-contract_address",
+    abi="your-abi",
 ))
-
-balance = contract.call("balanceOf", ["0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18"])
 ```
 
-## Actions
+## Events
 
-### call
-
-Read-only call to a contract function. Returns decoded result.
-
-### encodeFunctionData / encode_function_data
-
-Encode a function call into hex calldata (useful for building transactions).
-
-### decodeFunctionResult / decode_function_result
-
-Decode hex return data into typed values.
-
-## Supported types
-
-`address`, `uint256`/`uint*`, `int256`/`int*`, `bool`, `bytes32`, `string` (basic encoding).
-
-## Requirements
-
-- JSON-RPC endpoint URL
-- Contract ABI
-- No external dependencies — uses stdlib only
+- **onCallResult** — Fired on successful contract read call. Payload: `method: string`, `result: string`
+- **onError** — Fired on JSON-RPC or ABI error. Payload: `code: string`, `message: string`, `method: string`

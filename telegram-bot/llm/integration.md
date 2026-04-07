@@ -1,69 +1,46 @@
-# telegram-bot — Integration Guide
+# How to integrate @radzor/telegram-bot
 
 ## Overview
+Telegram bot component using the Bot API. Send messages, photos, reply keyboards, and inline keyboards.
 
-Server-side Telegram bot using the Bot API. Send text messages, photos, reply keyboards, and inline keyboards.
-
-## Installation
-
-```bash
-radzor add telegram-bot
-```
-
-## Configuration
-
-| Input      | Type   | Required | Description                          |
-| ---------- | ------ | -------- | ------------------------------------ |
-| `botToken` | string | yes      | Bot API token from @BotFather        |
-
-Create a bot via https://t.me/BotFather and copy the token.
-
-## Quick Start
+## Integration Steps
 
 ### TypeScript
 
-```typescript
-import { TelegramBot } from "./components/telegram-bot/src";
+1. **No external dependencies required.** This component uses native APIs only.
 
-const bot = new TelegramBot({
+2. **Create an instance:**
+```typescript
+import { TelegramBot } from "@radzor/telegram-bot";
+
+const telegramBot = new TelegramBot({
   botToken: process.env.TELEGRAM_BOT_TOKEN!,
 });
+```
 
-await bot.sendMessage(123456789, "Hello from Radzor!");
+3. **Use the component:**
+```typescript
+const result = await telegramBot.sendMessage("example-chatId", "example-text");
+const result = await telegramBot.sendPhoto("example-chatId", "example-photo");
+const result = await telegramBot.sendReplyKeyboard("example-chatId", "example-text");
 ```
 
 ### Python
 
 ```python
-from components.telegram_bot.src import TelegramBot, TelegramBotConfig
+from telegram_bot import TelegramBot, TelegramBotConfig
+import os
 
-bot = TelegramBot(TelegramBotConfig(bot_token=os.environ["TELEGRAM_BOT_TOKEN"]))
-bot.send_message(123456789, "Hello from Radzor!")
+telegramBot = TelegramBot(TelegramBotConfig(
+    bot_token=os.environ["TELEGRAM_BOT_TOKEN"],
+))
 ```
 
-## Actions
+## Events
 
-### sendMessage / send_message
+- **onMessageSent** — Fired when a message is successfully sent. Payload: `messageId: number`, `chatId: string`
+- **onError** — Fired on API error. Payload: `code: string`, `message: string`
 
-Send a text message. Supports `HTML`, `Markdown`, `MarkdownV2` parse modes.
+## Environment Variables
 
-### sendPhoto / send_photo
-
-Send a photo by URL with optional caption.
-
-### sendReplyKeyboard / send_reply_keyboard
-
-Send a message with a custom reply keyboard.
-
-### sendInlineKeyboard / send_inline_keyboard
-
-Send a message with inline keyboard buttons (URLs or callback data).
-
-## Error handling
-
-Listen to `onError` events or wrap calls in try/catch.
-
-## Requirements
-
-- Telegram Bot API token
-- No external dependencies — uses stdlib only
+- `TELEGRAM_BOT_TOKEN`

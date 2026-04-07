@@ -1,68 +1,37 @@
-# video-call — Integration Guide
+# How to integrate @radzor/video-call
 
 ## Overview
+WebRTC-based peer-to-peer video calling. Manage local/remote streams, signaling, and call lifecycle.
 
-WebRTC-based peer-to-peer video calling. Manage local/remote media streams, ICE candidates, and call lifecycle. Requires a signaling mechanism to exchange offers/answers between peers.
+## Integration Steps
 
-**TypeScript only** — this component runs in the browser and uses WebRTC APIs.
+### TypeScript
 
-## Installation
+1. **No external dependencies required.** This component uses native APIs only.
 
-```bash
-radzor add video-call
-```
-
-## Configuration
-
-| Input          | Type   | Required | Description                                     |
-| -------------- | ------ | -------- | ----------------------------------------------- |
-| `iceServers`   | array  | no       | ICE/STUN/TURN servers (default: Google STUN)    |
-| `signalingUrl` | string | no       | WebSocket signaling server URL                  |
-
-## Quick Start
-
+2. **Create an instance:**
 ```typescript
-import { VideoCall } from "./components/video-call/src";
+import { VideoCall } from "@radzor/video-call";
 
-const call = new VideoCall();
+const videoCall = new VideoCall({
 
-call.on("onLocalStream", (stream) => {
-  document.querySelector<HTMLVideoElement>("#local")!.srcObject = stream;
 });
-
-call.on("onRemoteStream", (stream) => {
-  document.querySelector<HTMLVideoElement>("#remote")!.srcObject = stream;
-});
-
-// Caller
-const offer = await call.startCall();
-// Send offer to remote peer via signaling
-
-// Callee
-const answer = await call.answerCall(receivedOffer);
-// Send answer back via signaling
 ```
 
-## Actions
-
-### startCall — Create offer and start local media
-### answerCall — Accept offer and create answer
-### handleAnswer — Set remote answer (caller side)
-### addIceCandidate — Add ICE candidate from remote peer
-### endCall — Stop all tracks and close connection
-### toggleAudio — Mute/unmute microphone
-### toggleVideo — Enable/disable camera
+3. **Use the component:**
+```typescript
+const result = await videoCall.startCall(/* constraints */);
+const result = await videoCall.answerCall(/* offer */);
+videoCall.endCall();
+```
 
 ## Events
 
-- `onLocalStream` — local media stream ready
-- `onRemoteStream` — remote stream received
-- `onIceCandidate` — ICE candidate to send to remote peer
-- `onCallEnded` — call ended
-- `onError` — error occurred
+- **onLocalStream** — Fired when local media stream is ready. Payload: `trackCount: number`
+- **onRemoteStream** — Fired when remote stream arrives from the peer. Payload: `trackCount: number`
+- **onCallEnded** — Fired when the call ends. Payload: `durationMs: number`
+- **onError** — Fired on ICE, media, or signaling error. Payload: `code: string`, `message: string`
 
-## Requirements
+## Constraints
 
-- Browser with WebRTC support
-- Signaling server for exchanging offers/answers/candidates
-- No external dependencies
+Browser-only — uses WebRTC and getUserMedia APIs not available in Node.js. Requires HTTPS in production. For peer discovery and signaling, a WebSocket server is needed.

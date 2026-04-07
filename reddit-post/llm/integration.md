@@ -1,67 +1,48 @@
-# reddit-post — Integration Guide
+# How to integrate @radzor/reddit-post
 
 ## Overview
+Post to Reddit using the Reddit API. Submit text or link posts and manage comments.
 
-Post to Reddit using the Reddit API. Submit text posts, link posts, and add comments to subreddits.
-
-## Installation
-
-```bash
-radzor add reddit-post
-```
-
-## Configuration
-
-| Input          | Type   | Required | Description              |
-| -------------- | ------ | -------- | ------------------------ |
-| `clientId`     | string | yes      | Reddit app client ID     |
-| `clientSecret` | string | yes      | Reddit app client secret |
-| `username`     | string | yes      | Reddit username          |
-| `password`     | string | yes      | Reddit password          |
-
-Create a Reddit app at https://www.reddit.com/prefs/apps (script type).
-
-## Quick Start
+## Integration Steps
 
 ### TypeScript
 
+1. **No external dependencies required.** This component uses native APIs only.
+
+2. **Create an instance:**
 ```typescript
-import { RedditClient } from "./components/reddit-post/src";
+import { RedditPost } from "@radzor/reddit-post";
 
-const reddit = new RedditClient({
-  clientId: process.env.REDDIT_CLIENT_ID!,
-  clientSecret: process.env.REDDIT_CLIENT_SECRET!,
-  username: process.env.REDDIT_USERNAME!,
-  password: process.env.REDDIT_PASSWORD!,
+const redditPost = new RedditPost({
+  clientId: "your-clientId",
+  clientSecret: "your-clientSecret",
+  username: "your-username",
+  password: "your-password",
 });
+```
 
-const post = await reddit.submitText("test", "Hello from Radzor", "This is a test post");
-console.log(post.url);
+3. **Use the component:**
+```typescript
+const result = await redditPost.submitText("example-subreddit", "example-title");
+const result = await redditPost.submitLink("example-subreddit", "example-title");
+const result = await redditPost.addComment("example-thingId", "example-text");
 ```
 
 ### Python
 
 ```python
-from components.reddit_post.src import RedditClient, RedditConfig
+from reddit_post import RedditPost, RedditPostConfig
+import os
 
-reddit = RedditClient(RedditConfig(
-    client_id=os.environ["REDDIT_CLIENT_ID"],
-    client_secret=os.environ["REDDIT_CLIENT_SECRET"],
-    username=os.environ["REDDIT_USERNAME"],
-    password=os.environ["REDDIT_PASSWORD"],
+redditPost = RedditPost(RedditPostConfig(
+    client_id="your-client_id",
+    client_secret="your-client_secret",
+    username="your-username",
+    password="your-password",
 ))
-
-post = reddit.submit_text("test", "Hello from Radzor", "This is a test post")
-print(post.url)
 ```
 
-## Actions
+## Events
 
-### submitText / submit_text — Submit a self/text post
-### submitLink / submit_link — Submit a link post
-### addComment / add_comment — Comment on a post or reply to a comment
-
-## Requirements
-
-- Reddit API app credentials (script type)
-- No external dependencies — uses stdlib only
+- **onPostCreated** — Fired when a post is successfully created. Payload: `id: string`, `subreddit: string`, `url: string`
+- **onError** — Fired on API error. Payload: `code: string`, `message: string`

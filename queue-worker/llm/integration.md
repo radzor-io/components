@@ -1,82 +1,43 @@
-# queue-worker — Integration Guide
+# How to integrate @radzor/queue-worker
 
 ## Overview
+In-memory job queue with workers, retries, and dead-letter handling. No external dependencies.
 
-In-memory job queue with configurable concurrency, automatic retries, and dead-letter handling. No external dependencies — runs entirely in-process.
-
-## Installation
-
-```bash
-radzor add queue-worker
-```
-
-## Configuration
-
-| Input         | Type   | Required | Description                             |
-| ------------- | ------ | -------- | --------------------------------------- |
-| `concurrency` | number | no       | Max concurrent workers (default: 1)     |
-| `maxRetries`  | number | no       | Max retry attempts per job (default: 3) |
-| `retryDelay`  | number | no       | Delay between retries in ms (default: 1000) |
-
-## Quick Start
+## Integration Steps
 
 ### TypeScript
 
+1. **No external dependencies required.** This component uses native APIs only.
+
+2. **Create an instance:**
 ```typescript
-import { QueueWorker } from "./components/queue-worker/src";
+import { QueueWorker } from "@radzor/queue-worker";
 
-const queue = new QueueWorker<{ email: string }>({
-  concurrency: 3,
-  maxRetries: 2,
+const queueWorker = new QueueWorker({
+
 });
+```
 
-queue.process(async (data) => {
-  console.log("Sending email to", data.email);
-});
-
-queue.start();
-queue.addJob({ email: "user@example.com" });
+3. **Use the component:**
+```typescript
+queueWorker.addJob("example-name", /* payload */);
+queueWorker.process("example-name", /* handler */);
+queueWorker.start();
 ```
 
 ### Python
 
 ```python
-from components.queue_worker.src import QueueWorker
+from queue_worker import QueueWorker, QueueWorkerConfig
+import os
 
-queue = QueueWorker(concurrency=3, max_retries=2)
+queueWorker = QueueWorker(QueueWorkerConfig(
 
-def handler(data):
-    print(f"Sending email to {data['email']}")
-
-queue.process(handler)
-queue.start()
-queue.add_job({"email": "user@example.com"})
+))
 ```
 
-## Actions
+## Events
 
-### addJob / add_job
-
-Add a job to the queue. Returns the Job object with a unique ID.
-
-### process
-
-Register the worker function that processes each job's data.
-
-### start
-
-Start processing queued jobs.
-
-### stop
-
-Stop processing (jobs already in-flight will finish).
-
-## Accessors
-
-- `getQueue()` / `get_queue()` — list of all jobs
-- `getDeadLetter()` / `get_dead_letter()` — list of jobs that failed after all retries
-
-## Requirements
-
-- No external dependencies
-- Python uses `threading` for concurrency
+- **onJobComplete** — Fired when a job completes successfully. Payload: `jobId: string`, `name: string`, `durationMs: number`
+- **onJobFailed** — Fired when a job fails after all retries. Payload: `jobId: string`, `name: string`, `error: string`, `attempts: number`
+- **onError** — Fired on queue error. Payload: `code: string`, `message: string`

@@ -1,73 +1,42 @@
-# two-factor-auth — Integration Guide
+# How to integrate @radzor/two-factor-auth
 
 ## Overview
+TOTP-based two-factor authentication. Generate secrets, create QR URIs, and verify tokens (RFC 6238).
 
-TOTP-based two-factor authentication (RFC 6238). Generate secrets, produce `otpauth://` URIs for QR codes, and verify 6-digit tokens from authenticator apps (Google Authenticator, Authy, etc.).
-
-## Installation
-
-```bash
-radzor add two-factor-auth
-```
-
-## Configuration
-
-| Input    | Type   | Required | Description                                    |
-| -------- | ------ | -------- | ---------------------------------------------- |
-| `issuer` | string | yes      | App name shown in authenticator apps            |
-| `digits` | number | no       | OTP length (default: 6)                        |
-| `period` | number | no       | Time step in seconds (default: 30)             |
-
-## Quick Start
+## Integration Steps
 
 ### TypeScript
 
+1. **No external dependencies required.** This component uses native APIs only.
+
+2. **Create an instance:**
 ```typescript
-import { TwoFactorAuth } from "./components/two-factor-auth/src";
+import { TwoFactorAuth } from "@radzor/two-factor-auth";
 
-const tfa = new TwoFactorAuth({ issuer: "MyApp" });
+const twoFactorAuth = new TwoFactorAuth({
+  issuer: "your-issuer",
+});
+```
 
-// 1. Generate secret for a user
-const secret = tfa.generateSecret("user@example.com");
-// → Show secret.otpauthUri as QR code
-
-// 2. Verify token from authenticator app
-const valid = tfa.verifyToken("123456", secret.base32);
+3. **Use the component:**
+```typescript
+twoFactorAuth.generateSecret();
+twoFactorAuth.generateQrUri("example-secret", "example-accountName");
+twoFactorAuth.verifyToken("example-secret", "example-token");
 ```
 
 ### Python
 
 ```python
-from components.two_factor_auth.src import TwoFactorAuth, TwoFactorConfig
+from two_factor_auth import TwoFactorAuth, TwoFactorAuthConfig
+import os
 
-tfa = TwoFactorAuth(TwoFactorConfig(issuer="MyApp"))
-
-secret = tfa.generate_secret("user@example.com")
-valid = tfa.verify_token("123456", secret.base32)
+twoFactorAuth = TwoFactorAuth(TwoFactorAuthConfig(
+    issuer="your-issuer",
+))
 ```
 
-## Actions
+## Events
 
-### generateSecret / generate_secret
-
-Generate a 20-byte random secret. Returns `base32`, `hex`, and `otpauthUri`.
-
-### generateQrUri / generate_qr_uri
-
-Generate an `otpauth://` URI for an existing secret.
-
-### verifyToken / verify_token
-
-Verify a TOTP token against a base32 secret. Supports a configurable time window (default: ±1 period).
-
-## Security notes
-
-- Store the base32 secret securely (encrypted at rest)
-- Use HTTPS to transmit secrets and tokens
-- Implement rate limiting on verification attempts
-- Consider backup codes for account recovery
-
-## Requirements
-
-- Node.js `crypto` module (TypeScript) or Python `hmac`/`hashlib` (Python)
-- No external dependencies
+- **onVerified** — Fired when a TOTP token is verified. Payload: `valid: boolean`, `accountName: string`
+- **onError** — Fired on verification error. Payload: `code: string`, `message: string`
