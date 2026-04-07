@@ -139,7 +139,7 @@
       {
         "output": "searchResults",
         "compatibleWith": [
-          "@radzor/llm-completion.input.systemPrompt"
+          "@radzor/llm-completion.action.complete.prompt"
         ]
       }
     ]
