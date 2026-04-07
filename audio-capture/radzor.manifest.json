@@ -99,9 +99,7 @@
         "output": "audioBlob",
         "compatibleWith": [
           "@radzor/speech-to-text.action.transcribe.audio"
-        ],
-        "runtime": "cross-environment",
-        "note": "Requires sending the Blob from browser to server via WebSocket or HTTP upload."
+        ]
       },
       {
         "output": "audioStream",
