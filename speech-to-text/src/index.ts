@@ -95,9 +95,11 @@ export class SpeechToText {
     if (typeof audio === "string") {
       const fs = await import("fs");
       const buffer = fs.readFileSync(audio);
-      formData.append("file", new Blob([new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength)]), audio.split("/").pop() ?? "audio.wav");
+      const bytes = new Uint8Array(buffer);
+      formData.append("file", new Blob([bytes]), audio.split("/").pop() ?? "audio.wav");
     } else if (Buffer.isBuffer(audio)) {
-      formData.append("file", new Blob([new Uint8Array(audio.buffer, audio.byteOffset, audio.byteLength)]), "audio.wav");
+      const bytes = new Uint8Array(audio);
+      formData.append("file", new Blob([bytes]), "audio.wav");
     } else {
       formData.append("file", audio, "audio.wav");
     }
@@ -142,11 +144,11 @@ export class SpeechToText {
     if (typeof audio === "string") {
       const fs = await import("fs");
       const buf = fs.readFileSync(audio);
-      bodyBytes = new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
+      bodyBytes = new Uint8Array(buf);
     } else if (audio instanceof Blob) {
       bodyBytes = new Uint8Array(await audio.arrayBuffer());
     } else {
-      bodyBytes = new Uint8Array(audio.buffer, audio.byteOffset, audio.byteLength);
+      bodyBytes = new Uint8Array(audio);
     }
 
     const params = new URLSearchParams({
@@ -168,7 +170,7 @@ export class SpeechToText {
         Authorization: `Token ${this.config.apiKey}`,
         "Content-Type": "audio/wav",
       },
-      body: bodyBytes,
+      body: bodyBytes as unknown as BodyInit,
     });
 
     if (!res.ok) {
