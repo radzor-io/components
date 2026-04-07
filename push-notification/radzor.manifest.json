@@ -3,9 +3,20 @@
   "name": "@radzor/push-notification",
   "version": "0.1.0",
   "description": "Send push notifications via Firebase Cloud Messaging (FCM) or Apple Push Notification service (APNs).",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "messaging",
-  "tags": ["push", "notification", "fcm", "apns", "mobile", "messaging"],
+  "runtime": "server",
+  "tags": [
+    "push",
+    "notification",
+    "fcm",
+    "apns",
+    "mobile",
+    "messaging"
+  ],
   "inputs": [
     {
       "name": "provider",
@@ -48,12 +59,19 @@
   "events": [
     {
       "name": "onSent",
-      "payload": { "messageId": "string", "token": "string" },
+      "payload": {
+        "messageId": "string",
+        "token": "string"
+      },
       "description": "Fired when a notification is successfully sent."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "token": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "token": "string"
+      },
       "description": "Fired on send error."
     }
   ],
@@ -61,8 +79,16 @@
     {
       "name": "sendToDevice",
       "params": [
-        { "name": "token", "type": "string", "description": "Device push token." },
-        { "name": "notification", "type": "{ title: string; body: string; data?: Record<string, string> }", "description": "Notification payload." }
+        {
+          "name": "token",
+          "type": "string",
+          "description": "Device push token."
+        },
+        {
+          "name": "notification",
+          "type": "{ title: string; body: string; data?: Record<string, string> }",
+          "description": "Notification payload."
+        }
       ],
       "returns": "Promise<{ messageId: string; success: boolean }>",
       "description": "Send a push notification to a single device."
@@ -70,13 +96,23 @@
     {
       "name": "sendToTopic",
       "params": [
-        { "name": "topic", "type": "string", "description": "FCM topic name (without leading slash)." },
-        { "name": "notification", "type": "{ title: string; body: string; data?: Record<string, string> }", "description": "Notification payload." }
+        {
+          "name": "topic",
+          "type": "string",
+          "description": "FCM topic name (without leading slash)."
+        },
+        {
+          "name": "notification",
+          "type": "{ title: string; body: string; data?: Record<string, string> }",
+          "description": "Notification payload."
+        }
       ],
       "returns": "Promise<{ messageId: string; success: boolean }>",
       "description": "Send a push notification to a topic (FCM only)."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {}
 }

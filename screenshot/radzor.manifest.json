@@ -3,9 +3,20 @@
   "name": "@radzor/screenshot",
   "version": "0.1.0",
   "description": "Capture full-page and element screenshots using a headless Chromium browser. Supports URL capture, HTML content rendering, and CSS selector targeting. Produces PNG or JPEG buffers.",
-  "languages": ["typescript"],
+  "languages": [
+    "typescript"
+  ],
   "category": "media",
-  "tags": ["screenshot", "puppeteer", "headless", "chromium", "capture", "pdf", "browser"],
+  "runtime": "server",
+  "tags": [
+    "screenshot",
+    "puppeteer",
+    "headless",
+    "chromium",
+    "capture",
+    "pdf",
+    "browser"
+  ],
   "inputs": [
     {
       "name": "viewport",
@@ -52,12 +63,21 @@
   "events": [
     {
       "name": "onCaptured",
-      "payload": { "url": "string", "width": "number", "height": "number", "bytes": "number" },
+      "payload": {
+        "url": "string",
+        "width": "number",
+        "height": "number",
+        "bytes": "number"
+      },
       "description": "Fired when a screenshot is captured."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "url": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "url": "string"
+      },
       "description": "Fired on navigation or capture error."
     }
   ],
@@ -65,8 +85,17 @@
     {
       "name": "capture",
       "params": [
-        { "name": "url", "type": "string", "description": "URL to navigate to and capture." },
-        { "name": "options", "type": "CaptureOptions", "description": "Per-call overrides for viewport, fullPage, format.", "required": false }
+        {
+          "name": "url",
+          "type": "string",
+          "description": "URL to navigate to and capture."
+        },
+        {
+          "name": "options",
+          "type": "CaptureOptions",
+          "description": "Per-call overrides for viewport, fullPage, format.",
+          "required": false
+        }
       ],
       "returns": "Promise<Buffer>",
       "description": "Navigate to a URL and capture a screenshot."
@@ -74,9 +103,22 @@
     {
       "name": "captureElement",
       "params": [
-        { "name": "url", "type": "string", "description": "URL to navigate to." },
-        { "name": "selector", "type": "string", "description": "CSS selector of the element to capture." },
-        { "name": "options", "type": "CaptureOptions", "description": "Per-call overrides.", "required": false }
+        {
+          "name": "url",
+          "type": "string",
+          "description": "URL to navigate to."
+        },
+        {
+          "name": "selector",
+          "type": "string",
+          "description": "CSS selector of the element to capture."
+        },
+        {
+          "name": "options",
+          "type": "CaptureOptions",
+          "description": "Per-call overrides.",
+          "required": false
+        }
       ],
       "returns": "Promise<Buffer>",
       "description": "Capture a specific DOM element by CSS selector."
@@ -84,8 +126,17 @@
     {
       "name": "captureHtml",
       "params": [
-        { "name": "html", "type": "string", "description": "HTML string to render and capture." },
-        { "name": "options", "type": "CaptureOptions", "description": "Per-call overrides.", "required": false }
+        {
+          "name": "html",
+          "type": "string",
+          "description": "HTML string to render and capture."
+        },
+        {
+          "name": "options",
+          "type": "CaptureOptions",
+          "description": "Per-call overrides.",
+          "required": false
+        }
       ],
       "returns": "Promise<Buffer>",
       "description": "Render raw HTML in a headless browser and capture a screenshot."

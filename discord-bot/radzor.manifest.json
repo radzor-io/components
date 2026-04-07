@@ -8,6 +8,7 @@
     "python"
   ],
   "category": "chat",
+  "runtime": "server",
   "tags": [
     "discord",
     "bot",

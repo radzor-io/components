@@ -8,6 +8,7 @@
     "python"
   ],
   "category": "email",
+  "runtime": "server",
   "tags": [
     "email",
     "resend",

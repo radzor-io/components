@@ -3,9 +3,22 @@
   "name": "@radzor/document-ocr",
   "version": "0.1.0",
   "description": "Extract text and structured data from PDFs, images, and scanned documents. Supports Tesseract (local), Google Vision, and Azure Document Intelligence. Handles multi-page PDFs, tables, and form fields.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "ai",
-  "tags": ["ocr", "pdf", "document", "text-extraction", "vision", "google", "azure", "tesseract"],
+  "runtime": "server",
+  "tags": [
+    "ocr",
+    "pdf",
+    "document",
+    "text-extraction",
+    "vision",
+    "google",
+    "azure",
+    "tesseract"
+  ],
   "inputs": [
     {
       "name": "provider",
@@ -55,12 +68,20 @@
   "events": [
     {
       "name": "onPageExtracted",
-      "payload": { "page": "number", "confidence": "number", "chars": "number" },
+      "payload": {
+        "page": "number",
+        "confidence": "number",
+        "chars": "number"
+      },
       "description": "Fired when a page is processed."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "page": "number" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "page": "number"
+      },
       "description": "Fired on extraction error."
     }
   ],
@@ -68,7 +89,11 @@
     {
       "name": "extractText",
       "params": [
-        { "name": "input", "type": "Buffer | string", "description": "Document as Buffer or file path (PDF, PNG, JPEG, TIFF)." }
+        {
+          "name": "input",
+          "type": "Buffer | string",
+          "description": "Document as Buffer or file path (PDF, PNG, JPEG, TIFF)."
+        }
       ],
       "returns": "Promise<{ text: string; pages: number; confidence: number }>",
       "description": "Extract all text from a document or image."
@@ -76,7 +101,11 @@
     {
       "name": "extractStructured",
       "params": [
-        { "name": "input", "type": "Buffer | string", "description": "Document as Buffer or file path." }
+        {
+          "name": "input",
+          "type": "Buffer | string",
+          "description": "Document as Buffer or file path."
+        }
       ],
       "returns": "Promise<{ tables: object[][]; fields: Record<string, string>; lines: string[] }>",
       "description": "Extract structured data including tables and form fields (cloud providers only)."
@@ -84,14 +113,24 @@
     {
       "name": "extractPage",
       "params": [
-        { "name": "input", "type": "Buffer | string", "description": "PDF as Buffer or file path." },
-        { "name": "pageNumber", "type": "number", "description": "1-indexed page number to extract." }
+        {
+          "name": "input",
+          "type": "Buffer | string",
+          "description": "PDF as Buffer or file path."
+        },
+        {
+          "name": "pageNumber",
+          "type": "number",
+          "description": "1-indexed page number to extract."
+        }
       ],
       "returns": "Promise<{ text: string; confidence: number }>",
       "description": "Extract text from a specific page of a PDF."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",

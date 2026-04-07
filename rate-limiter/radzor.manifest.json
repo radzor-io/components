@@ -8,6 +8,7 @@
     "python"
   ],
   "category": "security",
+  "runtime": "server",
   "tags": [
     "rate-limit",
     "throttle",
@@ -140,6 +141,6 @@
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "In-memory only \u2014 rate limits reset on process restart. For distributed systems, use an external store (Redis). Automatic cleanup prevents memory leaks."
+    "constraints": "In-memory only — rate limits reset on process restart. For distributed systems, use an external store (Redis). Automatic cleanup prevents memory leaks."
   }
 }

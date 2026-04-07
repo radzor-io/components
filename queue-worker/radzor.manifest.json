@@ -3,9 +3,20 @@
   "name": "@radzor/queue-worker",
   "version": "0.1.0",
   "description": "In-memory job queue with workers, retries, and dead-letter handling. No external dependencies.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "automation",
-  "tags": ["queue", "worker", "jobs", "background", "async", "task"],
+  "runtime": "server",
+  "tags": [
+    "queue",
+    "worker",
+    "jobs",
+    "background",
+    "async",
+    "task"
+  ],
   "inputs": [
     {
       "name": "concurrency",
@@ -36,17 +47,29 @@
   "events": [
     {
       "name": "onJobComplete",
-      "payload": { "jobId": "string", "name": "string", "durationMs": "number" },
+      "payload": {
+        "jobId": "string",
+        "name": "string",
+        "durationMs": "number"
+      },
       "description": "Fired when a job completes successfully."
     },
     {
       "name": "onJobFailed",
-      "payload": { "jobId": "string", "name": "string", "error": "string", "attempts": "number" },
+      "payload": {
+        "jobId": "string",
+        "name": "string",
+        "error": "string",
+        "attempts": "number"
+      },
       "description": "Fired when a job fails after all retries."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired on queue error."
     }
   ],
@@ -54,8 +77,16 @@
     {
       "name": "addJob",
       "params": [
-        { "name": "name", "type": "string", "description": "Job queue name." },
-        { "name": "payload", "type": "unknown", "description": "Serializable job data." }
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Job queue name."
+        },
+        {
+          "name": "payload",
+          "type": "unknown",
+          "description": "Serializable job data."
+        }
       ],
       "returns": "string",
       "description": "Add a job to the queue. Returns the job ID."
@@ -63,8 +94,16 @@
     {
       "name": "process",
       "params": [
-        { "name": "name", "type": "string", "description": "Queue name to process." },
-        { "name": "handler", "type": "(payload: unknown) => Promise<unknown>", "description": "Async handler function." }
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Queue name to process."
+        },
+        {
+          "name": "handler",
+          "type": "(payload: unknown) => Promise<unknown>",
+          "description": "Async handler function."
+        }
       ],
       "returns": "void",
       "description": "Register a worker handler for a queue. Call once at startup."
@@ -82,6 +121,8 @@
       "description": "Stop processing and drain the queue gracefully."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {}
 }

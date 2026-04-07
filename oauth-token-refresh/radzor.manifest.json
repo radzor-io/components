@@ -3,9 +3,21 @@
   "name": "@radzor/oauth-token-refresh",
   "version": "0.1.0",
   "description": "Automatic OAuth 2.0 access token refresh and lifecycle management. Handles token expiry detection, background refresh, secure storage, and provider-specific quirks for Google, GitHub, Discord, Stripe, and custom providers.",
-  "languages": ["typescript"],
+  "languages": [
+    "typescript"
+  ],
   "category": "auth",
-  "tags": ["oauth", "token", "refresh", "auth", "google", "github", "discord", "jwt"],
+  "runtime": "server",
+  "tags": [
+    "oauth",
+    "token",
+    "refresh",
+    "auth",
+    "google",
+    "github",
+    "discord",
+    "jwt"
+  ],
   "inputs": [
     {
       "name": "clientId",
@@ -55,17 +67,26 @@
   "events": [
     {
       "name": "onRefreshed",
-      "payload": { "expiresAt": "number", "scope": "string" },
+      "payload": {
+        "expiresAt": "number",
+        "scope": "string"
+      },
       "description": "Fired when the access token is successfully refreshed."
     },
     {
       "name": "onExpired",
-      "payload": { "provider": "string" },
+      "payload": {
+        "provider": "string"
+      },
       "description": "Fired when the refresh token itself has expired. Requires re-authorization."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "provider": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "provider": "string"
+      },
       "description": "Fired when a refresh attempt fails."
     }
   ],
@@ -73,7 +94,11 @@
     {
       "name": "getToken",
       "params": [
-        { "name": "userId", "type": "string", "description": "User or account ID to retrieve the token for." }
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "User or account ID to retrieve the token for."
+        }
       ],
       "returns": "Promise<string>",
       "description": "Return a valid access token, refreshing automatically if near expiry."
@@ -81,7 +106,11 @@
     {
       "name": "refresh",
       "params": [
-        { "name": "refreshToken", "type": "string", "description": "The refresh token to use." }
+        {
+          "name": "refreshToken",
+          "type": "string",
+          "description": "The refresh token to use."
+        }
       ],
       "returns": "Promise<TokenMeta>",
       "description": "Force an immediate token refresh."
@@ -89,8 +118,16 @@
     {
       "name": "store",
       "params": [
-        { "name": "userId", "type": "string", "description": "User ID to associate with the tokens." },
-        { "name": "tokens", "type": "TokenSet", "description": "Initial token set (accessToken, refreshToken, expiresAt)." }
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "User ID to associate with the tokens."
+        },
+        {
+          "name": "tokens",
+          "type": "TokenSet",
+          "description": "Initial token set (accessToken, refreshToken, expiresAt)."
+        }
       ],
       "returns": "Promise<void>",
       "description": "Store an initial token set after OAuth authorization."
@@ -98,7 +135,11 @@
     {
       "name": "revoke",
       "params": [
-        { "name": "userId", "type": "string", "description": "User ID whose tokens should be revoked." }
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "User ID whose tokens should be revoked."
+        }
       ],
       "returns": "Promise<void>",
       "description": "Revoke the refresh token and delete stored tokens."
@@ -106,7 +147,11 @@
     {
       "name": "isExpired",
       "params": [
-        { "name": "userId", "type": "string", "description": "User ID to check." }
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "User ID to check."
+        }
       ],
       "returns": "Promise<boolean>",
       "description": "Check if the current access token is expired or about to expire."

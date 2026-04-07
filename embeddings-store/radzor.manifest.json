@@ -8,6 +8,7 @@
     "python"
   ],
   "category": "ai",
+  "runtime": "universal",
   "tags": [
     "embeddings",
     "vector",
@@ -146,6 +147,6 @@
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "In-memory store \u2014 data does not persist across restarts. For production, export/import the store or use a dedicated vector DB."
+    "constraints": "In-memory store — data does not persist across restarts. For production, export/import the store or use a dedicated vector DB."
   }
 }

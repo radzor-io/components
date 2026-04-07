@@ -8,6 +8,7 @@
     "python"
   ],
   "category": "data",
+  "runtime": "server",
   "tags": [
     "scraper",
     "web",
@@ -105,6 +106,6 @@
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Respects robots.txt conventions. Use responsibly \u2014 excessive scraping may violate ToS. Server-side only."
+    "constraints": "Respects robots.txt conventions. Use responsibly — excessive scraping may violate ToS. Server-side only."
   }
 }

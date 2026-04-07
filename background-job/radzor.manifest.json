@@ -3,9 +3,22 @@
   "name": "@radzor/background-job",
   "version": "0.1.0",
   "description": "Persistent background job queue with retries, scheduling, and concurrency control. Built on BullMQ (Redis) or pg-boss (PostgreSQL). Supports delayed jobs, cron-scheduled jobs, priority queues, and dead letter queues.",
-  "languages": ["typescript"],
+  "languages": [
+    "typescript"
+  ],
   "category": "automation",
-  "tags": ["queue", "jobs", "background", "bullmq", "pg-boss", "redis", "cron", "retry", "async"],
+  "runtime": "server",
+  "tags": [
+    "queue",
+    "jobs",
+    "background",
+    "bullmq",
+    "pg-boss",
+    "redis",
+    "cron",
+    "retry",
+    "async"
+  ],
   "inputs": [
     {
       "name": "driver",
@@ -57,17 +70,30 @@
   "events": [
     {
       "name": "onJobCompleted",
-      "payload": { "jobId": "string", "queue": "string", "durationMs": "number" },
+      "payload": {
+        "jobId": "string",
+        "queue": "string",
+        "durationMs": "number"
+      },
       "description": "Fired when a job completes successfully."
     },
     {
       "name": "onJobFailed",
-      "payload": { "jobId": "string", "queue": "string", "error": "string", "attempt": "number" },
+      "payload": {
+        "jobId": "string",
+        "queue": "string",
+        "error": "string",
+        "attempt": "number"
+      },
       "description": "Fired when a job fails after all retry attempts."
     },
     {
       "name": "onJobRetry",
-      "payload": { "jobId": "string", "attempt": "number", "nextDelayMs": "number" },
+      "payload": {
+        "jobId": "string",
+        "attempt": "number",
+        "nextDelayMs": "number"
+      },
       "description": "Fired when a job is scheduled for retry."
     }
   ],
@@ -75,9 +101,22 @@
     {
       "name": "enqueue",
       "params": [
-        { "name": "queue", "type": "string", "description": "Queue name." },
-        { "name": "payload", "type": "unknown", "description": "Serializable job data." },
-        { "name": "options", "type": "EnqueueOptions", "description": "delay (ms), priority, repeat (cron), jobId.", "required": false }
+        {
+          "name": "queue",
+          "type": "string",
+          "description": "Queue name."
+        },
+        {
+          "name": "payload",
+          "type": "unknown",
+          "description": "Serializable job data."
+        },
+        {
+          "name": "options",
+          "type": "EnqueueOptions",
+          "description": "delay (ms), priority, repeat (cron), jobId.",
+          "required": false
+        }
       ],
       "returns": "Promise<string>",
       "description": "Add a job to the queue. Returns the job ID."
@@ -85,8 +124,16 @@
     {
       "name": "process",
       "params": [
-        { "name": "queue", "type": "string", "description": "Queue name to process." },
-        { "name": "handler", "type": "(payload: unknown, jobId: string) => Promise<unknown>", "description": "Async function that processes the job payload." }
+        {
+          "name": "queue",
+          "type": "string",
+          "description": "Queue name to process."
+        },
+        {
+          "name": "handler",
+          "type": "(payload: unknown, jobId: string) => Promise<unknown>",
+          "description": "Async function that processes the job payload."
+        }
       ],
       "returns": "void",
       "description": "Register a worker function for a queue. Call once at startup."
@@ -94,7 +141,11 @@
     {
       "name": "getJob",
       "params": [
-        { "name": "jobId", "type": "string", "description": "Job ID to look up." }
+        {
+          "name": "jobId",
+          "type": "string",
+          "description": "Job ID to look up."
+        }
       ],
       "returns": "Promise<JobResult | null>",
       "description": "Get the current status and result of a specific job."
@@ -102,7 +153,11 @@
     {
       "name": "cancel",
       "params": [
-        { "name": "jobId", "type": "string", "description": "ID of the job to cancel." }
+        {
+          "name": "jobId",
+          "type": "string",
+          "description": "ID of the job to cancel."
+        }
       ],
       "returns": "Promise<boolean>",
       "description": "Cancel a waiting or delayed job. Returns false if already active."
@@ -110,7 +165,12 @@
     {
       "name": "getStats",
       "params": [
-        { "name": "queue", "type": "string", "description": "Queue name.", "required": false }
+        {
+          "name": "queue",
+          "type": "string",
+          "description": "Queue name.",
+          "required": false
+        }
       ],
       "returns": "Promise<QueueStats>",
       "description": "Get queue statistics."

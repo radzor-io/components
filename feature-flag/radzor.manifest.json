@@ -3,9 +3,20 @@
   "name": "@radzor/feature-flag",
   "version": "0.1.0",
   "description": "Simple feature flag evaluation with per-user overrides, percentage rollouts, and environment-based defaults. No external service required — flags are defined in code or config files.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "automation",
-  "tags": ["feature-flag", "rollout", "ab-test", "toggle", "configuration", "deployment"],
+  "runtime": "universal",
+  "tags": [
+    "feature-flag",
+    "rollout",
+    "ab-test",
+    "toggle",
+    "configuration",
+    "deployment"
+  ],
   "inputs": [
     {
       "name": "flags",
@@ -37,17 +48,28 @@
   "events": [
     {
       "name": "onFlagEnabled",
-      "payload": { "flag": "string", "userId": "string", "reason": "string" },
+      "payload": {
+        "flag": "string",
+        "userId": "string",
+        "reason": "string"
+      },
       "description": "Fired when a boolean flag evaluates to true."
     },
     {
       "name": "onFlagDisabled",
-      "payload": { "flag": "string", "userId": "string" },
+      "payload": {
+        "flag": "string",
+        "userId": "string"
+      },
       "description": "Fired when a boolean flag evaluates to false."
     },
     {
       "name": "onOverride",
-      "payload": { "flag": "string", "source": "string", "value": "string" },
+      "payload": {
+        "flag": "string",
+        "source": "string",
+        "value": "string"
+      },
       "description": "Fired when an env or header override changes the evaluated value."
     }
   ],
@@ -55,8 +77,17 @@
     {
       "name": "isEnabled",
       "params": [
-        { "name": "flag", "type": "string", "description": "Flag name to evaluate." },
-        { "name": "userId", "type": "string", "description": "User ID for percentage rollout bucket assignment.", "required": false }
+        {
+          "name": "flag",
+          "type": "string",
+          "description": "Flag name to evaluate."
+        },
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "User ID for percentage rollout bucket assignment.",
+          "required": false
+        }
       ],
       "returns": "boolean",
       "description": "Evaluate a boolean flag for a user. For percentage flags, deterministically bucketed by userId."
@@ -64,8 +95,17 @@
     {
       "name": "getValue",
       "params": [
-        { "name": "flag", "type": "string", "description": "Flag name to read." },
-        { "name": "defaultValue", "type": "boolean | string | number", "description": "Value returned if flag is not defined.", "required": false }
+        {
+          "name": "flag",
+          "type": "string",
+          "description": "Flag name to read."
+        },
+        {
+          "name": "defaultValue",
+          "type": "boolean | string | number",
+          "description": "Value returned if flag is not defined.",
+          "required": false
+        }
       ],
       "returns": "boolean | string | number",
       "description": "Get the raw value of a flag."
@@ -73,8 +113,16 @@
     {
       "name": "setOverride",
       "params": [
-        { "name": "flag", "type": "string", "description": "Flag name to override." },
-        { "name": "value", "type": "boolean | string | number", "description": "Override value." }
+        {
+          "name": "flag",
+          "type": "string",
+          "description": "Flag name to override."
+        },
+        {
+          "name": "value",
+          "type": "boolean | string | number",
+          "description": "Override value."
+        }
       ],
       "returns": "void",
       "description": "Set a runtime override for a flag (in-memory, not persisted)."
@@ -82,13 +130,20 @@
     {
       "name": "getAll",
       "params": [
-        { "name": "userId", "type": "string", "description": "User ID for rollout evaluation.", "required": false }
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "User ID for rollout evaluation.",
+          "required": false
+        }
       ],
       "returns": "Record<string, boolean | string | number>",
       "description": "Get all evaluated flag values for a given user context."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",

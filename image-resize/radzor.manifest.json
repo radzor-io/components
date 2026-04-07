@@ -3,9 +3,20 @@
   "name": "@radzor/image-resize",
   "version": "0.1.0",
   "description": "Resize, crop, and transform images using raw pixel manipulation. No external dependencies.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "media",
-  "tags": ["image", "resize", "crop", "thumbnail", "transform", "media"],
+  "runtime": "server",
+  "tags": [
+    "image",
+    "resize",
+    "crop",
+    "thumbnail",
+    "transform",
+    "media"
+  ],
   "inputs": [
     {
       "name": "quality",
@@ -24,12 +35,19 @@
   "events": [
     {
       "name": "onProcessed",
-      "payload": { "width": "number", "height": "number", "bytes": "number" },
+      "payload": {
+        "width": "number",
+        "height": "number",
+        "bytes": "number"
+      },
       "description": "Fired when an image is processed."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired on error."
     }
   ],
@@ -37,9 +55,22 @@
     {
       "name": "resize",
       "params": [
-        { "name": "input", "type": "Buffer | string", "description": "Input image as Buffer or file path." },
-        { "name": "width", "type": "number", "description": "Target width in pixels." },
-        { "name": "height", "type": "number", "description": "Target height in pixels.", "required": false }
+        {
+          "name": "input",
+          "type": "Buffer | string",
+          "description": "Input image as Buffer or file path."
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "description": "Target width in pixels."
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "description": "Target height in pixels.",
+          "required": false
+        }
       ],
       "returns": "Promise<Buffer>",
       "description": "Resize an image. Preserves aspect ratio if only width is provided."
@@ -47,11 +78,31 @@
     {
       "name": "crop",
       "params": [
-        { "name": "input", "type": "Buffer | string", "description": "Input image." },
-        { "name": "x", "type": "number", "description": "Left offset in pixels." },
-        { "name": "y", "type": "number", "description": "Top offset in pixels." },
-        { "name": "width", "type": "number", "description": "Crop width in pixels." },
-        { "name": "height", "type": "number", "description": "Crop height in pixels." }
+        {
+          "name": "input",
+          "type": "Buffer | string",
+          "description": "Input image."
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "description": "Left offset in pixels."
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "description": "Top offset in pixels."
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "description": "Crop width in pixels."
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "description": "Crop height in pixels."
+        }
       ],
       "returns": "Promise<Buffer>",
       "description": "Crop a region from an image."
@@ -59,8 +110,16 @@
     {
       "name": "thumbnail",
       "params": [
-        { "name": "input", "type": "Buffer | string", "description": "Input image." },
-        { "name": "maxSize", "type": "number", "description": "Maximum dimension (width or height) in pixels." }
+        {
+          "name": "input",
+          "type": "Buffer | string",
+          "description": "Input image."
+        },
+        {
+          "name": "maxSize",
+          "type": "number",
+          "description": "Maximum dimension (width or height) in pixels."
+        }
       ],
       "returns": "Promise<Buffer>",
       "description": "Generate a thumbnail preserving aspect ratio."
@@ -68,12 +127,18 @@
     {
       "name": "getInfo",
       "params": [
-        { "name": "input", "type": "Buffer | string", "description": "Input image." }
+        {
+          "name": "input",
+          "type": "Buffer | string",
+          "description": "Input image."
+        }
       ],
       "returns": "Promise<{ width: number; height: number; format: string }>",
       "description": "Get image dimensions and format without transforming."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {}
 }

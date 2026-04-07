@@ -3,9 +3,20 @@
   "name": "@radzor/magic-link-auth",
   "version": "0.1.0",
   "description": "Passwordless authentication via email magic links. Generates signed tokens, sends links via email, and verifies them on callback. Zero-dependency token management with configurable TTL and single-use enforcement.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "auth",
-  "tags": ["magic-link", "passwordless", "auth", "email", "token", "security"],
+  "runtime": "server",
+  "tags": [
+    "magic-link",
+    "passwordless",
+    "auth",
+    "email",
+    "token",
+    "security"
+  ],
   "inputs": [
     {
       "name": "secret",
@@ -49,22 +60,33 @@
   "events": [
     {
       "name": "onLinkSent",
-      "payload": { "email": "string", "expiresAt": "number" },
+      "payload": {
+        "email": "string",
+        "expiresAt": "number"
+      },
       "description": "Fired when a magic link is generated and ready to send."
     },
     {
       "name": "onVerified",
-      "payload": { "email": "string", "tokenId": "string" },
+      "payload": {
+        "email": "string",
+        "tokenId": "string"
+      },
       "description": "Fired when a magic link token is successfully verified."
     },
     {
       "name": "onExpired",
-      "payload": { "email": "string" },
+      "payload": {
+        "email": "string"
+      },
       "description": "Fired when a token is used after its TTL has elapsed."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired on token generation or verification error."
     }
   ],
@@ -72,7 +94,11 @@
     {
       "name": "generateLink",
       "params": [
-        { "name": "email", "type": "string", "description": "Email address to authenticate." }
+        {
+          "name": "email",
+          "type": "string",
+          "description": "Email address to authenticate."
+        }
       ],
       "returns": "Promise<{ url: string; token: string; expiresAt: number }>",
       "description": "Generate a signed magic link URL for the given email. Send this URL to the user via email."
@@ -80,7 +106,11 @@
     {
       "name": "verifyToken",
       "params": [
-        { "name": "token", "type": "string", "description": "Token extracted from the magic link callback URL." }
+        {
+          "name": "token",
+          "type": "string",
+          "description": "Token extracted from the magic link callback URL."
+        }
       ],
       "returns": "Promise<{ email: string; valid: boolean }>",
       "description": "Verify a magic link token. Returns the email if valid, throws if expired or already used."
@@ -88,13 +118,19 @@
     {
       "name": "revokeToken",
       "params": [
-        { "name": "token", "type": "string", "description": "Token to invalidate." }
+        {
+          "name": "token",
+          "type": "string",
+          "description": "Token to invalidate."
+        }
       ],
       "returns": "Promise<void>",
       "description": "Manually invalidate a token before it expires."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",

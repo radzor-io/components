@@ -3,9 +3,21 @@
   "name": "@radzor/markdown-render",
   "version": "0.1.0",
   "description": "Convert Markdown to sanitized HTML with syntax highlighting, GFM extensions (tables, strikethrough, task lists), and frontmatter extraction. Safe for user-generated content.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "data",
-  "tags": ["markdown", "html", "render", "sanitize", "syntax-highlight", "gfm", "content"],
+  "runtime": "universal",
+  "tags": [
+    "markdown",
+    "html",
+    "render",
+    "sanitize",
+    "syntax-highlight",
+    "gfm",
+    "content"
+  ],
   "inputs": [
     {
       "name": "sanitize",
@@ -62,12 +74,18 @@
   "events": [
     {
       "name": "onRendered",
-      "payload": { "inputBytes": "number", "outputBytes": "number" },
+      "payload": {
+        "inputBytes": "number",
+        "outputBytes": "number"
+      },
       "description": "Fired when rendering completes."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired on parsing or sanitization error."
     }
   ],
@@ -75,8 +93,17 @@
     {
       "name": "render",
       "params": [
-        { "name": "markdown", "type": "string", "description": "Markdown source string." },
-        { "name": "options", "type": "RenderOptions", "description": "Per-call overrides for sanitize, breaks, etc.", "required": false }
+        {
+          "name": "markdown",
+          "type": "string",
+          "description": "Markdown source string."
+        },
+        {
+          "name": "options",
+          "type": "RenderOptions",
+          "description": "Per-call overrides for sanitize, breaks, etc.",
+          "required": false
+        }
       ],
       "returns": "Promise<{ html: string; frontmatter: Record<string, unknown> }>",
       "description": "Convert Markdown to sanitized HTML and extract frontmatter."
@@ -84,7 +111,11 @@
     {
       "name": "toPlainText",
       "params": [
-        { "name": "markdown", "type": "string", "description": "Markdown source string." }
+        {
+          "name": "markdown",
+          "type": "string",
+          "description": "Markdown source string."
+        }
       ],
       "returns": "string",
       "description": "Strip all Markdown formatting and return plain text."
@@ -92,13 +123,19 @@
     {
       "name": "extractFrontmatter",
       "params": [
-        { "name": "markdown", "type": "string", "description": "Markdown source string with optional YAML frontmatter." }
+        {
+          "name": "markdown",
+          "type": "string",
+          "description": "Markdown source string with optional YAML frontmatter."
+        }
       ],
       "returns": "{ data: Record<string, unknown>; content: string }",
       "description": "Extract YAML frontmatter and return parsed metadata with body content."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",

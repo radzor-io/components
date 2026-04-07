@@ -3,9 +3,22 @@
   "name": "@radzor/github-bot",
   "version": "0.1.0",
   "description": "Interact with the GitHub REST API. Create issues, post comments, trigger workflows, manage pull requests, and read repository data. Supports both personal access tokens and GitHub App authentication.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "automation",
-  "tags": ["github", "git", "issues", "pull-request", "ci", "automation", "api", "bot"],
+  "runtime": "server",
+  "tags": [
+    "github",
+    "git",
+    "issues",
+    "pull-request",
+    "ci",
+    "automation",
+    "api",
+    "bot"
+  ],
   "inputs": [
     {
       "name": "token",
@@ -43,17 +56,29 @@
   "events": [
     {
       "name": "onIssueCreated",
-      "payload": { "number": "number", "url": "string", "title": "string" },
+      "payload": {
+        "number": "number",
+        "url": "string",
+        "title": "string"
+      },
       "description": "Fired when an issue is created."
     },
     {
       "name": "onCommentPosted",
-      "payload": { "id": "number", "issueNumber": "number", "url": "string" },
+      "payload": {
+        "id": "number",
+        "issueNumber": "number",
+        "url": "string"
+      },
       "description": "Fired when a comment is posted."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "status": "number" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "status": "number"
+      },
       "description": "Fired on GitHub API error."
     }
   ],
@@ -61,10 +86,28 @@
     {
       "name": "createIssue",
       "params": [
-        { "name": "title", "type": "string", "description": "Issue title." },
-        { "name": "body", "type": "string", "description": "Issue body (Markdown)." },
-        { "name": "labels", "type": "string[]", "description": "Label names to apply.", "required": false },
-        { "name": "assignees", "type": "string[]", "description": "GitHub usernames to assign.", "required": false }
+        {
+          "name": "title",
+          "type": "string",
+          "description": "Issue title."
+        },
+        {
+          "name": "body",
+          "type": "string",
+          "description": "Issue body (Markdown)."
+        },
+        {
+          "name": "labels",
+          "type": "string[]",
+          "description": "Label names to apply.",
+          "required": false
+        },
+        {
+          "name": "assignees",
+          "type": "string[]",
+          "description": "GitHub usernames to assign.",
+          "required": false
+        }
       ],
       "returns": "Promise<{ number: number; url: string; id: number }>",
       "description": "Create a new issue in the repository."
@@ -72,8 +115,16 @@
     {
       "name": "createComment",
       "params": [
-        { "name": "issueNumber", "type": "number", "description": "Issue or PR number to comment on." },
-        { "name": "body", "type": "string", "description": "Comment body (Markdown)." }
+        {
+          "name": "issueNumber",
+          "type": "number",
+          "description": "Issue or PR number to comment on."
+        },
+        {
+          "name": "body",
+          "type": "string",
+          "description": "Comment body (Markdown)."
+        }
       ],
       "returns": "Promise<{ id: number; url: string }>",
       "description": "Post a comment on an issue or pull request."
@@ -81,9 +132,22 @@
     {
       "name": "triggerWorkflow",
       "params": [
-        { "name": "workflow", "type": "string", "description": "Workflow file name (e.g. deploy.yml) or ID." },
-        { "name": "ref", "type": "string", "description": "Branch or tag to run on." },
-        { "name": "inputs", "type": "Record<string, string>", "description": "Workflow dispatch inputs.", "required": false }
+        {
+          "name": "workflow",
+          "type": "string",
+          "description": "Workflow file name (e.g. deploy.yml) or ID."
+        },
+        {
+          "name": "ref",
+          "type": "string",
+          "description": "Branch or tag to run on."
+        },
+        {
+          "name": "inputs",
+          "type": "Record<string, string>",
+          "description": "Workflow dispatch inputs.",
+          "required": false
+        }
       ],
       "returns": "Promise<void>",
       "description": "Trigger a workflow_dispatch event to run a GitHub Actions workflow."
@@ -91,7 +155,11 @@
     {
       "name": "getPullRequest",
       "params": [
-        { "name": "number", "type": "number", "description": "Pull request number." }
+        {
+          "name": "number",
+          "type": "number",
+          "description": "Pull request number."
+        }
       ],
       "returns": "Promise<{ number: number; title: string; state: string; mergeable: boolean; headSha: string }>",
       "description": "Fetch pull request details."
@@ -99,8 +167,17 @@
     {
       "name": "mergePullRequest",
       "params": [
-        { "name": "number", "type": "number", "description": "Pull request number to merge." },
-        { "name": "method", "type": "'merge' | 'squash' | 'rebase'", "description": "Merge strategy.", "required": false }
+        {
+          "name": "number",
+          "type": "number",
+          "description": "Pull request number to merge."
+        },
+        {
+          "name": "method",
+          "type": "'merge' | 'squash' | 'rebase'",
+          "description": "Merge strategy.",
+          "required": false
+        }
       ],
       "returns": "Promise<{ sha: string; merged: boolean }>",
       "description": "Merge a pull request."
@@ -108,16 +185,36 @@
     {
       "name": "createRelease",
       "params": [
-        { "name": "tag", "type": "string", "description": "Tag name for the release (e.g. v1.2.0)." },
-        { "name": "name", "type": "string", "description": "Release title." },
-        { "name": "body", "type": "string", "description": "Release notes (Markdown).", "required": false },
-        { "name": "draft", "type": "boolean", "description": "Create as draft.", "required": false }
+        {
+          "name": "tag",
+          "type": "string",
+          "description": "Tag name for the release (e.g. v1.2.0)."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Release title."
+        },
+        {
+          "name": "body",
+          "type": "string",
+          "description": "Release notes (Markdown).",
+          "required": false
+        },
+        {
+          "name": "draft",
+          "type": "boolean",
+          "description": "Create as draft.",
+          "required": false
+        }
       ],
       "returns": "Promise<{ id: number; url: string; uploadUrl: string }>",
       "description": "Create a GitHub release."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",

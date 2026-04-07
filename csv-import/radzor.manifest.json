@@ -3,9 +3,21 @@
   "name": "@radzor/csv-import",
   "version": "0.1.0",
   "description": "Parse, validate, and batch-import CSV files. Supports streaming for large files, schema validation with typed coercion, error row collection, and progress tracking. Works with file uploads, S3 streams, and local paths.",
-  "languages": ["typescript"],
+  "languages": [
+    "typescript"
+  ],
   "category": "data",
-  "tags": ["csv", "import", "parse", "batch", "data", "etl", "validation", "streaming"],
+  "runtime": "universal",
+  "tags": [
+    "csv",
+    "import",
+    "parse",
+    "batch",
+    "data",
+    "etl",
+    "validation",
+    "streaming"
+  ],
   "inputs": [
     {
       "name": "delimiter",
@@ -64,22 +76,36 @@
   "events": [
     {
       "name": "onRow",
-      "payload": { "row": "Record<string, unknown>", "index": "number" },
+      "payload": {
+        "row": "Record<string, unknown>",
+        "index": "number"
+      },
       "description": "Fired for each parsed row."
     },
     {
       "name": "onBatch",
-      "payload": { "rows": "Record<string, unknown>[]", "batchNumber": "number" },
+      "payload": {
+        "rows": "Record<string, unknown>[]",
+        "batchNumber": "number"
+      },
       "description": "Fired when a batch of rows is ready for processing."
     },
     {
       "name": "onComplete",
-      "payload": { "totalRows": "number", "errorRows": "number", "durationMs": "number" },
+      "payload": {
+        "totalRows": "number",
+        "errorRows": "number",
+        "durationMs": "number"
+      },
       "description": "Fired when the entire file has been parsed."
     },
     {
       "name": "onError",
-      "payload": { "line": "number", "message": "string", "raw": "string" },
+      "payload": {
+        "line": "number",
+        "message": "string",
+        "raw": "string"
+      },
       "description": "Fired for each row that fails validation or parsing."
     }
   ],
@@ -87,7 +113,11 @@
     {
       "name": "parseBuffer",
       "params": [
-        { "name": "buffer", "type": "Buffer", "description": "CSV file content as Buffer." }
+        {
+          "name": "buffer",
+          "type": "Buffer",
+          "description": "CSV file content as Buffer."
+        }
       ],
       "returns": "Promise<Record<string, unknown>[]>",
       "description": "Parse an in-memory CSV buffer and return all rows."
@@ -95,7 +125,11 @@
     {
       "name": "parseStream",
       "params": [
-        { "name": "stream", "type": "ReadableStream | NodeJS.ReadableStream", "description": "Readable stream of CSV data." }
+        {
+          "name": "stream",
+          "type": "ReadableStream | NodeJS.ReadableStream",
+          "description": "Readable stream of CSV data."
+        }
       ],
       "returns": "Promise<ParseStats>",
       "description": "Stream-parse a CSV file, emitting onRow and onBatch events progressively."
@@ -103,7 +137,11 @@
     {
       "name": "validate",
       "params": [
-        { "name": "rows", "type": "Record<string, unknown>[]", "description": "Pre-parsed rows to validate against the schema." }
+        {
+          "name": "rows",
+          "type": "Record<string, unknown>[]",
+          "description": "Pre-parsed rows to validate against the schema."
+        }
       ],
       "returns": "ValidationResult",
       "description": "Validate rows against the configured schema, returning valid rows and error details."
@@ -111,7 +149,11 @@
     {
       "name": "getHeaders",
       "params": [
-        { "name": "buffer", "type": "Buffer", "description": "CSV content to inspect." }
+        {
+          "name": "buffer",
+          "type": "Buffer",
+          "description": "CSV content to inspect."
+        }
       ],
       "returns": "Promise<string[]>",
       "description": "Peek at the first row and return column header names."
@@ -126,7 +168,9 @@
     "connectsTo": [
       {
         "output": "rows",
-        "compatibleWith": ["@radzor/background-job.input.payload"]
+        "compatibleWith": [
+          "@radzor/background-job.input.payload"
+        ]
       }
     ]
   },

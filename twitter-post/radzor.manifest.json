@@ -8,6 +8,7 @@
     "python"
   ],
   "category": "media",
+  "runtime": "server",
   "tags": [
     "twitter",
     "x",

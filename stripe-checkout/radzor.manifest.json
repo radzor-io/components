@@ -8,6 +8,7 @@
     "python"
   ],
   "category": "payment",
+  "runtime": "server",
   "tags": [
     "stripe",
     "payment",

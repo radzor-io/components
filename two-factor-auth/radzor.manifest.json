@@ -3,9 +3,20 @@
   "name": "@radzor/two-factor-auth",
   "version": "0.1.0",
   "description": "TOTP-based two-factor authentication. Generate secrets, create QR URIs, and verify tokens (RFC 6238).",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "auth",
-  "tags": ["2fa", "totp", "otp", "authentication", "security", "mfa"],
+  "runtime": "server",
+  "tags": [
+    "2fa",
+    "totp",
+    "otp",
+    "authentication",
+    "security",
+    "mfa"
+  ],
   "inputs": [
     {
       "name": "issuer",
@@ -36,12 +47,18 @@
   "events": [
     {
       "name": "onVerified",
-      "payload": { "valid": "boolean", "accountName": "string" },
+      "payload": {
+        "valid": "boolean",
+        "accountName": "string"
+      },
       "description": "Fired when a TOTP token is verified."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired on verification error."
     }
   ],
@@ -55,8 +72,16 @@
     {
       "name": "generateQrUri",
       "params": [
-        { "name": "secret", "type": "string", "description": "Base32-encoded secret." },
-        { "name": "accountName", "type": "string", "description": "User account name shown in the authenticator app." }
+        {
+          "name": "secret",
+          "type": "string",
+          "description": "Base32-encoded secret."
+        },
+        {
+          "name": "accountName",
+          "type": "string",
+          "description": "User account name shown in the authenticator app."
+        }
       ],
       "returns": "string",
       "description": "Generate an otpauth:// URI suitable for QR code display."
@@ -64,13 +89,23 @@
     {
       "name": "verifyToken",
       "params": [
-        { "name": "secret", "type": "string", "description": "Base32-encoded TOTP secret." },
-        { "name": "token", "type": "string", "description": "6-digit OTP token from the user." }
+        {
+          "name": "secret",
+          "type": "string",
+          "description": "Base32-encoded TOTP secret."
+        },
+        {
+          "name": "token",
+          "type": "string",
+          "description": "6-digit OTP token from the user."
+        }
       ],
       "returns": "{ valid: boolean; delta: number }",
       "description": "Verify a TOTP token. Checks current and adjacent time windows."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {}
 }

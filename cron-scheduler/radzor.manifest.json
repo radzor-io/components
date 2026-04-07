@@ -3,35 +3,102 @@
   "name": "@radzor/cron-scheduler",
   "version": "0.1.0",
   "description": "In-process cron scheduler for recurring tasks. Supports cron expressions, interval-based scheduling, timezone-aware execution, and graceful shutdown.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "automation",
-  "tags": ["cron", "scheduler", "jobs", "tasks", "automation", "recurring"],
+  "runtime": "server",
+  "tags": [
+    "cron",
+    "scheduler",
+    "jobs",
+    "tasks",
+    "automation",
+    "recurring"
+  ],
   "inputs": [
-    { "name": "timezone", "type": "string", "default": "UTC", "description": "Timezone for cron expression evaluation.", "required": false }
+    {
+      "name": "timezone",
+      "type": "string",
+      "default": "UTC",
+      "description": "Timezone for cron expression evaluation.",
+      "required": false
+    }
   ],
   "outputs": [
-    { "name": "jobResult", "type": "JobResult", "description": "Result of a job execution including status, duration, and error if any." }
+    {
+      "name": "jobResult",
+      "type": "JobResult",
+      "description": "Result of a job execution including status, duration, and error if any."
+    }
   ],
   "events": [
-    { "name": "onJobStart", "payload": { "jobId": "string", "scheduledAt": "number" }, "description": "Fired when a job starts executing." },
-    { "name": "onJobComplete", "payload": { "jobId": "string", "duration": "number" }, "description": "Fired when a job completes." },
-    { "name": "onJobError", "payload": { "jobId": "string", "error": "string" }, "description": "Fired when a job fails." },
-    { "name": "onError", "payload": { "code": "string", "message": "string" }, "description": "Fired on scheduler errors." }
+    {
+      "name": "onJobStart",
+      "payload": {
+        "jobId": "string",
+        "scheduledAt": "number"
+      },
+      "description": "Fired when a job starts executing."
+    },
+    {
+      "name": "onJobComplete",
+      "payload": {
+        "jobId": "string",
+        "duration": "number"
+      },
+      "description": "Fired when a job completes."
+    },
+    {
+      "name": "onJobError",
+      "payload": {
+        "jobId": "string",
+        "error": "string"
+      },
+      "description": "Fired when a job fails."
+    },
+    {
+      "name": "onError",
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
+      "description": "Fired on scheduler errors."
+    }
   ],
   "actions": [
     {
       "name": "schedule",
       "params": [
-        { "name": "jobId", "type": "string", "description": "Unique identifier for the job." },
-        { "name": "expression", "type": "string", "description": "Cron expression (e.g. '*/5 * * * *') or interval string (e.g. 'every 30s')." },
-        { "name": "handler", "type": "Function", "description": "Function to execute on each trigger." }
+        {
+          "name": "jobId",
+          "type": "string",
+          "description": "Unique identifier for the job."
+        },
+        {
+          "name": "expression",
+          "type": "string",
+          "description": "Cron expression (e.g. '*/5 * * * *') or interval string (e.g. 'every 30s')."
+        },
+        {
+          "name": "handler",
+          "type": "Function",
+          "description": "Function to execute on each trigger."
+        }
       ],
       "returns": "void",
       "description": "Schedule a recurring job."
     },
     {
       "name": "unschedule",
-      "params": [{ "name": "jobId", "type": "string", "description": "Job ID to remove." }],
+      "params": [
+        {
+          "name": "jobId",
+          "type": "string",
+          "description": "Job ID to remove."
+        }
+      ],
       "returns": "void",
       "description": "Remove a scheduled job."
     },
@@ -48,8 +115,13 @@
       "description": "Stop the scheduler gracefully."
     }
   ],
-  "dependencies": { "packages": {}, "radzor": [] },
-  "composability": { "connectsTo": [] },
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": []
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

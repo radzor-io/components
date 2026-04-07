@@ -8,6 +8,7 @@
     "python"
   ],
   "category": "networking",
+  "runtime": "server",
   "tags": [
     "webhook",
     "hmac",

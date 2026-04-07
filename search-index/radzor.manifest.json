@@ -3,9 +3,20 @@
   "name": "@radzor/search-index",
   "version": "0.1.0",
   "description": "Full-text search with facets, filters, and typo-tolerance. Supports Meilisearch and Typesense. Handles indexing, real-time updates, relevance tuning, and instant search queries.",
-  "languages": ["typescript"],
+  "languages": [
+    "typescript"
+  ],
   "category": "data",
-  "tags": ["search", "full-text", "meilisearch", "typesense", "facets", "filters", "instant-search"],
+  "runtime": "server",
+  "tags": [
+    "search",
+    "full-text",
+    "meilisearch",
+    "typesense",
+    "facets",
+    "filters",
+    "instant-search"
+  ],
   "inputs": [
     {
       "name": "provider",
@@ -61,17 +72,29 @@
   "events": [
     {
       "name": "onIndexed",
-      "payload": { "documentCount": "number", "indexName": "string", "durationMs": "number" },
+      "payload": {
+        "documentCount": "number",
+        "indexName": "string",
+        "durationMs": "number"
+      },
       "description": "Fired when documents are successfully indexed."
     },
     {
       "name": "onSearchComplete",
-      "payload": { "query": "string", "hits": "number", "processingMs": "number" },
+      "payload": {
+        "query": "string",
+        "hits": "number",
+        "processingMs": "number"
+      },
       "description": "Fired when a search query returns."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "operation": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "operation": "string"
+      },
       "description": "Fired when an indexing or search operation fails."
     }
   ],
@@ -79,7 +102,11 @@
     {
       "name": "index",
       "params": [
-        { "name": "documents", "type": "Record<string, unknown>[]", "description": "Array of documents to index." }
+        {
+          "name": "documents",
+          "type": "Record<string, unknown>[]",
+          "description": "Array of documents to index."
+        }
       ],
       "returns": "Promise<void>",
       "description": "Add or replace documents in the index."
@@ -87,8 +114,17 @@
     {
       "name": "search",
       "params": [
-        { "name": "query", "type": "string", "description": "Search query string." },
-        { "name": "options", "type": "SearchOptions", "description": "filter, facets, limit, offset, sort.", "required": false }
+        {
+          "name": "query",
+          "type": "string",
+          "description": "Search query string."
+        },
+        {
+          "name": "options",
+          "type": "SearchOptions",
+          "description": "filter, facets, limit, offset, sort.",
+          "required": false
+        }
       ],
       "returns": "Promise<SearchResults>",
       "description": "Perform a full-text search with optional filtering and faceting."
@@ -96,7 +132,11 @@
     {
       "name": "update",
       "params": [
-        { "name": "documents", "type": "Record<string, unknown>[]", "description": "Partial documents to merge into existing ones." }
+        {
+          "name": "documents",
+          "type": "Record<string, unknown>[]",
+          "description": "Partial documents to merge into existing ones."
+        }
       ],
       "returns": "Promise<void>",
       "description": "Partially update existing documents (merge, not replace)."
@@ -104,7 +144,11 @@
     {
       "name": "delete",
       "params": [
-        { "name": "ids", "type": "string[]", "description": "IDs of documents to remove." }
+        {
+          "name": "ids",
+          "type": "string[]",
+          "description": "IDs of documents to remove."
+        }
       ],
       "returns": "Promise<void>",
       "description": "Delete documents by ID."
@@ -118,7 +162,11 @@
     {
       "name": "configure",
       "params": [
-        { "name": "settings", "type": "IndexSettings", "description": "searchableAttributes, filterableAttributes, rankingRules, etc." }
+        {
+          "name": "settings",
+          "type": "IndexSettings",
+          "description": "searchableAttributes, filterableAttributes, rankingRules, etc."
+        }
       ],
       "returns": "Promise<void>",
       "description": "Update index settings (searchable fields, ranking, etc.)."

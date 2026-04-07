@@ -3,9 +3,20 @@
   "name": "@radzor/session-manager",
   "version": "0.1.0",
   "description": "Server-side session management with pluggable stores (memory, Redis, PostgreSQL). Handles session creation, rotation, expiry, and signed cookie generation. Framework-agnostic.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "auth",
-  "tags": ["session", "auth", "cookie", "redis", "store", "security"],
+  "runtime": "server",
+  "tags": [
+    "session",
+    "auth",
+    "cookie",
+    "redis",
+    "store",
+    "security"
+  ],
   "inputs": [
     {
       "name": "store",
@@ -63,22 +74,32 @@
   "events": [
     {
       "name": "onCreated",
-      "payload": { "sessionId": "string", "userId": "string" },
+      "payload": {
+        "sessionId": "string",
+        "userId": "string"
+      },
       "description": "Fired when a new session is created."
     },
     {
       "name": "onDestroyed",
-      "payload": { "sessionId": "string" },
+      "payload": {
+        "sessionId": "string"
+      },
       "description": "Fired when a session is explicitly destroyed."
     },
     {
       "name": "onExpired",
-      "payload": { "sessionId": "string" },
+      "payload": {
+        "sessionId": "string"
+      },
       "description": "Fired when a session expires."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired on store read/write errors."
     }
   ],
@@ -86,7 +107,11 @@
     {
       "name": "create",
       "params": [
-        { "name": "data", "type": "Record<string, unknown>", "description": "Initial session payload (e.g. { userId, role })." }
+        {
+          "name": "data",
+          "type": "Record<string, unknown>",
+          "description": "Initial session payload (e.g. { userId, role })."
+        }
       ],
       "returns": "Promise<{ sessionId: string; cookie: string }>",
       "description": "Create a new session and return its ID and signed cookie value."
@@ -94,7 +119,11 @@
     {
       "name": "get",
       "params": [
-        { "name": "sessionId", "type": "string", "description": "Session ID to retrieve." }
+        {
+          "name": "sessionId",
+          "type": "string",
+          "description": "Session ID to retrieve."
+        }
       ],
       "returns": "Promise<Record<string, unknown> | null>",
       "description": "Retrieve session data by ID. Returns null if expired or not found."
@@ -102,8 +131,16 @@
     {
       "name": "set",
       "params": [
-        { "name": "sessionId", "type": "string", "description": "Session ID to update." },
-        { "name": "data", "type": "Record<string, unknown>", "description": "Updated session payload (merged)." }
+        {
+          "name": "sessionId",
+          "type": "string",
+          "description": "Session ID to update."
+        },
+        {
+          "name": "data",
+          "type": "Record<string, unknown>",
+          "description": "Updated session payload (merged)."
+        }
       ],
       "returns": "Promise<void>",
       "description": "Update session data and reset its TTL."
@@ -111,7 +148,11 @@
     {
       "name": "destroy",
       "params": [
-        { "name": "sessionId", "type": "string", "description": "Session ID to invalidate." }
+        {
+          "name": "sessionId",
+          "type": "string",
+          "description": "Session ID to invalidate."
+        }
       ],
       "returns": "Promise<void>",
       "description": "Destroy a session immediately."
@@ -119,13 +160,19 @@
     {
       "name": "parseCookie",
       "params": [
-        { "name": "cookieHeader", "type": "string", "description": "Raw Cookie header from the request." }
+        {
+          "name": "cookieHeader",
+          "type": "string",
+          "description": "Raw Cookie header from the request."
+        }
       ],
       "returns": "string | null",
       "description": "Extract and verify the session ID from a Cookie header."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",

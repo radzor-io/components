@@ -3,9 +3,21 @@
   "name": "@radzor/vector-search",
   "version": "0.1.0",
   "description": "Vector embedding storage and semantic search. Supports Pinecone, Qdrant, and pgvector. Index documents with embeddings and query by semantic similarity for RAG pipelines, recommendation engines, and duplicate detection.",
-  "languages": ["typescript"],
+  "languages": [
+    "typescript"
+  ],
   "category": "ai",
-  "tags": ["vector", "embeddings", "semantic-search", "rag", "pinecone", "qdrant", "pgvector", "similarity"],
+  "runtime": "server",
+  "tags": [
+    "vector",
+    "embeddings",
+    "semantic-search",
+    "rag",
+    "pinecone",
+    "qdrant",
+    "pgvector",
+    "similarity"
+  ],
   "inputs": [
     {
       "name": "provider",
@@ -67,17 +79,28 @@
   "events": [
     {
       "name": "onIndexed",
-      "payload": { "id": "string", "dimensions": "number" },
+      "payload": {
+        "id": "string",
+        "dimensions": "number"
+      },
       "description": "Fired when a vector is successfully indexed."
     },
     {
       "name": "onSearchComplete",
-      "payload": { "query": "string", "resultCount": "number", "durationMs": "number" },
+      "payload": {
+        "query": "string",
+        "resultCount": "number",
+        "durationMs": "number"
+      },
       "description": "Fired when a search query completes."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "provider": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "provider": "string"
+      },
       "description": "Fired when an operation fails."
     }
   ],
@@ -85,9 +108,22 @@
     {
       "name": "index",
       "params": [
-        { "name": "id", "type": "string", "description": "Unique identifier for the vector." },
-        { "name": "vector", "type": "number[]", "description": "Embedding vector." },
-        { "name": "metadata", "type": "Record<string, unknown>", "description": "Arbitrary metadata stored alongside the vector.", "required": false }
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Unique identifier for the vector."
+        },
+        {
+          "name": "vector",
+          "type": "number[]",
+          "description": "Embedding vector."
+        },
+        {
+          "name": "metadata",
+          "type": "Record<string, unknown>",
+          "description": "Arbitrary metadata stored alongside the vector.",
+          "required": false
+        }
       ],
       "returns": "Promise<void>",
       "description": "Store a vector with its metadata."
@@ -95,7 +131,11 @@
     {
       "name": "indexBatch",
       "params": [
-        { "name": "items", "type": "Array<{ id: string; vector: number[]; metadata?: Record<string, unknown> }>", "description": "Batch of vectors to index." }
+        {
+          "name": "items",
+          "type": "Array<{ id: string; vector: number[]; metadata?: Record<string, unknown> }>",
+          "description": "Batch of vectors to index."
+        }
       ],
       "returns": "Promise<void>",
       "description": "Index multiple vectors in a single request."
@@ -103,9 +143,23 @@
     {
       "name": "search",
       "params": [
-        { "name": "vector", "type": "number[]", "description": "Query embedding vector." },
-        { "name": "topK", "type": "number", "description": "Number of results to return.", "required": false },
-        { "name": "filter", "type": "Record<string, unknown>", "description": "Metadata filter (provider-specific syntax).", "required": false }
+        {
+          "name": "vector",
+          "type": "number[]",
+          "description": "Query embedding vector."
+        },
+        {
+          "name": "topK",
+          "type": "number",
+          "description": "Number of results to return.",
+          "required": false
+        },
+        {
+          "name": "filter",
+          "type": "Record<string, unknown>",
+          "description": "Metadata filter (provider-specific syntax).",
+          "required": false
+        }
       ],
       "returns": "Promise<SearchResult[]>",
       "description": "Find the most semantically similar vectors."
@@ -113,7 +167,11 @@
     {
       "name": "delete",
       "params": [
-        { "name": "id", "type": "string", "description": "ID of the vector to remove." }
+        {
+          "name": "id",
+          "type": "string",
+          "description": "ID of the vector to remove."
+        }
       ],
       "returns": "Promise<void>",
       "description": "Delete a vector by ID."
@@ -129,13 +187,17 @@
     "packages": {
       "@pinecone-database/pinecone": "^3.0.0"
     },
-    "radzor": ["@radzor/llm-completion"]
+    "radzor": [
+      "@radzor/llm-completion"
+    ]
   },
   "composability": {
     "connectsTo": [
       {
         "output": "searchResults",
-        "compatibleWith": ["@radzor/llm-completion.input.systemPrompt"]
+        "compatibleWith": [
+          "@radzor/llm-completion.input.systemPrompt"
+        ]
       }
     ]
   },

@@ -3,9 +3,19 @@
   "name": "@radzor/video-call",
   "version": "0.1.0",
   "description": "WebRTC-based peer-to-peer video calling. Manage local/remote streams, signaling, and call lifecycle.",
-  "languages": ["typescript"],
+  "languages": [
+    "typescript"
+  ],
   "category": "chat",
-  "tags": ["video", "call", "webrtc", "peer-to-peer", "streaming", "media"],
+  "runtime": "browser",
+  "tags": [
+    "video",
+    "call",
+    "webrtc",
+    "peer-to-peer",
+    "streaming",
+    "media"
+  ],
   "inputs": [
     {
       "name": "iceServers",
@@ -35,22 +45,31 @@
   "events": [
     {
       "name": "onLocalStream",
-      "payload": { "trackCount": "number" },
+      "payload": {
+        "trackCount": "number"
+      },
       "description": "Fired when local media stream is ready."
     },
     {
       "name": "onRemoteStream",
-      "payload": { "trackCount": "number" },
+      "payload": {
+        "trackCount": "number"
+      },
       "description": "Fired when remote stream arrives from the peer."
     },
     {
       "name": "onCallEnded",
-      "payload": { "durationMs": "number" },
+      "payload": {
+        "durationMs": "number"
+      },
       "description": "Fired when the call ends."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired on ICE, media, or signaling error."
     }
   ],
@@ -58,7 +77,12 @@
     {
       "name": "startCall",
       "params": [
-        { "name": "constraints", "type": "MediaStreamConstraints", "description": "Audio/video constraints for getUserMedia.", "required": false }
+        {
+          "name": "constraints",
+          "type": "MediaStreamConstraints",
+          "description": "Audio/video constraints for getUserMedia.",
+          "required": false
+        }
       ],
       "returns": "Promise<RTCSessionDescriptionInit>",
       "description": "Start a call by capturing local media and creating an SDP offer."
@@ -66,7 +90,11 @@
     {
       "name": "answerCall",
       "params": [
-        { "name": "offer", "type": "RTCSessionDescriptionInit", "description": "SDP offer from the remote peer." }
+        {
+          "name": "offer",
+          "type": "RTCSessionDescriptionInit",
+          "description": "SDP offer from the remote peer."
+        }
       ],
       "returns": "Promise<RTCSessionDescriptionInit>",
       "description": "Answer an incoming call by setting the remote offer and creating an SDP answer."
@@ -90,7 +118,9 @@
       "description": "Toggle camera on/off. Returns the new enabled state."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {},
   "llm": {
     "constraints": "Browser-only — uses WebRTC and getUserMedia APIs not available in Node.js. Requires HTTPS in production. For peer discovery and signaling, a WebSocket server is needed."

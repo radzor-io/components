@@ -3,9 +3,20 @@
   "name": "@radzor/circuit-breaker",
   "version": "0.1.0",
   "description": "Circuit breaker pattern for fault-tolerant external service calls. Tracks failure rates, opens the circuit to fast-fail requests when a threshold is exceeded, and probes recovery with half-open state. Zero dependencies.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "networking",
-  "tags": ["circuit-breaker", "resilience", "fault-tolerance", "retry", "availability", "pattern"],
+  "runtime": "universal",
+  "tags": [
+    "circuit-breaker",
+    "resilience",
+    "fault-tolerance",
+    "retry",
+    "availability",
+    "pattern"
+  ],
   "inputs": [
     {
       "name": "threshold",
@@ -51,27 +62,39 @@
   "events": [
     {
       "name": "onOpen",
-      "payload": { "failures": "number", "at": "number" },
+      "payload": {
+        "failures": "number",
+        "at": "number"
+      },
       "description": "Fired when the circuit opens due to too many failures."
     },
     {
       "name": "onHalfOpen",
-      "payload": { "at": "number" },
+      "payload": {
+        "at": "number"
+      },
       "description": "Fired when the circuit transitions to half-open to probe recovery."
     },
     {
       "name": "onClose",
-      "payload": { "at": "number" },
+      "payload": {
+        "at": "number"
+      },
       "description": "Fired when the circuit closes (service recovered)."
     },
     {
       "name": "onRejected",
-      "payload": { "state": "string" },
+      "payload": {
+        "state": "string"
+      },
       "description": "Fired when a request is fast-failed because the circuit is open."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired on unexpected internal error."
     }
   ],
@@ -79,7 +102,11 @@
     {
       "name": "execute",
       "params": [
-        { "name": "fn", "type": "() => Promise<T>", "description": "Async function to protect with the circuit breaker." }
+        {
+          "name": "fn",
+          "type": "() => Promise<T>",
+          "description": "Async function to protect with the circuit breaker."
+        }
       ],
       "returns": "Promise<T>",
       "description": "Execute a function through the circuit breaker. Throws CircuitOpenError if the circuit is open."
@@ -103,7 +130,9 @@
       "description": "Manually reset the circuit to closed state and clear metrics."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",

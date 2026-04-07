@@ -8,6 +8,7 @@
     "python"
   ],
   "category": "ai",
+  "runtime": "server",
   "tags": [
     "tts",
     "speech",

@@ -3,9 +3,21 @@
   "name": "@radzor/password-hash",
   "version": "0.1.0",
   "description": "Secure password hashing with bcrypt or Argon2id. Includes strength validation, comparison timing-safe, and configurable cost parameters. Zero external dependencies for bcrypt (uses Node.js crypto).",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "security",
-  "tags": ["password", "hash", "bcrypt", "argon2", "security", "auth", "crypto"],
+  "runtime": "server",
+  "tags": [
+    "password",
+    "hash",
+    "bcrypt",
+    "argon2",
+    "security",
+    "auth",
+    "crypto"
+  ],
   "inputs": [
     {
       "name": "algorithm",
@@ -51,17 +63,25 @@
   "events": [
     {
       "name": "onHashed",
-      "payload": { "algorithm": "string", "durationMs": "number" },
+      "payload": {
+        "algorithm": "string",
+        "durationMs": "number"
+      },
       "description": "Fired when a password is hashed."
     },
     {
       "name": "onVerified",
-      "payload": { "match": "boolean" },
+      "payload": {
+        "match": "boolean"
+      },
       "description": "Fired when a password is compared against a hash."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired on hashing or comparison error."
     }
   ],
@@ -69,7 +89,11 @@
     {
       "name": "hash",
       "params": [
-        { "name": "password", "type": "string", "description": "Plain-text password to hash." }
+        {
+          "name": "password",
+          "type": "string",
+          "description": "Plain-text password to hash."
+        }
       ],
       "returns": "Promise<string>",
       "description": "Hash a plain-text password. Store the returned string in your database."
@@ -77,8 +101,16 @@
     {
       "name": "verify",
       "params": [
-        { "name": "password", "type": "string", "description": "Plain-text password to check." },
-        { "name": "hash", "type": "string", "description": "Previously hashed password from your database." }
+        {
+          "name": "password",
+          "type": "string",
+          "description": "Plain-text password to check."
+        },
+        {
+          "name": "hash",
+          "type": "string",
+          "description": "Previously hashed password from your database."
+        }
       ],
       "returns": "Promise<boolean>",
       "description": "Timing-safe comparison of a password against its hash."
@@ -86,13 +118,19 @@
     {
       "name": "checkStrength",
       "params": [
-        { "name": "password", "type": "string", "description": "Password to evaluate." }
+        {
+          "name": "password",
+          "type": "string",
+          "description": "Password to evaluate."
+        }
       ],
       "returns": "{ score: number; feedback: string[]; strong: boolean }",
       "description": "Evaluate password strength (0-4 score). Returns improvement suggestions."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",

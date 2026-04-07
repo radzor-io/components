@@ -3,9 +3,20 @@
   "name": "@radzor/csv-export",
   "version": "0.1.0",
   "description": "Generate and parse CSV files from data arrays. Supports custom delimiters, headers, and streaming.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "data",
-  "tags": ["csv", "export", "import", "parse", "data", "spreadsheet"],
+  "runtime": "universal",
+  "tags": [
+    "csv",
+    "export",
+    "import",
+    "parse",
+    "data",
+    "spreadsheet"
+  ],
   "inputs": [
     {
       "name": "delimiter",
@@ -30,12 +41,18 @@
   "events": [
     {
       "name": "onGenerated",
-      "payload": { "rows": "number", "bytes": "number" },
+      "payload": {
+        "rows": "number",
+        "bytes": "number"
+      },
       "description": "Fired when CSV generation completes."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired on error."
     }
   ],
@@ -43,8 +60,17 @@
     {
       "name": "generate",
       "params": [
-        { "name": "data", "type": "Record<string, unknown>[]", "description": "Array of objects to serialize as CSV rows." },
-        { "name": "columns", "type": "string[]", "description": "Ordered column names. Inferred from first row if omitted.", "required": false }
+        {
+          "name": "data",
+          "type": "Record<string, unknown>[]",
+          "description": "Array of objects to serialize as CSV rows."
+        },
+        {
+          "name": "columns",
+          "type": "string[]",
+          "description": "Ordered column names. Inferred from first row if omitted.",
+          "required": false
+        }
       ],
       "returns": "string",
       "description": "Generate a CSV string from a data array."
@@ -52,7 +78,11 @@
     {
       "name": "parse",
       "params": [
-        { "name": "csv", "type": "string", "description": "CSV string to parse." }
+        {
+          "name": "csv",
+          "type": "string",
+          "description": "CSV string to parse."
+        }
       ],
       "returns": "Record<string, unknown>[]",
       "description": "Parse a CSV string into an array of objects."
@@ -60,13 +90,23 @@
     {
       "name": "toFile",
       "params": [
-        { "name": "data", "type": "Record<string, unknown>[]", "description": "Data to serialize." },
-        { "name": "outputPath", "type": "string", "description": "File path to write the CSV to." }
+        {
+          "name": "data",
+          "type": "Record<string, unknown>[]",
+          "description": "Data to serialize."
+        },
+        {
+          "name": "outputPath",
+          "type": "string",
+          "description": "File path to write the CSV to."
+        }
       ],
       "returns": "Promise<void>",
       "description": "Generate CSV and write to a file."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {}
 }

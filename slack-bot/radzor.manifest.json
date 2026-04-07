@@ -3,9 +3,21 @@
   "name": "@radzor/slack-bot",
   "version": "0.1.0",
   "description": "Slack bot for sending messages, Block Kit layouts, file uploads, and slash command responses via the Slack Web API. Supports both Bot tokens and incoming webhooks.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "messaging",
-  "tags": ["slack", "bot", "messaging", "chat", "notifications", "block-kit", "webhook"],
+  "runtime": "server",
+  "tags": [
+    "slack",
+    "bot",
+    "messaging",
+    "chat",
+    "notifications",
+    "block-kit",
+    "webhook"
+  ],
   "inputs": [
     {
       "name": "botToken",
@@ -36,12 +48,19 @@
   "events": [
     {
       "name": "onMessageSent",
-      "payload": { "ts": "string", "channel": "string" },
+      "payload": {
+        "ts": "string",
+        "channel": "string"
+      },
       "description": "Fired when a message is successfully sent."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "slackError": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "slackError": "string"
+      },
       "description": "Fired on Slack API error."
     }
   ],
@@ -49,9 +68,22 @@
     {
       "name": "sendMessage",
       "params": [
-        { "name": "channel", "type": "string", "description": "Channel ID (C...) or @username." },
-        { "name": "text", "type": "string", "description": "Message text (supports mrkdwn formatting)." },
-        { "name": "options", "type": "{ threadTs?: string; unfurlLinks?: boolean }", "description": "Optional thread_ts for replies, and link unfurl settings.", "required": false }
+        {
+          "name": "channel",
+          "type": "string",
+          "description": "Channel ID (C...) or @username."
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "description": "Message text (supports mrkdwn formatting)."
+        },
+        {
+          "name": "options",
+          "type": "{ threadTs?: string; unfurlLinks?: boolean }",
+          "description": "Optional thread_ts for replies, and link unfurl settings.",
+          "required": false
+        }
       ],
       "returns": "Promise<{ ts: string; channel: string }>",
       "description": "Send a text message to a channel or user."
@@ -59,9 +91,22 @@
     {
       "name": "sendBlocks",
       "params": [
-        { "name": "channel", "type": "string", "description": "Channel ID or @username." },
-        { "name": "blocks", "type": "object[]", "description": "Slack Block Kit block array." },
-        { "name": "text", "type": "string", "description": "Fallback text for notifications.", "required": false }
+        {
+          "name": "channel",
+          "type": "string",
+          "description": "Channel ID or @username."
+        },
+        {
+          "name": "blocks",
+          "type": "object[]",
+          "description": "Slack Block Kit block array."
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "description": "Fallback text for notifications.",
+          "required": false
+        }
       ],
       "returns": "Promise<{ ts: string; channel: string }>",
       "description": "Send a rich Block Kit message."
@@ -69,9 +114,21 @@
     {
       "name": "reply",
       "params": [
-        { "name": "channel", "type": "string", "description": "Channel ID of the original message." },
-        { "name": "threadTs", "type": "string", "description": "Timestamp of the parent message to reply to." },
-        { "name": "text", "type": "string", "description": "Reply text." }
+        {
+          "name": "channel",
+          "type": "string",
+          "description": "Channel ID of the original message."
+        },
+        {
+          "name": "threadTs",
+          "type": "string",
+          "description": "Timestamp of the parent message to reply to."
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "description": "Reply text."
+        }
       ],
       "returns": "Promise<{ ts: string; channel: string }>",
       "description": "Reply in a thread."
@@ -79,10 +136,27 @@
     {
       "name": "uploadFile",
       "params": [
-        { "name": "channel", "type": "string", "description": "Channel to share the file in." },
-        { "name": "content", "type": "Buffer | string", "description": "File content." },
-        { "name": "filename", "type": "string", "description": "File name with extension." },
-        { "name": "title", "type": "string", "description": "File title displayed in Slack.", "required": false }
+        {
+          "name": "channel",
+          "type": "string",
+          "description": "Channel to share the file in."
+        },
+        {
+          "name": "content",
+          "type": "Buffer | string",
+          "description": "File content."
+        },
+        {
+          "name": "filename",
+          "type": "string",
+          "description": "File name with extension."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "File title displayed in Slack.",
+          "required": false
+        }
       ],
       "returns": "Promise<{ fileId: string; permalink: string }>",
       "description": "Upload a file and share it in a channel."
@@ -90,15 +164,29 @@
     {
       "name": "verifyRequest",
       "params": [
-        { "name": "body", "type": "string", "description": "Raw request body from Slack." },
-        { "name": "timestamp", "type": "string", "description": "X-Slack-Request-Timestamp header." },
-        { "name": "signature", "type": "string", "description": "X-Slack-Signature header." }
+        {
+          "name": "body",
+          "type": "string",
+          "description": "Raw request body from Slack."
+        },
+        {
+          "name": "timestamp",
+          "type": "string",
+          "description": "X-Slack-Request-Timestamp header."
+        },
+        {
+          "name": "signature",
+          "type": "string",
+          "description": "X-Slack-Signature header."
+        }
       ],
       "returns": "boolean",
       "description": "Verify the HMAC signature of an incoming Slack event or slash command."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",

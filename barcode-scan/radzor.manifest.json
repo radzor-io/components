@@ -3,9 +3,20 @@
   "name": "@radzor/barcode-scan",
   "version": "0.1.0",
   "description": "Generate and scan 1D and 2D barcodes. Supports Code128, EAN-13, UPC-A, ITF, Code39, QR Code, and Data Matrix. Produces SVG/PNG output and decodes from image buffers.",
-  "languages": ["typescript"],
+  "languages": [
+    "typescript"
+  ],
   "category": "media",
-  "tags": ["barcode", "ean", "qr-code", "scan", "retail", "logistics", "encode"],
+  "runtime": "browser",
+  "tags": [
+    "barcode",
+    "ean",
+    "qr-code",
+    "scan",
+    "retail",
+    "logistics",
+    "encode"
+  ],
   "inputs": [
     {
       "name": "format",
@@ -51,17 +62,27 @@
   "events": [
     {
       "name": "onGenerated",
-      "payload": { "format": "string", "data": "string", "bytes": "number" },
+      "payload": {
+        "format": "string",
+        "data": "string",
+        "bytes": "number"
+      },
       "description": "Fired when a barcode is generated."
     },
     {
       "name": "onScanned",
-      "payload": { "data": "string", "format": "string" },
+      "payload": {
+        "data": "string",
+        "format": "string"
+      },
       "description": "Fired when a barcode is decoded from an image."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired on generation or scan error."
     }
   ],
@@ -69,9 +90,23 @@
     {
       "name": "generate",
       "params": [
-        { "name": "data", "type": "string", "description": "Data to encode." },
-        { "name": "format", "type": "string", "description": "Barcode format override.", "required": false },
-        { "name": "outputFormat", "type": "'png' | 'svg'", "description": "Image output format.", "required": false }
+        {
+          "name": "data",
+          "type": "string",
+          "description": "Data to encode."
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "description": "Barcode format override.",
+          "required": false
+        },
+        {
+          "name": "outputFormat",
+          "type": "'png' | 'svg'",
+          "description": "Image output format.",
+          "required": false
+        }
       ],
       "returns": "Promise<Buffer>",
       "description": "Generate a barcode image from data."
@@ -79,8 +114,17 @@
     {
       "name": "generateDataUrl",
       "params": [
-        { "name": "data", "type": "string", "description": "Data to encode." },
-        { "name": "format", "type": "string", "description": "Barcode format override.", "required": false }
+        {
+          "name": "data",
+          "type": "string",
+          "description": "Data to encode."
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "description": "Barcode format override.",
+          "required": false
+        }
       ],
       "returns": "Promise<string>",
       "description": "Generate a barcode as a base64 data URL for use in <img> tags."
@@ -88,13 +132,19 @@
     {
       "name": "scan",
       "params": [
-        { "name": "input", "type": "Buffer | string", "description": "Image as Buffer or file path containing a barcode." }
+        {
+          "name": "input",
+          "type": "Buffer | string",
+          "description": "Image as Buffer or file path containing a barcode."
+        }
       ],
       "returns": "Promise<{ data: string; format: string; confidence: number }>",
       "description": "Decode a barcode from an image."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",

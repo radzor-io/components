@@ -8,6 +8,7 @@
     "python"
   ],
   "category": "messaging",
+  "runtime": "server",
   "tags": [
     "sms",
     "twilio",

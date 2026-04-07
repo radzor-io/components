@@ -8,6 +8,7 @@
     "python"
   ],
   "category": "storage",
+  "runtime": "server",
   "tags": [
     "upload",
     "s3",

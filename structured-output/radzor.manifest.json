@@ -3,9 +3,21 @@
   "name": "@radzor/structured-output",
   "version": "0.1.0",
   "description": "Force LLM responses to match a JSON schema. Wraps OpenAI and Anthropic with schema-validated generation, automatic retry on parse failure, and TypeScript type inference from the schema.",
-  "languages": ["typescript"],
+  "languages": [
+    "typescript"
+  ],
   "category": "ai",
-  "tags": ["llm", "structured", "json-schema", "extraction", "openai", "anthropic", "validation", "ai"],
+  "runtime": "server",
+  "tags": [
+    "llm",
+    "structured",
+    "json-schema",
+    "extraction",
+    "openai",
+    "anthropic",
+    "validation",
+    "ai"
+  ],
   "inputs": [
     {
       "name": "provider",
@@ -55,17 +67,27 @@
   "events": [
     {
       "name": "onParsed",
-      "payload": { "model": "string", "attempts": "number" },
+      "payload": {
+        "model": "string",
+        "attempts": "number"
+      },
       "description": "Fired when the output is successfully parsed and validated."
     },
     {
       "name": "onRetry",
-      "payload": { "attempt": "number", "validationError": "string" },
+      "payload": {
+        "attempt": "number",
+        "validationError": "string"
+      },
       "description": "Fired when validation fails and a retry is triggered."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "lastAttempt": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "lastAttempt": "string"
+      },
       "description": "Fired when all retries are exhausted."
     }
   ],
@@ -73,9 +95,22 @@
     {
       "name": "generate",
       "params": [
-        { "name": "prompt", "type": "string", "description": "User prompt to send to the LLM." },
-        { "name": "schema", "type": "Record<string, unknown>", "description": "JSON Schema object describing the expected output shape." },
-        { "name": "systemPrompt", "type": "string", "description": "Optional system instructions.", "required": false }
+        {
+          "name": "prompt",
+          "type": "string",
+          "description": "User prompt to send to the LLM."
+        },
+        {
+          "name": "schema",
+          "type": "Record<string, unknown>",
+          "description": "JSON Schema object describing the expected output shape."
+        },
+        {
+          "name": "systemPrompt",
+          "type": "string",
+          "description": "Optional system instructions.",
+          "required": false
+        }
       ],
       "returns": "Promise<T>",
       "description": "Generate a structured response matching the provided JSON schema."
@@ -83,8 +118,16 @@
     {
       "name": "extract",
       "params": [
-        { "name": "text", "type": "string", "description": "Source text to extract structured data from." },
-        { "name": "schema", "type": "Record<string, unknown>", "description": "JSON Schema describing the fields to extract." }
+        {
+          "name": "text",
+          "type": "string",
+          "description": "Source text to extract structured data from."
+        },
+        {
+          "name": "schema",
+          "type": "Record<string, unknown>",
+          "description": "JSON Schema describing the fields to extract."
+        }
       ],
       "returns": "Promise<T>",
       "description": "Extract structured fields from unstructured text."
@@ -92,14 +135,24 @@
     {
       "name": "classify",
       "params": [
-        { "name": "text", "type": "string", "description": "Text to classify." },
-        { "name": "labels", "type": "string[]", "description": "Possible classification labels." }
+        {
+          "name": "text",
+          "type": "string",
+          "description": "Text to classify."
+        },
+        {
+          "name": "labels",
+          "type": "string[]",
+          "description": "Possible classification labels."
+        }
       ],
       "returns": "Promise<{ label: string; confidence: number; reasoning: string }>",
       "description": "Classify text into one of the provided labels with a confidence score."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",

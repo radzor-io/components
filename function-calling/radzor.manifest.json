@@ -3,9 +3,21 @@
   "name": "@radzor/function-calling",
   "version": "0.1.0",
   "description": "Structured LLM tool use (function calling) for OpenAI and Anthropic. Define typed tools, run agentic loops, and receive validated structured results. Handles multi-turn tool execution automatically.",
-  "languages": ["typescript"],
+  "languages": [
+    "typescript"
+  ],
   "category": "ai",
-  "tags": ["function-calling", "tool-use", "agent", "openai", "anthropic", "llm", "ai", "structured"],
+  "runtime": "server",
+  "tags": [
+    "function-calling",
+    "tool-use",
+    "agent",
+    "openai",
+    "anthropic",
+    "llm",
+    "ai",
+    "structured"
+  ],
   "inputs": [
     {
       "name": "provider",
@@ -54,22 +66,35 @@
   "events": [
     {
       "name": "onToolCalled",
-      "payload": { "tool": "string", "input": "string" },
+      "payload": {
+        "tool": "string",
+        "input": "string"
+      },
       "description": "Fired when the LLM invokes a tool."
     },
     {
       "name": "onToolResult",
-      "payload": { "tool": "string", "durationMs": "number" },
+      "payload": {
+        "tool": "string",
+        "durationMs": "number"
+      },
       "description": "Fired when a tool call completes and its result is returned to the LLM."
     },
     {
       "name": "onComplete",
-      "payload": { "iterations": "number", "tokensUsed": "number" },
+      "payload": {
+        "iterations": "number",
+        "tokensUsed": "number"
+      },
       "description": "Fired when the LLM produces a final response with no more tool calls."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "iteration": "number" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "iteration": "number"
+      },
       "description": "Fired on tool execution error or API failure."
     }
   ],
@@ -77,7 +102,11 @@
     {
       "name": "define",
       "params": [
-        { "name": "tools", "type": "Array<{ name: string; description: string; schema: Record<string, unknown>; handler: (input: unknown) => Promise<unknown> }>", "description": "Tool definitions with JSON Schema input spec and async handler function." }
+        {
+          "name": "tools",
+          "type": "Array<{ name: string; description: string; schema: Record<string, unknown>; handler: (input: unknown) => Promise<unknown> }>",
+          "description": "Tool definitions with JSON Schema input spec and async handler function."
+        }
       ],
       "returns": "void",
       "description": "Register tools the LLM can call. Must be called before run()."
@@ -85,7 +114,11 @@
     {
       "name": "run",
       "params": [
-        { "name": "prompt", "type": "string", "description": "User message to start the agentic loop." }
+        {
+          "name": "prompt",
+          "type": "string",
+          "description": "User message to start the agentic loop."
+        }
       ],
       "returns": "Promise<{ response: string; toolCallLog: Array<{ tool: string; input: unknown; output: unknown; durationMs: number }> }>",
       "description": "Start an agentic tool-use loop. Runs until the LLM produces a final response or maxIterations is reached."
@@ -93,13 +126,19 @@
     {
       "name": "runWithHistory",
       "params": [
-        { "name": "messages", "type": "Array<{ role: 'user' | 'assistant'; content: string }>", "description": "Conversation history to continue from." }
+        {
+          "name": "messages",
+          "type": "Array<{ role: 'user' | 'assistant'; content: string }>",
+          "description": "Conversation history to continue from."
+        }
       ],
       "returns": "Promise<{ response: string; toolCallLog: Array<{ tool: string; input: unknown; output: unknown; durationMs: number }> }>",
       "description": "Continue a multi-turn conversation with tool use."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",

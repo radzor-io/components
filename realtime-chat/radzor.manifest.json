@@ -7,6 +7,7 @@
     "typescript"
   ],
   "category": "chat",
+  "runtime": "browser",
   "tags": [
     "websocket",
     "realtime",

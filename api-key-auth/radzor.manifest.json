@@ -3,9 +3,19 @@
   "name": "@radzor/api-key-auth",
   "version": "0.1.0",
   "description": "API key authentication middleware. Generate, validate, hash, and revoke API keys.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "auth",
-  "tags": ["api-key", "authentication", "middleware", "security", "auth"],
+  "runtime": "server",
+  "tags": [
+    "api-key",
+    "authentication",
+    "middleware",
+    "security",
+    "auth"
+  ],
   "inputs": [
     {
       "name": "headerName",
@@ -30,17 +40,25 @@
   "events": [
     {
       "name": "onValidated",
-      "payload": { "keyId": "string", "prefix": "string" },
+      "payload": {
+        "keyId": "string",
+        "prefix": "string"
+      },
       "description": "Fired when an API key is successfully validated."
     },
     {
       "name": "onRevoked",
-      "payload": { "keyId": "string" },
+      "payload": {
+        "keyId": "string"
+      },
       "description": "Fired when an API key is revoked."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
       "description": "Fired on auth error."
     }
   ],
@@ -54,8 +72,16 @@
     {
       "name": "validateKey",
       "params": [
-        { "name": "key", "type": "string", "description": "Raw API key to validate." },
-        { "name": "storedHash", "type": "string", "description": "Stored hash to compare against." }
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Raw API key to validate."
+        },
+        {
+          "name": "storedHash",
+          "type": "string",
+          "description": "Stored hash to compare against."
+        }
       ],
       "returns": "Promise<boolean>",
       "description": "Validate a raw API key against its stored hash."
@@ -63,7 +89,11 @@
     {
       "name": "hashKey",
       "params": [
-        { "name": "key", "type": "string", "description": "Raw API key to hash." }
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Raw API key to hash."
+        }
       ],
       "returns": "string",
       "description": "Hash an API key for storage (SHA-256)."
@@ -71,12 +101,18 @@
     {
       "name": "revokeKey",
       "params": [
-        { "name": "keyId", "type": "string", "description": "ID of the key to revoke." }
+        {
+          "name": "keyId",
+          "type": "string",
+          "description": "ID of the key to revoke."
+        }
       ],
       "returns": "Promise<void>",
       "description": "Revoke an API key by ID."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {}
 }

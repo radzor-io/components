@@ -3,9 +3,22 @@
   "name": "@radzor/http-client",
   "version": "0.1.0",
   "description": "Resilient HTTP client with automatic retry, exponential backoff, timeout, and request/response interceptors. Built on the native fetch API. No dependencies.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "networking",
-  "tags": ["http", "fetch", "retry", "timeout", "backoff", "api", "client", "rest"],
+  "runtime": "universal",
+  "tags": [
+    "http",
+    "fetch",
+    "retry",
+    "timeout",
+    "backoff",
+    "api",
+    "client",
+    "rest"
+  ],
   "inputs": [
     {
       "name": "baseUrl",
@@ -51,22 +64,37 @@
   "events": [
     {
       "name": "onRequest",
-      "payload": { "method": "string", "url": "string" },
+      "payload": {
+        "method": "string",
+        "url": "string"
+      },
       "description": "Fired before each request attempt."
     },
     {
       "name": "onResponse",
-      "payload": { "status": "number", "url": "string", "durationMs": "number" },
+      "payload": {
+        "status": "number",
+        "url": "string",
+        "durationMs": "number"
+      },
       "description": "Fired on successful response."
     },
     {
       "name": "onRetry",
-      "payload": { "attempt": "number", "delayMs": "number", "reason": "string" },
+      "payload": {
+        "attempt": "number",
+        "delayMs": "number",
+        "reason": "string"
+      },
       "description": "Fired when a request is retried."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "url": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "url": "string"
+      },
       "description": "Fired when all retry attempts are exhausted."
     }
   ],
@@ -74,8 +102,17 @@
     {
       "name": "get",
       "params": [
-        { "name": "path", "type": "string", "description": "URL path or full URL." },
-        { "name": "options", "type": "RequestOptions", "description": "Per-request headers, params, timeout override.", "required": false }
+        {
+          "name": "path",
+          "type": "string",
+          "description": "URL path or full URL."
+        },
+        {
+          "name": "options",
+          "type": "RequestOptions",
+          "description": "Per-request headers, params, timeout override.",
+          "required": false
+        }
       ],
       "returns": "Promise<{ status: number; data: unknown }>",
       "description": "Perform a GET request."
@@ -83,9 +120,22 @@
     {
       "name": "post",
       "params": [
-        { "name": "path", "type": "string", "description": "URL path or full URL." },
-        { "name": "body", "type": "unknown", "description": "Request body (serialized as JSON)." },
-        { "name": "options", "type": "RequestOptions", "description": "Per-request overrides.", "required": false }
+        {
+          "name": "path",
+          "type": "string",
+          "description": "URL path or full URL."
+        },
+        {
+          "name": "body",
+          "type": "unknown",
+          "description": "Request body (serialized as JSON)."
+        },
+        {
+          "name": "options",
+          "type": "RequestOptions",
+          "description": "Per-request overrides.",
+          "required": false
+        }
       ],
       "returns": "Promise<{ status: number; data: unknown }>",
       "description": "Perform a POST request with a JSON body."
@@ -93,9 +143,22 @@
     {
       "name": "put",
       "params": [
-        { "name": "path", "type": "string", "description": "URL path or full URL." },
-        { "name": "body", "type": "unknown", "description": "Request body." },
-        { "name": "options", "type": "RequestOptions", "description": "Per-request overrides.", "required": false }
+        {
+          "name": "path",
+          "type": "string",
+          "description": "URL path or full URL."
+        },
+        {
+          "name": "body",
+          "type": "unknown",
+          "description": "Request body."
+        },
+        {
+          "name": "options",
+          "type": "RequestOptions",
+          "description": "Per-request overrides.",
+          "required": false
+        }
       ],
       "returns": "Promise<{ status: number; data: unknown }>",
       "description": "Perform a PUT request with a JSON body."
@@ -103,8 +166,17 @@
     {
       "name": "delete",
       "params": [
-        { "name": "path", "type": "string", "description": "URL path or full URL." },
-        { "name": "options", "type": "RequestOptions", "description": "Per-request overrides.", "required": false }
+        {
+          "name": "path",
+          "type": "string",
+          "description": "URL path or full URL."
+        },
+        {
+          "name": "options",
+          "type": "RequestOptions",
+          "description": "Per-request overrides.",
+          "required": false
+        }
       ],
       "returns": "Promise<{ status: number; data: unknown }>",
       "description": "Perform a DELETE request."
@@ -112,15 +184,30 @@
     {
       "name": "request",
       "params": [
-        { "name": "method", "type": "string", "description": "HTTP method (GET, POST, PATCH, etc.)." },
-        { "name": "path", "type": "string", "description": "URL path or full URL." },
-        { "name": "options", "type": "RequestOptions", "description": "Body, headers, timeout, and other options.", "required": false }
+        {
+          "name": "method",
+          "type": "string",
+          "description": "HTTP method (GET, POST, PATCH, etc.)."
+        },
+        {
+          "name": "path",
+          "type": "string",
+          "description": "URL path or full URL."
+        },
+        {
+          "name": "options",
+          "type": "RequestOptions",
+          "description": "Body, headers, timeout, and other options.",
+          "required": false
+        }
       ],
       "returns": "Promise<{ status: number; headers: Record<string, string>; data: unknown }>",
       "description": "Generic request method for any HTTP verb."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {},
   "llm": {
     "integrationPrompt": "llm/integration.md",

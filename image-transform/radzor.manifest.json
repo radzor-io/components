@@ -3,9 +3,22 @@
   "name": "@radzor/image-transform",
   "version": "0.1.0",
   "description": "High-performance image transformation using Sharp. Resize, crop, convert formats, apply watermarks, strip metadata, and optimize for web. Supports JPEG, PNG, WebP, AVIF, GIF, and SVG inputs.",
-  "languages": ["typescript"],
+  "languages": [
+    "typescript"
+  ],
   "category": "media",
-  "tags": ["image", "resize", "compress", "sharp", "webp", "avif", "crop", "watermark", "optimize"],
+  "runtime": "server",
+  "tags": [
+    "image",
+    "resize",
+    "compress",
+    "sharp",
+    "webp",
+    "avif",
+    "crop",
+    "watermark",
+    "optimize"
+  ],
   "inputs": [
     {
       "name": "quality",
@@ -51,12 +64,21 @@
   "events": [
     {
       "name": "onTransformed",
-      "payload": { "format": "string", "width": "number", "height": "number", "sizeBytes": "number" },
+      "payload": {
+        "format": "string",
+        "width": "number",
+        "height": "number",
+        "sizeBytes": "number"
+      },
       "description": "Fired when a transformation completes successfully."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "operation": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "operation": "string"
+      },
       "description": "Fired when a transformation fails."
     }
   ],
@@ -64,10 +86,29 @@
     {
       "name": "resize",
       "params": [
-        { "name": "input", "type": "Buffer | string", "description": "Input image as Buffer or file path." },
-        { "name": "width", "type": "number", "description": "Target width in pixels.", "required": false },
-        { "name": "height", "type": "number", "description": "Target height in pixels.", "required": false },
-        { "name": "fit", "type": "'cover' | 'contain' | 'fill' | 'inside' | 'outside'", "description": "Resize strategy.", "required": false }
+        {
+          "name": "input",
+          "type": "Buffer | string",
+          "description": "Input image as Buffer or file path."
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "description": "Target width in pixels.",
+          "required": false
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "description": "Target height in pixels.",
+          "required": false
+        },
+        {
+          "name": "fit",
+          "type": "'cover' | 'contain' | 'fill' | 'inside' | 'outside'",
+          "description": "Resize strategy.",
+          "required": false
+        }
       ],
       "returns": "Promise<Buffer>",
       "description": "Resize an image. Preserves aspect ratio by default (fit=inside)."
@@ -75,11 +116,33 @@
     {
       "name": "crop",
       "params": [
-        { "name": "input", "type": "Buffer | string", "description": "Input image." },
-        { "name": "width", "type": "number", "description": "Crop width." },
-        { "name": "height", "type": "number", "description": "Crop height." },
-        { "name": "left", "type": "number", "description": "Left offset.", "required": false },
-        { "name": "top", "type": "number", "description": "Top offset.", "required": false }
+        {
+          "name": "input",
+          "type": "Buffer | string",
+          "description": "Input image."
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "description": "Crop width."
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "description": "Crop height."
+        },
+        {
+          "name": "left",
+          "type": "number",
+          "description": "Left offset.",
+          "required": false
+        },
+        {
+          "name": "top",
+          "type": "number",
+          "description": "Top offset.",
+          "required": false
+        }
       ],
       "returns": "Promise<Buffer>",
       "description": "Crop a region from an image."
@@ -87,9 +150,22 @@
     {
       "name": "convert",
       "params": [
-        { "name": "input", "type": "Buffer | string", "description": "Input image." },
-        { "name": "format", "type": "'jpeg' | 'png' | 'webp' | 'avif'", "description": "Target format." },
-        { "name": "quality", "type": "number", "description": "Output quality override (1-100).", "required": false }
+        {
+          "name": "input",
+          "type": "Buffer | string",
+          "description": "Input image."
+        },
+        {
+          "name": "format",
+          "type": "'jpeg' | 'png' | 'webp' | 'avif'",
+          "description": "Target format."
+        },
+        {
+          "name": "quality",
+          "type": "number",
+          "description": "Output quality override (1-100).",
+          "required": false
+        }
       ],
       "returns": "Promise<Buffer>",
       "description": "Convert an image to a different format."
@@ -97,9 +173,22 @@
     {
       "name": "watermark",
       "params": [
-        { "name": "input", "type": "Buffer | string", "description": "Base image." },
-        { "name": "overlay", "type": "Buffer | string", "description": "Watermark image to composite." },
-        { "name": "gravity", "type": "'southeast' | 'south' | 'southwest' | 'east' | 'center' | 'west' | 'northeast' | 'north' | 'northwest'", "description": "Watermark position.", "required": false }
+        {
+          "name": "input",
+          "type": "Buffer | string",
+          "description": "Base image."
+        },
+        {
+          "name": "overlay",
+          "type": "Buffer | string",
+          "description": "Watermark image to composite."
+        },
+        {
+          "name": "gravity",
+          "type": "'southeast' | 'south' | 'southwest' | 'east' | 'center' | 'west' | 'northeast' | 'north' | 'northwest'",
+          "description": "Watermark position.",
+          "required": false
+        }
       ],
       "returns": "Promise<Buffer>",
       "description": "Add a watermark overlay to an image."
@@ -107,7 +196,11 @@
     {
       "name": "getMetadata",
       "params": [
-        { "name": "input", "type": "Buffer | string", "description": "Input image." }
+        {
+          "name": "input",
+          "type": "Buffer | string",
+          "description": "Input image."
+        }
       ],
       "returns": "Promise<ImageMetadata>",
       "description": "Read image metadata without transformation."
@@ -117,7 +210,9 @@
     "packages": {
       "sharp": "^0.33.0"
     },
-    "radzor": ["@radzor/file-upload"]
+    "radzor": [
+      "@radzor/file-upload"
+    ]
   },
   "composability": {},
   "llm": {

@@ -3,9 +3,20 @@
   "name": "@radzor/smart-contract",
   "version": "0.1.0",
   "description": "Interact with EVM smart contracts via JSON-RPC. Read state, call functions, and send transactions.",
-  "languages": ["typescript", "python"],
+  "languages": [
+    "typescript",
+    "python"
+  ],
   "category": "web3",
-  "tags": ["smart-contract", "ethereum", "evm", "solidity", "web3", "blockchain"],
+  "runtime": "server",
+  "tags": [
+    "smart-contract",
+    "ethereum",
+    "evm",
+    "solidity",
+    "web3",
+    "blockchain"
+  ],
   "inputs": [
     {
       "name": "rpcUrl",
@@ -36,12 +47,19 @@
   "events": [
     {
       "name": "onCallResult",
-      "payload": { "method": "string", "result": "string" },
+      "payload": {
+        "method": "string",
+        "result": "string"
+      },
       "description": "Fired on successful contract read call."
     },
     {
       "name": "onError",
-      "payload": { "code": "string", "message": "string", "method": "string" },
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "method": "string"
+      },
       "description": "Fired on JSON-RPC or ABI error."
     }
   ],
@@ -49,8 +67,17 @@
     {
       "name": "call",
       "params": [
-        { "name": "method", "type": "string", "description": "Contract function name to call." },
-        { "name": "args", "type": "unknown[]", "description": "Arguments for the function.", "required": false }
+        {
+          "name": "method",
+          "type": "string",
+          "description": "Contract function name to call."
+        },
+        {
+          "name": "args",
+          "type": "unknown[]",
+          "description": "Arguments for the function.",
+          "required": false
+        }
       ],
       "returns": "Promise<unknown>",
       "description": "Read-only call to a view/pure contract function."
@@ -58,8 +85,16 @@
     {
       "name": "encodeFunctionData",
       "params": [
-        { "name": "method", "type": "string", "description": "Function name." },
-        { "name": "args", "type": "unknown[]", "description": "Function arguments." }
+        {
+          "name": "method",
+          "type": "string",
+          "description": "Function name."
+        },
+        {
+          "name": "args",
+          "type": "unknown[]",
+          "description": "Function arguments."
+        }
       ],
       "returns": "string",
       "description": "ABI-encode a function call for use in a raw transaction."
@@ -67,13 +102,23 @@
     {
       "name": "decodeFunctionResult",
       "params": [
-        { "name": "method", "type": "string", "description": "Function name." },
-        { "name": "data", "type": "string", "description": "Hex-encoded return data from the call." }
+        {
+          "name": "method",
+          "type": "string",
+          "description": "Function name."
+        },
+        {
+          "name": "data",
+          "type": "string",
+          "description": "Hex-encoded return data from the call."
+        }
       ],
       "returns": "unknown[]",
       "description": "ABI-decode return data from a contract call."
     }
   ],
-  "dependencies": { "packages": {} },
+  "dependencies": {
+    "packages": {}
+  },
   "composability": {}
 }
