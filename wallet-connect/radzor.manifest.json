@@ -125,6 +125,8 @@
   },
   "composability": {},
   "llm": {
-    "constraints": "Browser-only — requires window.ethereum injected by MetaMask or similar. Not available in Node.js or SSR. Always handle the case where no wallet is installed."
+    "constraints": "Browser-only \u2014 requires window.ethereum injected by MetaMask or similar. Not available in Node.js or SSR. Always handle the case where no wallet is installed.",
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md"
   }
 }

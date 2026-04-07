@@ -128,5 +128,10 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {}
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "No external dependencies. In-memory only \u2014 cache is lost on process restart. Set maxSize to prevent memory leaks. TTL is in milliseconds."
+  }
 }

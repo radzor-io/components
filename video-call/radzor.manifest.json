@@ -123,6 +123,8 @@
   },
   "composability": {},
   "llm": {
-    "constraints": "Browser-only — uses WebRTC and getUserMedia APIs not available in Node.js. Requires HTTPS in production. For peer discovery and signaling, a WebSocket server is needed."
+    "constraints": "Browser-only \u2014 uses WebRTC and getUserMedia APIs not available in Node.js. Requires HTTPS in production. For peer discovery and signaling, a WebSocket server is needed.",
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md"
   }
 }

@@ -124,5 +124,10 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {}
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "No external dependencies. In-memory only \u2014 jobs are lost on process restart. For persistent queues use Redis or a dedicated message broker. Concurrency controls parallel workers."
+  }
 }

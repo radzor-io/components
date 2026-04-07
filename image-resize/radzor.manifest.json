@@ -140,5 +140,10 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {}
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "No external dependencies. Uses raw pixel manipulation \u2014 slower than native bindings but fully portable. Input must be a Buffer or Uint8Array of a supported format."
+  }
 }

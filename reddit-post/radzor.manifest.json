@@ -134,5 +134,10 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {}
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires Reddit API credentials (client ID, secret, username, password). Rate-limited to 60 requests/minute by Reddit. OAuth token is refreshed automatically."
+  }
 }

@@ -108,5 +108,10 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {}
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "No external dependencies. Works in Node.js and browser. For large datasets prefer streaming mode. Default delimiter is comma."
+  }
 }

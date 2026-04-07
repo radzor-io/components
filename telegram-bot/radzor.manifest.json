@@ -144,5 +144,10 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {}
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires a Telegram Bot Token from @BotFather. Uses long-polling by default. For production, prefer webhook mode with HTTPS."
+  }
 }

@@ -120,5 +120,10 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {}
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires an Ethereum JSON-RPC endpoint (Infura, Alchemy, or local node). ABI must match the deployed contract. Sending transactions requires a funded private key."
+  }
 }

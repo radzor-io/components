@@ -107,5 +107,10 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {}
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "No external dependencies. TOTP tokens are time-based (RFC 6238) \u2014 server clock must be accurate. Default window is \u00b11 period (30 seconds). QR URIs use otpauth:// format."
+  }
 }

@@ -114,5 +114,10 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {}
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires FCM server key or APNs credentials. FCM uses HTTP v1 API. APNs requires a .p8 private key file. Device tokens must be collected from client apps."
+  }
 }

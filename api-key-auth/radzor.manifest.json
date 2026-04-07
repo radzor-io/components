@@ -114,5 +114,10 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {}
+  "composability": {},
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "No external dependencies. Keys are hashed with SHA-256 \u2014 never store plain-text keys. Header name and prefix are configurable."
+  }
 }
