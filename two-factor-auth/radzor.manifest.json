@@ -107,10 +107,21 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "verificationResult",
+        "compatibleWith": [
+          "@radzor/sms-send.action.send.to",
+          "@radzor/email-send.action.send.message",
+          "@radzor/push-notification.action.sendToDevice.token"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "No external dependencies. TOTP tokens are time-based (RFC 6238) \u2014 server clock must be accurate. Default window is \u00b11 period (30 seconds). QR URIs use otpauth:// format."
+    "constraints": "No external dependencies. TOTP tokens are time-based (RFC 6238) — server clock must be accurate. Default window is ±1 period (30 seconds). QR URIs use otpauth:// format."
   }
 }

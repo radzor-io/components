@@ -7,7 +7,7 @@
     "typescript"
   ],
   "category": "data",
-  "runtime": "universal",
+  "runtime": "server",
   "tags": [
     "csv",
     "import",
@@ -120,8 +120,9 @@
     {
       "name": "onError",
       "payload": {
-        "line": "number",
+        "code": "string",
         "message": "string",
+        "line": "number",
         "raw": "string"
       },
       "description": "Fired for each row that fails validation or parsing."
@@ -187,7 +188,7 @@
       {
         "output": "rows",
         "compatibleWith": [
-          "@radzor/background-job.input.payload"
+          "@radzor/background-job.action.enqueue.payload"
         ]
       }
     ]

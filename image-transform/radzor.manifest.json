@@ -242,10 +242,19 @@
       "@radzor/file-upload"
     ]
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "imageBuffer",
+        "compatibleWith": [
+          "@radzor/file-upload.action.upload.data"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Sharp requires native bindings \u2014 prebuilt binaries are available for common platforms. Not compatible with edge runtimes. In Docker, install libvips or use the sharp Docker image. Width and height are both optional in resize; omit one to scale proportionally."
+    "constraints": "Sharp requires native bindings — prebuilt binaries are available for common platforms. Not compatible with edge runtimes. In Docker, install libvips or use the sharp Docker image. Width and height are both optional in resize; omit one to scale proportionally."
   }
 }

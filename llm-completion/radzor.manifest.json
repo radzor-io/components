@@ -192,7 +192,7 @@
         "output": "completionResult",
         "compatibleWith": [
           "@radzor/text-to-speech.action.synthesize.text",
-          "@radzor/structured-output.action.parse.text",
+          "@radzor/structured-output.action.extract.text",
           "@radzor/markdown-render.action.render.markdown"
         ],
         "mapField": "content"

@@ -145,7 +145,16 @@
     "packages": {},
     "radzor": []
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "generationResult",
+        "compatibleWith": [
+          "@radzor/file-upload.action.upload.data"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

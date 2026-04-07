@@ -124,7 +124,7 @@
       {
         "output": "audioData",
         "compatibleWith": [
-          "@radzor/file-upload.action.upload.fileContent"
+          "@radzor/file-upload.action.upload.data"
         ]
       }
     ]

@@ -132,10 +132,22 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "extractionResult",
+        "compatibleWith": [
+          "@radzor/llm-completion.action.complete.prompt",
+          "@radzor/search-index.action.index.documents",
+          "@radzor/embeddings-store.action.add.id"
+        ],
+        "mapField": "text"
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Tesseract requires a local installation (apt-get install tesseract-ocr). Cloud providers require API credentials and network access. extractStructured() is only available for google-vision and azure \u2014 tesseract returns plain text only. For large PDFs, process page by page to avoid memory issues."
+    "constraints": "Tesseract requires a local installation (apt-get install tesseract-ocr). Cloud providers require API credentials and network access. extractStructured() is only available for google-vision and azure — tesseract returns plain text only. For large PDFs, process page by page to avoid memory issues."
   }
 }

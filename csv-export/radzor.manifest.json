@@ -8,7 +8,7 @@
     "python"
   ],
   "category": "data",
-  "runtime": "universal",
+  "runtime": "server",
   "tags": [
     "csv",
     "export",
@@ -108,7 +108,17 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "csvBuffer",
+        "compatibleWith": [
+          "@radzor/file-upload.action.upload.data",
+          "@radzor/email-send.action.send.message"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

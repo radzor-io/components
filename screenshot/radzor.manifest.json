@@ -147,7 +147,16 @@
       "puppeteer": "^21.0.0"
     }
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "screenshotBuffer",
+        "compatibleWith": [
+          "@radzor/file-upload.action.upload.data"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

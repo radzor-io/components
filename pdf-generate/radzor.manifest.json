@@ -122,7 +122,17 @@
     "packages": {},
     "radzor": []
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "pdfBuffer",
+        "compatibleWith": [
+          "@radzor/file-upload.action.upload.data",
+          "@radzor/email-send.action.send.message"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

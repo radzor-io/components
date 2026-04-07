@@ -8,7 +8,7 @@
     "python"
   ],
   "category": "automation",
-  "runtime": "universal",
+  "runtime": "server",
   "tags": [
     "feature-flag",
     "rollout",

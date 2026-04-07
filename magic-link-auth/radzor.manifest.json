@@ -132,10 +132,25 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "verifiedEmail",
+        "compatibleWith": [
+          "@radzor/session-manager.action.create.data"
+        ]
+      },
+      {
+        "output": "tokenMeta",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "generateLink() only creates the URL \u2014 you must send it via @radzor/email-send or similar. Tokens are stored in-memory by default; restart clears all pending tokens. For multi-instance deployments, use an external store."
+    "constraints": "generateLink() only creates the URL — you must send it via @radzor/email-send or similar. Tokens are stored in-memory by default; restart clears all pending tokens. For multi-instance deployments, use an external store."
   }
 }

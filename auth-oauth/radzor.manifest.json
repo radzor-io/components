@@ -228,9 +228,8 @@
       {
         "output": "session",
         "compatibleWith": [
-          "@radzor/realtime-chat.input.authToken"
-        ],
-        "mapField": "accessToken"
+          "@radzor/session-manager.action.create.data"
+        ]
       }
     ]
   },

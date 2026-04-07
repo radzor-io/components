@@ -140,10 +140,20 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "finalResponse",
+        "compatibleWith": [
+          "@radzor/llm-completion.action.complete.prompt"
+        ],
+        "mapField": "result"
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Tool handler functions must be synchronous-safe or return Promises. maxIterations prevents infinite agentic loops \u2014 set conservatively. Tool schemas must be valid JSON Schema. For Anthropic, uses tool_use blocks; for OpenAI, uses function_calling or tool_choice."
+    "constraints": "Tool handler functions must be synchronous-safe or return Promises. maxIterations prevents infinite agentic loops — set conservatively. Tool schemas must be valid JSON Schema. For Anthropic, uses tool_use blocks; for OpenAI, uses function_calling or tool_choice."
   }
 }

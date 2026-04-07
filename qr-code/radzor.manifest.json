@@ -8,7 +8,7 @@
     "python"
   ],
   "category": "media",
-  "runtime": "universal",
+  "runtime": "server",
   "tags": [
     "qr-code",
     "barcode",

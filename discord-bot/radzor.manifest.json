@@ -116,7 +116,17 @@
     "packages": {},
     "radzor": []
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "messageResult",
+        "compatibleWith": [
+          "@radzor/llm-completion.action.complete.prompt"
+        ],
+        "mapField": "content"
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

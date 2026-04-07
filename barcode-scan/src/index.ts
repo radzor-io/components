@@ -155,6 +155,103 @@ function validateCode39(data: string): void {
   }
 }
 
+// ── EAN / UPC encoding tables ──
+
+const EAN_L: string[] = [
+  "0001101","0011001","0010011","0111101","0100011",
+  "0110001","0101111","0111011","0110111","0001011",
+];
+const EAN_G: string[] = [
+  "0100111","0110011","0011011","0100001","0011101",
+  "0111001","0000101","0010001","0001001","0010111",
+];
+const EAN_R: string[] = [
+  "1110010","1100110","1101100","1000010","1011100",
+  "1001110","1010000","1000100","1001000","1110100",
+];
+const EAN_PARITY: string[] = [
+  "LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG",
+  "LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL",
+];
+
+function eanCheckDigit(digits: number[]): number {
+  let sum = 0;
+  for (let i = 0; i < 12; i++) {
+    sum += digits[i] * (i % 2 === 0 ? 1 : 3);
+  }
+  return (10 - (sum % 10)) % 10;
+}
+
+function encodeEan13(data: string): boolean[] {
+  const digits = data.split("").map(Number);
+  if (digits.length === 12) digits.push(eanCheckDigit(digits));
+
+  const parity = EAN_PARITY[digits[0]];
+  let bits = "101"; // start guard
+
+  for (let i = 1; i <= 6; i++) {
+    bits += parity[i - 1] === "L" ? EAN_L[digits[i]] : EAN_G[digits[i]];
+  }
+  bits += "01010"; // center guard
+  for (let i = 7; i <= 12; i++) {
+    bits += EAN_R[digits[i]];
+  }
+  bits += "101"; // end guard
+
+  return bits.split("").map((c) => c === "1");
+}
+
+function encodeUpcA(data: string): boolean[] {
+  const digits = data.split("").map(Number);
+  if (digits.length === 11) digits.push(eanCheckDigit([0, ...digits]));
+
+  let bits = "101"; // start guard
+  for (let i = 0; i < 6; i++) {
+    bits += EAN_L[digits[i]];
+  }
+  bits += "01010"; // center guard
+  for (let i = 6; i < 12; i++) {
+    bits += EAN_R[digits[i]];
+  }
+  bits += "101"; // end guard
+
+  return bits.split("").map((c) => c === "1");
+}
+
+// ── Code 39 encoding ──
+
+const CODE39_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%";
+const CODE39_PATTERNS: string[] = [
+  "100010100","101000100","100010100","110000100","100100100",
+  "110100000","100110000","100010010","110010000","101100000",
+  "100101000","101001000","110001000","100100100","110100100",
+  "101100100","100110100","110010100","101010000","100100010",
+  "101000010","100000110","110000010","100000110","110000010",
+  "100010010","110010010","101010010","100010001","110000001",
+  "100000011","110000001","100010001","110010001","101010001",
+  "100010100","100010010","100010001","101000001","100100001",
+  "100100100","100100010","100010010","101001010",
+];
+
+function encodeCode39(data: string): boolean[] {
+  // Code 39 wraps data with start/stop asterisks
+  const toEncode = `*${data}*`;
+  const bars: boolean[] = [];
+
+  for (let i = 0; i < toEncode.length; i++) {
+    const ch = toEncode[i];
+    const idx = ch === "*" ? -1 : CODE39_CHARS.indexOf(ch);
+    // Use a simple wide/narrow pattern — each char is 9 bars, interleaved with narrow space
+    const pattern = idx === -1 ? "100101101" : CODE39_PATTERNS[idx] ?? "100101101";
+    for (const c of pattern) {
+      bars.push(c === "1");
+    }
+    if (i < toEncode.length - 1) bars.push(false); // inter-character space
+  }
+
+  return bars;
+}
+
 export class UnsupportedOperationError extends Error {
   constructor(message: string) {
     super(message);
@@ -196,22 +293,22 @@ export class BarcodeScanner {
     data: string,
     format: BarcodeFormat = this.config.format,
     outputFormat: OutputFormat = "svg"
-  ): Promise<Buffer> {
+  ): Promise<Uint8Array> {
     try {
       let bars: boolean[];
 
       switch (format) {
         case "ean13":
           validateEan13(data);
-          bars = encodeCode128(data.slice(0, 13));
+          bars = encodeEan13(data.slice(0, 13));
           break;
         case "upca":
           validateUpcA(data);
-          bars = encodeCode128(data);
+          bars = encodeUpcA(data);
           break;
         case "code39":
           validateCode39(data);
-          bars = encodeCode128(data);
+          bars = encodeCode39(data);
           break;
         case "code128":
         default:
@@ -220,7 +317,7 @@ export class BarcodeScanner {
       }
 
       const svg = barsToSvg(bars, this.config.width, this.config.height, data, this.config.includeText);
-      const buf = Buffer.from(svg, "utf8");
+      const buf = new TextEncoder().encode(svg);
 
       if (outputFormat === "png") {
         throw new UnsupportedOperationError(
@@ -228,7 +325,7 @@ export class BarcodeScanner {
         );
       }
 
-      this.emit("onGenerated", { data, format, bytes: buf.length });
+      this.emit("onGenerated", { data, format, bytes: buf.byteLength });
       return buf;
     } catch (err) {
       const error = err as Error;
@@ -239,11 +336,12 @@ export class BarcodeScanner {
 
   async generateDataUrl(data: string, format: BarcodeFormat = this.config.format): Promise<string> {
     const buf = await this.generate(data, format, "svg");
-    const base64 = buf.toString("base64");
+    const binary = Array.from(buf).map((b) => String.fromCharCode(b)).join("");
+    const base64 = typeof btoa === "function" ? btoa(binary) : globalThis.btoa(binary);
     return `data:image/svg+xml;base64,${base64}`;
   }
 
-  async scan(_input: Buffer | string): Promise<ScanResult> {
+  async scan(_input: Uint8Array | string): Promise<ScanResult> {
     throw new UnsupportedOperationError(
       "scan() requires an image decoding library. " +
         "For real scanning, integrate with @zxing/library (browser) or use Jimp + zxing-wasm (Node.js). " +

@@ -117,12 +117,6 @@
         "compatibleWith": [
           "@radzor/speech-to-text.action.transcribe.audio"
         ]
-      },
-      {
-        "output": "audioStream",
-        "compatibleWith": [
-          "@radzor/audio-visualizer.input.audioStream"
-        ]
       }
     ]
   },

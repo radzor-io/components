@@ -26,7 +26,7 @@ export type EventMap = {
   onRow: { row: Record<string, unknown>; index: number };
   onBatch: { rows: Record<string, unknown>[]; batchNumber: number };
   onComplete: { totalRows: number; errorRows: number; durationMs: number };
-  onError: { line: number; message: string; raw: string };
+  onError: { code: string; line: number; message: string; raw: string };
 };
 
 export type Listener<T> = (payload: T) => void;
@@ -172,6 +172,7 @@ export class CsvImport {
           } catch (err) {
             errorRows++;
             this.emit("onError", {
+              code: "ROW_PARSE_ERROR",
               line: totalRows,
               message: err instanceof Error ? err.message : String(err),
               raw: JSON.stringify(record),
