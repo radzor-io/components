@@ -30,7 +30,7 @@ jobs:
         run: |
           mkdir -p spec
           curl -fsSL \
-            https://raw.githubusercontent.com/playmobitch/radzor/main/spec/radzor-manifest.schema.json \
+            https://raw.githubusercontent.com/radzor-io/spec/main/radzor-manifest.schema.json \
             -o spec/radzor-manifest.schema.json
 
       - name: Validate all manifests
