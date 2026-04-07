@@ -30,13 +30,13 @@ export interface OverrideEvent {
   previous: FlagValue | undefined;
 }
 
-type EventMap = {
+export type EventMap = {
   onFlagEnabled: FlagEnabledEvent;
   onFlagDisabled: FlagDisabledEvent;
   onOverride: OverrideEvent;
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
 // djb2 hash — deterministic, fast, good distribution for rollout
 function djb2(str: string): number {

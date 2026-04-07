@@ -1,22 +1,22 @@
 // @radzor/sms-send — SMS sending via Twilio or Vonage
 
-type Provider = "twilio" | "vonage";
+export type Provider = "twilio" | "vonage";
 
-interface SmsSendConfig {
+export interface SmsSendConfig {
   provider: Provider;
   accountSid: string;
   authToken: string;
   fromNumber: string;
 }
 
-interface SmsSendResult {
+export interface SmsSendResult {
   messageSid: string;
   to: string;
   status: string;
   provider: Provider;
 }
 
-type EventMap = {
+export type EventMap = {
   onSent: { to: string; messageSid: string };
   onError: { code: string; message: string; to: string };
 };

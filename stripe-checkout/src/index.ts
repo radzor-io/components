@@ -23,14 +23,14 @@ export interface WebhookEvent {
   data: Record<string, unknown>;
 }
 
-type EventMap = {
+export type EventMap = {
   onPaymentSuccess: { sessionId: string; customerId: string; amount: number };
   onPaymentFailed: { sessionId: string; error: string };
   onSubscriptionCreated: { subscriptionId: string; customerId: string; priceId: string };
   onSubscriptionCanceled: { subscriptionId: string };
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
 export class StripeCheckout {
   private secretKey: string;

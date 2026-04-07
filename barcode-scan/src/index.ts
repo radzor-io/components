@@ -31,13 +31,13 @@ export interface BarcodeError {
   message: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onGenerated: GeneratedEvent;
   onScanned: ScannedEvent;
   onError: BarcodeError;
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
 // Code128 character encoding table (subset B)
 const CODE128B: Record<string, number> = {};

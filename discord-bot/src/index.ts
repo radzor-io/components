@@ -1,18 +1,18 @@
 // @radzor/discord-bot — Discord bot with REST API
 
-interface DiscordBotConfig {
+export interface DiscordBotConfig {
   botToken: string;
   applicationId?: string;
 }
 
-interface DiscordMessage {
+export interface DiscordMessage {
   id: string;
   channelId: string;
   content: string;
   authorId: string;
 }
 
-interface DiscordEmbed {
+export interface DiscordEmbed {
   title?: string;
   description?: string;
   color?: number;
@@ -21,7 +21,7 @@ interface DiscordEmbed {
   timestamp?: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onMessage: { channelId: string; content: string; authorId: string };
   onError: { code: string; message: string };
 };

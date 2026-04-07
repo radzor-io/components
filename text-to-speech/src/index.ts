@@ -1,8 +1,8 @@
 // @radzor/text-to-speech — Text-to-speech synthesis
 
-type Provider = "openai" | "elevenlabs";
+export type Provider = "openai" | "elevenlabs";
 
-interface TextToSpeechConfig {
+export interface TextToSpeechConfig {
   provider: Provider;
   apiKey: string;
   voice?: string;
@@ -10,13 +10,13 @@ interface TextToSpeechConfig {
   speed?: number;
 }
 
-interface SynthesizeOptions {
+export interface SynthesizeOptions {
   voice?: string;
   speed?: number;
   format?: "mp3" | "wav" | "opus" | "aac" | "flac";
 }
 
-type EventMap = {
+export type EventMap = {
   onSynthesized: { size: number; format: string; voice: string };
   onError: { code: string; message: string };
 };
@@ -31,6 +31,9 @@ export class TextToSpeech {
   private listeners: Map<string, Function[]> = new Map();
 
   constructor(config: TextToSpeechConfig) {
+    if (!config.apiKey) {
+      throw new Error(`API key required for provider "${config.provider}"`);
+    }
     const defaults = PROVIDER_DEFAULTS[config.provider];
     this.config = {
       provider: config.provider,

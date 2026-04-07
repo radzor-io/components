@@ -2,34 +2,34 @@
 
 import * as crypto from "crypto";
 
-interface SlackBotConfig {
+export interface SlackBotConfig {
   botToken?: string;
   webhookUrl?: string;
   signingSecret?: string;
 }
 
-interface MessageResult {
+export interface MessageResult {
   ts: string;
   channel: string;
   ok: boolean;
 }
 
-interface FileResult {
+export interface FileResult {
   fileId: string;
   permalink: string;
 }
 
-interface SlackBlock {
+export interface SlackBlock {
   type: string;
   [key: string]: unknown;
 }
 
-interface SendOptions {
+export interface SendOptions {
   threadTs?: string;
   unfurlLinks?: boolean;
 }
 
-type EventMap = {
+export type EventMap = {
   onMessageSent: MessageResult;
   onError: { code: string; message: string };
 };

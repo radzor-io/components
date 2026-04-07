@@ -2,26 +2,26 @@
 
 import * as zlib from "zlib";
 
-type CompressionMethod = "deflate" | "store";
+export type CompressionMethod = "deflate" | "store";
 
-interface ZipArchiveConfig {
+export interface ZipArchiveConfig {
   compression?: CompressionMethod;
   level?: number;
 }
 
-interface FileEntry {
+export interface FileEntry {
   name: string;
   size: number;
   compressedSize: number;
   isDirectory: boolean;
 }
 
-interface ZipFileInput {
+export interface ZipFileInput {
   name: string;
   content: Buffer | string;
 }
 
-type EventMap = {
+export type EventMap = {
   onFileAdded: { name: string; size: number };
   onArchived: { fileCount: number; totalSize: number };
   onExtracted: { name: string; size: number };

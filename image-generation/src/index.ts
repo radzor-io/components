@@ -1,9 +1,9 @@
 // @radzor/image-generation — Multi-provider image generation
 
-type Provider = "openai" | "stability" | "replicate";
-type ResponseFormat = "url" | "base64";
+export type Provider = "openai" | "stability" | "replicate";
+export type ResponseFormat = "url" | "base64";
 
-interface ImageGenerationConfig {
+export interface ImageGenerationConfig {
   provider: Provider;
   apiKey: string;
   model?: string;
@@ -11,13 +11,13 @@ interface ImageGenerationConfig {
   responseFormat?: ResponseFormat;
 }
 
-interface GenerateOptions {
+export interface GenerateOptions {
   size?: string;
   responseFormat?: ResponseFormat;
   n?: number;
 }
 
-interface ImageGenerationResult {
+export interface ImageGenerationResult {
   url?: string;
   base64?: string;
   revisedPrompt?: string;
@@ -25,7 +25,7 @@ interface ImageGenerationResult {
   model: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onGenerated: { url: string; prompt: string; provider: string };
   onError: { code: string; message: string; provider: string };
 };
@@ -41,6 +41,9 @@ export class ImageGeneration {
   private listeners: Map<string, Function[]> = new Map();
 
   constructor(config: ImageGenerationConfig) {
+    if (!config.apiKey) {
+      throw new Error(`API key required for provider "${config.provider}"`);
+    }
     const defaults = PROVIDER_DEFAULTS[config.provider];
     this.config = {
       provider: config.provider,

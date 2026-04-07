@@ -21,7 +21,7 @@ export interface AbiParam {
   type: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onCallResult: { method: string; result: unknown };
   onError: { code: string; message: string };
 };

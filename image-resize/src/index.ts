@@ -28,14 +28,14 @@ export interface CropOptions {
   height: number;
 }
 
-type EventMap = {
+export type EventMap = {
   onProcessed: { operation: string; width: number; height: number };
   onError: { code: string; message: string };
 };
 
 // ---- BMP helpers (minimal format we can write without deps) ----
 
-interface RawImage {
+export interface RawImage {
   width: number;
   height: number;
   data: Uint8Array; // RGBA

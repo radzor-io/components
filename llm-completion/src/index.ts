@@ -40,13 +40,13 @@ export interface LLMError {
   status?: number;
 }
 
-type EventMap = {
+export type EventMap = {
   onChunk: StreamChunk;
   onComplete: CompletionResult;
   onError: LLMError;
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
 const DEFAULT_MAX_TOKENS = 4096;
 const DEFAULT_TEMPERATURE = 0.7;

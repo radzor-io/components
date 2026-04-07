@@ -1,10 +1,10 @@
 // @radzor/cron-scheduler — In-process cron scheduler
 
-interface CronSchedulerConfig {
+export interface CronSchedulerConfig {
   timezone?: string;
 }
 
-interface JobEntry {
+export interface JobEntry {
   id: string;
   expression: string;
   handler: () => void | Promise<void>;
@@ -13,7 +13,7 @@ interface JobEntry {
   timer?: ReturnType<typeof setInterval>;
 }
 
-interface CronFields {
+export interface CronFields {
   minute: number[];
   hour: number[];
   dayOfMonth: number[];
@@ -21,7 +21,7 @@ interface CronFields {
   dayOfWeek: number[];
 }
 
-type EventMap = {
+export type EventMap = {
   onJobStart: { jobId: string; scheduledAt: number };
   onJobComplete: { jobId: string; duration: number };
   onJobError: { jobId: string; error: string };

@@ -21,13 +21,13 @@ export interface TokenMeta {
   tokenType: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onRefreshed: { expiresAt: number; scope: string };
   onExpired: { provider: string };
   onError: { code: string; message: string; provider: string };
 };
 
-type Listener<T> = (payload: T) => void;
+export type Listener<T> = (payload: T) => void;
 
 const PROVIDER_ENDPOINTS: Record<string, string> = {
   google: "https://oauth2.googleapis.com/token",

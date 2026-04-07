@@ -28,12 +28,12 @@ export interface ErrorEvent {
   message: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onRendered: RenderedEvent;
   onError: ErrorEvent;
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
 const DEFAULT_ALLOWED_TAGS = [
   "h1","h2","h3","h4","h5","h6","p","br","hr","strong","em","del","code","pre",

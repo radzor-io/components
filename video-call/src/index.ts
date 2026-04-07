@@ -15,7 +15,7 @@ export interface CallState {
   videoEnabled: boolean;
 }
 
-type EventMap = {
+export type EventMap = {
   onLocalStream: MediaStream;
   onRemoteStream: MediaStream;
   onCallEnded: void;

@@ -33,13 +33,13 @@ export interface IndexSettings {
   [key: string]: unknown;
 }
 
-type EventMap = {
+export type EventMap = {
   onIndexed: { documentCount: number; indexName: string; durationMs: number };
   onSearchComplete: { query: string; hits: number; processingMs: number };
   onError: { code: string; message: string; operation: string };
 };
 
-type Listener<T> = (payload: T) => void;
+export type Listener<T> = (payload: T) => void;
 
 export class SearchIndex {
   private config: Required<SearchIndexConfig>;
@@ -47,6 +47,9 @@ export class SearchIndex {
   private listeners: Map<string, Listener<unknown>[]> = new Map();
 
   constructor(config: SearchIndexConfig) {
+    if (!config.apiKey) {
+      throw new Error(`API key required for provider "${config.provider}"`);
+    }
     this.config = {
       provider: config.provider,
       host: config.host,

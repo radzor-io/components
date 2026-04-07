@@ -16,8 +16,8 @@ export interface ImageMetadata {
   space?: string;
 }
 
-type FitOption = "cover" | "contain" | "fill" | "inside" | "outside";
-type GravityOption =
+export type FitOption = "cover" | "contain" | "fill" | "inside" | "outside";
+export type GravityOption =
   | "southeast"
   | "south"
   | "southwest"
@@ -28,12 +28,12 @@ type GravityOption =
   | "north"
   | "northwest";
 
-type EventMap = {
+export type EventMap = {
   onTransformed: { format: string; width: number; height: number; sizeBytes: number };
   onError: { code: string; message: string; operation: string };
 };
 
-type Listener<T> = (payload: T) => void;
+export type Listener<T> = (payload: T) => void;
 
 export class ImageTransform {
   private config: Required<ImageTransformConfig>;

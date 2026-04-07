@@ -1,14 +1,14 @@
 // @radzor/captcha-verify — Server-side CAPTCHA verification
 
-type Provider = "turnstile" | "recaptcha" | "hcaptcha";
+export type Provider = "turnstile" | "recaptcha" | "hcaptcha";
 
-interface CaptchaVerifyConfig {
+export interface CaptchaVerifyConfig {
   provider: Provider;
   secretKey: string;
   scoreThreshold?: number;
 }
 
-interface CaptchaResult {
+export interface CaptchaResult {
   success: boolean;
   score?: number;
   hostname?: string;
@@ -16,7 +16,7 @@ interface CaptchaResult {
   provider: Provider;
 }
 
-type EventMap = {
+export type EventMap = {
   onVerified: { success: boolean; score: number };
   onError: { code: string; message: string };
 };

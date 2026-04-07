@@ -2,9 +2,9 @@
 
 import { createHmac, timingSafeEqual } from "crypto";
 
-type Algorithm = "sha256" | "sha1" | "sha512";
+export type Algorithm = "sha256" | "sha1" | "sha512";
 
-interface WebhookReceiverConfig {
+export interface WebhookReceiverConfig {
   secret: string;
   algorithm?: Algorithm;
   signatureHeader?: string;
@@ -12,14 +12,14 @@ interface WebhookReceiverConfig {
   timestampHeader?: string;
 }
 
-interface WebhookPayload {
+export interface WebhookPayload {
   eventType: string;
   data: any;
   timestamp: number;
   raw: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onVerified: { eventType: string; timestamp: number };
   onRejected: { reason: string; code: string };
   onError: { code: string; message: string };

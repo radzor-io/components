@@ -33,7 +33,7 @@ export interface PushResult {
   error?: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onSent: PushResult;
   onError: { code: string; message: string };
 };

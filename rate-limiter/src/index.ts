@@ -28,20 +28,20 @@ export interface RateLimitError {
   retryAfterMs: number;
 }
 
-type EventMap = {
+export type EventMap = {
   onAllowed: RateLimitEvent;
   onBlocked: RateLimitError;
   onError: { code: string; message: string };
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
-interface TokenBucketEntry {
+export interface TokenBucketEntry {
   tokens: number;
   lastRefill: number;
 }
 
-interface SlidingWindowEntry {
+export interface SlidingWindowEntry {
   timestamps: number[];
 }
 

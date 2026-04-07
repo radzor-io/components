@@ -1,27 +1,27 @@
 // @radzor/speech-to-text — Audio transcription
 
-type Provider = "openai" | "deepgram";
+export type Provider = "openai" | "deepgram";
 
-interface SpeechToTextConfig {
+export interface SpeechToTextConfig {
   provider: Provider;
   apiKey: string;
   model?: string;
   language?: string;
 }
 
-interface TranscribeOptions {
+export interface TranscribeOptions {
   language?: string;
   timestamps?: boolean;
   responseFormat?: "text" | "json" | "verbose_json" | "srt" | "vtt";
 }
 
-interface WordTimestamp {
+export interface WordTimestamp {
   word: string;
   start: number;
   end: number;
 }
 
-interface TranscriptionResult {
+export interface TranscriptionResult {
   text: string;
   language: string;
   duration: number;
@@ -29,7 +29,7 @@ interface TranscriptionResult {
   provider: Provider;
 }
 
-type EventMap = {
+export type EventMap = {
   onTranscribed: { text: string; language: string; duration: number };
   onError: { code: string; message: string };
 };
@@ -44,6 +44,9 @@ export class SpeechToText {
   private listeners: Map<string, Function[]> = new Map();
 
   constructor(config: SpeechToTextConfig) {
+    if (!config.apiKey) {
+      throw new Error(`API key required for provider "${config.provider}"`);
+    }
     const defaults = PROVIDER_DEFAULTS[config.provider];
     this.config = {
       provider: config.provider,

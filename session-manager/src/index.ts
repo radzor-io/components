@@ -36,23 +36,23 @@ export interface ErrorEvent {
   message: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onCreated: CreatedEvent;
   onDestroyed: DestroyedEvent;
   onExpired: ExpiredEvent;
   onError: ErrorEvent;
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
-interface MemoryEntry {
+export interface MemoryEntry {
   data: Record<string, unknown>;
   expiresAt: number;
 }
 
 // ─── Store Interface ──────────────────────────────────────────────────────────
 
-interface SessionStore {
+export interface SessionStore {
   get(sessionId: string): Promise<Record<string, unknown> | null>;
   set(sessionId: string, data: Record<string, unknown>, ttlSeconds: number): Promise<void>;
   destroy(sessionId: string): Promise<void>;

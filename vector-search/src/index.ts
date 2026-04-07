@@ -29,13 +29,13 @@ export interface VectorItem {
   metadata?: Record<string, unknown>;
 }
 
-type EventMap = {
+export type EventMap = {
   onIndexed: { id: string; dimensions: number };
   onSearchComplete: { query: string; resultCount: number; durationMs: number };
   onError: { code: string; message: string; provider: string };
 };
 
-type Listener<T> = (payload: T) => void;
+export type Listener<T> = (payload: T) => void;
 
 export class VectorSearch {
   private config: Required<VectorSearchConfig>;

@@ -27,7 +27,7 @@ export interface RunResult {
   toolCallLog: ToolCallLog[];
 }
 
-type EventMap = {
+export type EventMap = {
   onToolCalled: { tool: string; input: unknown };
   onToolResult: { tool: string; output: unknown; durationMs: number };
   onComplete: { response: string; toolCallLog: ToolCallLog[] };
@@ -40,6 +40,9 @@ export class FunctionCalling {
   private listeners: Map<string, Function[]> = new Map();
 
   constructor(config: FunctionCallingConfig) {
+    if (!config.apiKey) {
+      throw new Error(`API key required for provider "${config.provider}"`);
+    }
     this.config = { maxIterations: 10, ...config };
   }
 

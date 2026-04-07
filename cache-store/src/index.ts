@@ -7,7 +7,7 @@ export interface CacheConfig {
   defaultTtl?: number; // ms, 0 = no expiry
 }
 
-interface CacheEntry<T> {
+export interface CacheEntry<T> {
   value: T;
   expiresAt: number; // 0 = no expiry
   lastAccessed: number;
@@ -20,7 +20,7 @@ export interface CacheStats {
   evictions: number;
 }
 
-type EventMap = {
+export type EventMap = {
   onHit: { key: string };
   onMiss: { key: string };
   onEvicted: { key: string; reason: "ttl" | "lru" | "manual" };

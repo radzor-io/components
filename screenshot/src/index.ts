@@ -38,12 +38,12 @@ export interface ErrorEvent {
   url?: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onCaptured: CapturedEvent;
   onError: ErrorEvent;
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
 const DEFAULT_VIEWPORT: Viewport = { width: 1280, height: 800 };
 const WAIT_UNTIL_MAP: Record<WaitFor, string> = {
@@ -53,12 +53,12 @@ const WAIT_UNTIL_MAP: Record<WaitFor, string> = {
 };
 
 // Lazily-loaded Puppeteer types
-type PuppeteerBrowser = {
+export type PuppeteerBrowser = {
   newPage(): Promise<PuppeteerPage>;
   close(): Promise<void>;
 };
 
-type PuppeteerPage = {
+export type PuppeteerPage = {
   setViewport(v: { width: number; height: number }): Promise<void>;
   goto(url: string, opts: { waitUntil: string }): Promise<unknown>;
   setContent(html: string, opts: { waitUntil: string }): Promise<void>;
@@ -67,7 +67,7 @@ type PuppeteerPage = {
   close(): Promise<void>;
 };
 
-type PuppeteerElement = {
+export type PuppeteerElement = {
   boundingBox(): Promise<{ x: number; y: number; width: number; height: number } | null>;
 };
 

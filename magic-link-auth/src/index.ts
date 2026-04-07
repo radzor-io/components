@@ -26,14 +26,14 @@ export interface TokenMeta {
   used: boolean;
 }
 
-type EventMap = {
+export type EventMap = {
   onLinkSent: { email: string; url: string; expiresAt: Date };
   onVerified: { email: string };
   onExpired: { email: string; token: string };
   onError: { code: string; message: string };
 };
 
-interface TokenPayload {
+export interface TokenPayload {
   email: string;
   expiresAt: number;
   id: string;

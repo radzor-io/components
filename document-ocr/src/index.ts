@@ -41,12 +41,12 @@ export interface OcrError {
   message: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onPageExtracted: PageExtractedEvent;
   onError: OcrError;
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
 function tmpFile(ext: string): string {
   return join(tmpdir(), `radzor-ocr-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`);

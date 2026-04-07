@@ -37,7 +37,7 @@ export interface ReleaseResult {
   uploadUrl: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onIssueCreated: { number: number; url: string };
   onCommentPosted: { id: number; url: string };
   onError: { code: string; message: string };

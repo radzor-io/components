@@ -1,19 +1,19 @@
 // @radzor/web-scraper — Web page scraping with CSS selectors
 
-interface WebScraperConfig {
+export interface WebScraperConfig {
   userAgent?: string;
   timeout?: number;
   rateLimit?: number;
 }
 
-interface ScrapeResult {
+export interface ScrapeResult {
   url: string;
   status: number;
   data: Record<string, string[]>;
   html: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onPageFetched: { url: string; status: number; size: number };
   onError: { code: string; message: string; url: string };
 };

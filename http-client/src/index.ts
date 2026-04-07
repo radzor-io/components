@@ -20,7 +20,7 @@ export interface HttpResponse<T = unknown> {
   data: T;
 }
 
-type EventMap = {
+export type EventMap = {
   onRequest: { method: string; url: string; attempt: number };
   onResponse: { method: string; url: string; status: number; durationMs: number };
   onRetry: { method: string; url: string; attempt: number; reason: string };

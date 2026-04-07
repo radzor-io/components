@@ -42,12 +42,12 @@ export interface EmailError {
   provider: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onSent: SendResult;
   onError: EmailError;
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
 export class EmailSend {
   private config: EmailSendConfig;

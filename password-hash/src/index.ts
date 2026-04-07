@@ -32,13 +32,13 @@ export interface ErrorEvent {
   message: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onHashed: HashedEvent;
   onVerified: VerifiedEvent;
   onError: ErrorEvent;
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
 // Stored hash format: $radzor-scrypt$v1$N$r$p$salt(hex)$hash(hex)
 const HASH_PREFIX = "$radzor-scrypt$v1$";

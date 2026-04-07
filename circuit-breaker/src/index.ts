@@ -35,7 +35,7 @@ export interface CircuitError {
   originalError?: unknown;
 }
 
-type EventMap = {
+export type EventMap = {
   onOpen: StateChangeEvent;
   onHalfOpen: StateChangeEvent;
   onClose: StateChangeEvent;
@@ -43,7 +43,7 @@ type EventMap = {
   onError: CircuitError;
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
 export class CircuitOpenError extends Error {
   constructor(public readonly state: CircuitState) {

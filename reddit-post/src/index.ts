@@ -25,7 +25,7 @@ export interface RedditComment {
   body: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onPostCreated: RedditPost;
   onError: { code: string; message: string };
 };

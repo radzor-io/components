@@ -27,7 +27,7 @@ export interface ReplyKeyboardButton {
   requestLocation?: boolean;
 }
 
-type EventMap = {
+export type EventMap = {
   onMessageSent: TelegramMessage;
   onError: { code: string; message: string };
 };

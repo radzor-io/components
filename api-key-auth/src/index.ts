@@ -23,7 +23,7 @@ export interface ValidationResult {
   metadata?: Record<string, unknown>;
 }
 
-type EventMap = {
+export type EventMap = {
   onValidated: ValidationResult;
   onRevoked: { keyHash: string };
   onError: { code: string; message: string };

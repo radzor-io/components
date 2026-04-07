@@ -22,14 +22,14 @@ export interface ValidationResult {
   errors: Array<{ row: number; field: string; message: string }>;
 }
 
-type EventMap = {
+export type EventMap = {
   onRow: { row: Record<string, unknown>; index: number };
   onBatch: { rows: Record<string, unknown>[]; batchNumber: number };
   onComplete: { totalRows: number; errorRows: number; durationMs: number };
   onError: { line: number; message: string; raw: string };
 };
 
-type Listener<T> = (payload: T) => void;
+export type Listener<T> = (payload: T) => void;
 
 export class CsvImport {
   private config: Required<Omit<CsvImportConfig, "schema">> & { schema?: CsvImportConfig["schema"] };

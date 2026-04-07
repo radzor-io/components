@@ -1,8 +1,8 @@
 // @radzor/structured-output — Structured JSON output from LLMs (OpenAI + Anthropic)
 
-type Provider = "openai" | "anthropic";
+export type Provider = "openai" | "anthropic";
 
-interface StructuredOutputConfig {
+export interface StructuredOutputConfig {
   provider: Provider;
   apiKey: string;
   model: string;
@@ -10,20 +10,20 @@ interface StructuredOutputConfig {
   temperature?: number;
 }
 
-interface ClassifyResult {
+export interface ClassifyResult {
   label: string;
   confidence: number;
   reasoning: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onParsed: { result: unknown; attempt: number };
   onRetry: { attempt: number; error: string };
   onError: { code: string; message: string };
 };
 
 // Minimal JSON schema type used internally
-interface JsonSchema {
+export interface JsonSchema {
   type?: string;
   properties?: Record<string, JsonSchema>;
   required?: string[];
@@ -37,6 +37,9 @@ export class StructuredOutput {
   private listeners: Map<string, Function[]> = new Map();
 
   constructor(config: StructuredOutputConfig) {
+    if (!config.apiKey) {
+      throw new Error(`API key required for provider "${config.provider}"`);
+    }
     this.config = {
       maxRetries: 3,
       temperature: 0,

@@ -24,21 +24,21 @@ export interface HandlerErrorEvent {
   timestamp: number;
 }
 
-type EventMap = {
+export type EventMap = {
   onPublish: PublishEvent;
   onHandlerError: HandlerErrorEvent;
 };
 
-type Handler = (payload: unknown) => void | Promise<void>;
-type MetaListener<T> = (event: T) => void;
+export type Handler = (payload: unknown) => void | Promise<void>;
+export type MetaListener<T> = (event: T) => void;
 
-interface Subscription {
+export interface Subscription {
   pattern: string;
   handler: Handler;
   once: boolean;
 }
 
-interface HistoryEntry {
+export interface HistoryEntry {
   event: string;
   payload: unknown;
   timestamp: number;

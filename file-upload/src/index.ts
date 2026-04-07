@@ -41,13 +41,13 @@ export interface FileUploadError {
   message: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onProgress: UploadProgress;
   onComplete: UploadResult;
   onError: FileUploadError;
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
 const DEFAULT_MAX_SIZE = 50 * 1024 * 1024; // 50MB
 const DEFAULT_ALLOWED_TYPES = [

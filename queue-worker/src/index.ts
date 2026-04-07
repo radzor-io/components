@@ -19,7 +19,7 @@ export interface Job<T = unknown> {
   completedAt?: number;
 }
 
-type EventMap = {
+export type EventMap = {
   onJobComplete: Job;
   onJobFailed: Job;
   onError: { code: string; message: string };

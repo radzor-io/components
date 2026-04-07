@@ -33,14 +33,14 @@ export interface AuthError {
   message: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onLogin: { userId: string; provider: string };
   onLogout: { userId: string };
   onTokenRefresh: { expiresAt: number };
   onError: AuthError;
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
 const PROVIDER_URLS: Record<OAuthProvider, { authorize: string; token: string; userinfo: string }> = {
   google: {

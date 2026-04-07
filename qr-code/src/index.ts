@@ -25,13 +25,13 @@ export interface ErrorEvent {
   message: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onGenerated: GeneratedEvent;
   onDecoded: { data: string };
   onError: ErrorEvent;
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
 // ─── Reed-Solomon GF(256) ────────────────────────────────────────────────────
 

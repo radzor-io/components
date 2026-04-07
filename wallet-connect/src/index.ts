@@ -24,7 +24,7 @@ export interface TransactionResult {
   hash: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onConnected: WalletState;
   onDisconnected: void;
   onChainChanged: { chainId: number };
@@ -32,7 +32,7 @@ type EventMap = {
 };
 
 // EIP-1193 provider interface
-interface EIP1193Provider {
+export interface EIP1193Provider {
   request(args: { method: string; params?: unknown[] }): Promise<unknown>;
   on(event: string, handler: (...args: unknown[]) => void): void;
   removeListener(event: string, handler: (...args: unknown[]) => void): void;

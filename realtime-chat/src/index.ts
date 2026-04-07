@@ -15,7 +15,7 @@ export interface ChatMessage {
   timestamp: number;
 }
 
-type EventMap = {
+export type EventMap = {
   onMessage: ChatMessage;
   onUserJoin: { userId: string; username: string };
   onUserLeave: { userId: string };
@@ -23,8 +23,8 @@ type EventMap = {
   onError: { code: string; message: string };
 };
 
-type Listener<T> = (event: T) => void;
-type ConnectionStatus = "connecting" | "connected" | "disconnected" | "error";
+export type Listener<T> = (event: T) => void;
+export type ConnectionStatus = "connecting" | "connected" | "disconnected" | "error";
 
 export class RealtimeChat {
   private config: Required<Omit<ChatConfig, "authToken">> & { authToken?: string };

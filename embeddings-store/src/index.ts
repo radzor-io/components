@@ -1,29 +1,29 @@
 // @radzor/embeddings-store — In-memory vector store with similarity search
 
-type Provider = "openai" | "ollama";
+export type Provider = "openai" | "ollama";
 
-interface EmbeddingsStoreConfig {
+export interface EmbeddingsStoreConfig {
   provider: Provider;
   apiKey?: string;
   model?: string;
   baseUrl?: string;
 }
 
-interface SearchResult {
+export interface SearchResult {
   id: string;
   text: string;
   score: number;
   metadata: Record<string, any>;
 }
 
-interface StoredDocument {
+export interface StoredDocument {
   id: string;
   text: string;
   embedding: number[];
   metadata: Record<string, any>;
 }
 
-type EventMap = {
+export type EventMap = {
   onStored: { id: string; dimensions: number };
   onSearchComplete: { query: string; resultCount: number };
   onError: { code: string; message: string };

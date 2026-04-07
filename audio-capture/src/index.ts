@@ -20,13 +20,13 @@ export interface AudioCaptureError {
   message: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onSpeechStart: SpeechStartEvent;
   onSpeechEnd: SpeechEndEvent;
   onError: AudioCaptureError;
 };
 
-type Listener<T> = (event: T) => void;
+export type Listener<T> = (event: T) => void;
 
 const MIME_MAP: Record<string, string> = {
   opus: "audio/webm;codecs=opus",

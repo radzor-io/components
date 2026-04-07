@@ -16,7 +16,7 @@ export interface TotpSecret {
   otpauthUri: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onVerified: { valid: boolean; token: string };
   onError: { code: string; message: string };
 };

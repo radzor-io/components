@@ -34,13 +34,13 @@ export interface QueueStats {
   delayed: number;
 }
 
-type EventMap = {
+export type EventMap = {
   onJobCompleted: { jobId: string; queue: string; durationMs: number };
   onJobFailed: { jobId: string; queue: string; error: string; attempt: number };
   onJobRetry: { jobId: string; attempt: number; nextDelayMs: number };
 };
 
-type Listener<T> = (payload: T) => void;
+export type Listener<T> = (payload: T) => void;
 
 export class BackgroundJob {
   private config: Required<BackgroundJobConfig>;

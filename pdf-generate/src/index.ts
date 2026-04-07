@@ -1,12 +1,12 @@
 // @radzor/pdf-generate — PDF generation from HTML
 
-interface PdfGenerateConfig {
+export interface PdfGenerateConfig {
   pageSize?: "A4" | "Letter" | "Legal";
   margin?: string;
   landscape?: boolean;
 }
 
-interface PdfOptions {
+export interface PdfOptions {
   pageSize?: "A4" | "Letter" | "Legal";
   margin?: string;
   landscape?: boolean;
@@ -14,7 +14,7 @@ interface PdfOptions {
   footerHtml?: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onGenerated: { pages: number; size: number };
   onError: { code: string; message: string };
 };

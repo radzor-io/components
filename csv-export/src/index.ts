@@ -10,7 +10,7 @@ export interface CsvConfig {
   quoteAll?: boolean;
 }
 
-type EventMap = {
+export type EventMap = {
   onGenerated: { rows: number; size: number };
   onError: { code: string; message: string };
 };

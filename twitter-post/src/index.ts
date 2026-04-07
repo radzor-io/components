@@ -1,6 +1,6 @@
 // @radzor/twitter-post — Twitter/X API v2 integration
 
-interface TwitterPostConfig {
+export interface TwitterPostConfig {
   bearerToken: string;
   apiKey?: string;
   apiSecret?: string;
@@ -8,12 +8,12 @@ interface TwitterPostConfig {
   accessSecret?: string;
 }
 
-interface TweetResult {
+export interface TweetResult {
   tweetId: string;
   text: string;
 }
 
-type EventMap = {
+export type EventMap = {
   onTweeted: { tweetId: string; text: string };
   onError: { code: string; message: string };
 };
