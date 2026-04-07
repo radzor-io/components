@@ -212,15 +212,26 @@ for (const dir of dirs) {
     }
   }
 
+  // ── runtime ──
+  if (manifest.runtime) {
+    const validRuntimes = ["server", "browser", "universal"];
+    if (!validRuntimes.includes(manifest.runtime)) {
+      errors.push(`${prefix} Invalid runtime: "${manifest.runtime}". Must be one of: ${validRuntimes.join(", ")}`);
+    }
+  }
+
   // ── composability ──
   if (manifest.composability && manifest.composability.connectsTo) {
     if (!Array.isArray(manifest.composability.connectsTo)) {
       errors.push(`${prefix} composability.connectsTo must be an array`);
     } else {
-      const allowedConn = ["output", "compatibleWith"];
+      const allowedConn = ["output", "compatibleWith", "runtime", "note"];
       manifest.composability.connectsTo.forEach((conn, i) => {
         if (!conn.output) errors.push(`${prefix} composability.connectsTo[${i}] missing output`);
         if (!conn.compatibleWith) errors.push(`${prefix} composability.connectsTo[${i}] missing compatibleWith`);
+        if (conn.runtime && !["same-process", "cross-environment"].includes(conn.runtime)) {
+          errors.push(`${prefix} composability.connectsTo[${i}] invalid runtime: "${conn.runtime}"`);
+        }
         for (const k of Object.keys(conn)) {
           if (!allowedConn.includes(k)) errors.push(`${prefix} composability.connectsTo[${i}] unknown property: "${k}"`);
         }
@@ -229,11 +240,14 @@ for (const dir of dirs) {
   }
 
   // ── llm metadata ──
-  if (manifest.llm) {
+  if (!manifest.llm) {
+    errors.push(`${prefix} Missing llm metadata block`);
+  } else {
     const allowedLlm = ["integrationPrompt", "usageExamples", "constraints"];
     for (const k of Object.keys(manifest.llm)) {
       if (!allowedLlm.includes(k)) errors.push(`${prefix} llm unknown property: "${k}"`);
     }
+    if (!manifest.llm.constraints) errors.push(`${prefix} Missing llm.constraints`);
     if (manifest.llm.integrationPrompt) {
       const p = path.join(COMPONENTS_DIR, dir, manifest.llm.integrationPrompt);
       if (!fs.existsSync(p)) errors.push(`${prefix} llm.integrationPrompt file not found: ${manifest.llm.integrationPrompt}`);
