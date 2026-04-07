@@ -97,7 +97,8 @@
       {
         "output": "transcriptionResult",
         "compatibleWith": [
-          "@radzor/llm-completion.input.systemPrompt"
+          "@radzor/llm-completion.action.complete.prompt",
+          "@radzor/search-index.action.search.query"
         ]
       }
     ]

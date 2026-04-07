@@ -152,7 +152,18 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "completionResult",
+        "compatibleWith": [
+          "@radzor/text-to-speech.action.synthesize.text",
+          "@radzor/structured-output.action.parse.text",
+          "@radzor/markdown-render.action.render.markdown"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

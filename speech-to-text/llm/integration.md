@@ -75,5 +75,5 @@ result = stt.transcribe(audio_data)
 - Supported formats: mp3, wav, m4a, flac, ogg, webm.
 
 ## Composability
-- Accepts audio from `@radzor/audio-capture` output.
-- Transcription text can feed into `@radzor/llm-completion` as context.
+- Accepts audio from `@radzor/audio-capture` output — but note that `audio-capture` runs in the **browser** while this component is **server-side only**. You need an HTTP upload or WebSocket to bridge the audio data. See `@radzor/audio-capture`'s integration guide for bridge patterns.
+- Transcription result text (`result.text`) feeds into `@radzor/llm-completion.action.complete(prompt)` — use `result.text` as the `prompt` argument, **not** as a system prompt.

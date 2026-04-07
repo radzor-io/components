@@ -69,5 +69,5 @@ tts.synthesize_to_file("Hello world", "./output.mp3")
 - Server-side only.
 
 ## Composability
-- Output audio can be stored via `@radzor/file-upload`.
-- Pairs with `@radzor/llm-completion` output → generate audio from LLM responses.
+- Accepts text from `@radzor/llm-completion` output — use `result.content` as the `text` argument to `synthesize()`.
+- Output audio buffer can be stored via `@radzor/file-upload`, or sent to the browser as base64/binary for playback via `<audio>` element or Web Audio API.

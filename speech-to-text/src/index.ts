@@ -92,9 +92,9 @@ export class SpeechToText {
     if (typeof audio === "string") {
       const fs = await import("fs");
       const buffer = fs.readFileSync(audio);
-      formData.append("file", new Blob([buffer]), audio.split("/").pop() ?? "audio.wav");
-    } else if (audio instanceof Buffer) {
-      formData.append("file", new Blob([audio]), "audio.wav");
+      formData.append("file", new Blob([new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength)]), audio.split("/").pop() ?? "audio.wav");
+    } else if (Buffer.isBuffer(audio)) {
+      formData.append("file", new Blob([new Uint8Array(audio.buffer, audio.byteOffset, audio.byteLength)]), "audio.wav");
     } else {
       formData.append("file", audio, "audio.wav");
     }
@@ -135,14 +135,15 @@ export class SpeechToText {
   // ─── Deepgram ────────────────────────────────────────────
 
   private async transcribeDeepgram(audio: Buffer | Blob | string, options?: TranscribeOptions): Promise<TranscriptionResult> {
-    let body: Buffer | Blob;
+    let bodyBytes: Uint8Array;
     if (typeof audio === "string") {
       const fs = await import("fs");
-      body = fs.readFileSync(audio);
+      const buf = fs.readFileSync(audio);
+      bodyBytes = new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
     } else if (audio instanceof Blob) {
-      body = Buffer.from(await audio.arrayBuffer());
+      bodyBytes = new Uint8Array(await audio.arrayBuffer());
     } else {
-      body = audio;
+      bodyBytes = new Uint8Array(audio.buffer, audio.byteOffset, audio.byteLength);
     }
 
     const params = new URLSearchParams({
@@ -164,7 +165,7 @@ export class SpeechToText {
         Authorization: `Token ${this.config.apiKey}`,
         "Content-Type": "audio/wav",
       },
-      body,
+      body: bodyBytes,
     });
 
     if (!res.ok) {
