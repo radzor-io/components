@@ -10,13 +10,13 @@ const fs = require("fs");
 const path = require("path");
 
 const ROOT = path.resolve(__dirname, "..");
-const SCHEMA_PATH = path.join(ROOT, "spec", "radzor-manifest.schema.json");
+const SCHEMA_PATH = process.env.SCHEMA_PATH
+  || path.join(ROOT, "spec", "radzor-manifest.schema.json");
 const COMPONENTS_DIR = ROOT;
 
-// The schema may live in a sibling repo; fall back to a bundled copy
 if (!fs.existsSync(SCHEMA_PATH)) {
   console.error("✗ Schema not found at " + SCHEMA_PATH);
-  console.error("  Place the spec/ folder next to components/ or set SCHEMA_PATH env var.");
+  console.error("  Set SCHEMA_PATH env var or run: mkdir -p spec && curl -fsSL https://raw.githubusercontent.com/radzor-io/spec/main/radzor-manifest.schema.json -o spec/radzor-manifest.schema.json");
   process.exit(1);
 }
 
