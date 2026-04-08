@@ -1,46 +1,61 @@
-# Radzor Components
+# Radzor Components 🧩
 
-Official AI-ready components with [RCS manifests](https://github.com/radzor-io/spec).
+The official registry of **AI-ready components** for the [Radzor Platform](https://radzor.io).
 
-## Components
+## What are Radzor Components?
+Radzor components are fully typed, framework-agnostic building blocks for **backend logic, APIs, and AI workflows**. They are not distributed as `node_modules` black boxes. Instead, you download the source code directly into your repository (like *shadcn/ui*).
 
-| Component | Category | Description |
-|-----------|----------|-------------|
-| [audio-capture](./audio-capture) | audio | Browser audio recording with MediaRecorder API |
-| [auth-oauth](./auth-oauth) | auth | Multi-provider OAuth authentication flow |
-| [email-send](./email-send) | email | Email sending via Resend, SendGrid, or SMTP |
-| [file-upload](./file-upload) | storage | File upload to S3, R2, or local storage |
-| [llm-completion](./llm-completion) | ai | LLM chat completions (OpenAI, Anthropic, Ollama) |
-| [rate-limiter](./rate-limiter) | security | In-memory rate limiting (token bucket, sliding window) |
-| [realtime-chat](./realtime-chat) | chat | WebSocket-based real-time messaging |
-| [stripe-checkout](./stripe-checkout) | payment | Payment processing with Stripe |
+### The "Killer Feature": Anti-Hallucination
+Every component in this repository includes:
+1. The **source code** (TypeScript, Python, etc.)
+2. A **`radzor.manifest.json`** compliant with the [RCS Specification](https://github.com/radzor-io/spec)
+3. An **`llm/integration.md`** guide
 
-Each component contains a `radzor.manifest.json` describing its inputs, outputs, actions, events, and composability — everything an LLM needs to integrate it.
+This ensures that when you ask an AI agent (Claude, Cursor, Copilot) to use the component, it reads the manifest, understands the exact inputs/outputs, required API keys, and events, and generates flawless integration code on the first try. No outdated API SDK hallucinations.
+
+## The Catalog
+The registry contains 55+ components across categories:
+- **AI**: `llm-completion`, `speech-to-text`, `text-to-speech`, `embeddings-store`, `vector-search`...
+- **Audio/Media**: `audio-capture`, `image-processor`, `video-transcoder`...
+- **Auth**: `auth-oauth`, `api-key-auth`, `jwt-verify`...
+- **Payment**: `stripe-checkout`, `webhook-receiver`...
+- **Storage/DB**: `file-upload`, `sql-query`, `redis-cache`...
+
+*Explore the full catalog on [radzor.io/components](https://radzor.io/components).*
 
 ## Usage
 
-Point your LLM at a component's manifest:
-
-```
-Fetch https://raw.githubusercontent.com/radzor-io/components/main/stripe-checkout/radzor.manifest.json
-and use it to integrate Stripe checkout into my app.
-```
-
-## Contributing
-
-Want to add a component? See the [Contributing Guide](./CONTRIBUTING.md) for the full workflow:
+Use the [Radzor CLI](https://github.com/radzor-io/cli) to install a component:
 
 ```bash
-npx radzor@latest create @radzor/my-component -c audio
-# implement in src/index.ts
-npx radzor@latest validate .
-# open a PR
+npx radzor@latest add speech-to-text llm-completion
 ```
+
+Or scaffold a complete **Recipe** (AI Workflow):
+
+```bash
+npx radzor@latest recipe add voice-bot
+```
+
+## Contributing 🤝
+
+We welcome community contributions to build the largest standard registry of LLM-friendly components! 
+
+To add a new component to the registry:
+1. Fork this repository.
+2. Scaffold your component using the CLI:
+   ```bash
+   npx radzor@latest create @radzor/my-component -c ai
+   ```
+3. Implement the logic in `src/index.ts` and write the LLM instructions in `llm/integration.md`.
+4. Run `npx radzor validate .` inside your component folder to ensure your manifest passes the RCS Schema validation.
+5. Open a Pull Request!
 
 ## Links
 
 - [Radzor Platform](https://radzor.io)
 - [RCS Specification](https://github.com/radzor-io/spec)
+- [Radzor CLI](https://github.com/radzor-io/cli)
 
 ## License
 
