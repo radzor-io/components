@@ -82,21 +82,8 @@
         },
         {
           "name": "usage",
-          "type": "object",
-          "fields": [
-            {
-              "name": "promptTokens",
-              "type": "number"
-            },
-            {
-              "name": "completionTokens",
-              "type": "number"
-            },
-            {
-              "name": "totalTokens",
-              "type": "number"
-            }
-          ]
+          "type": "{ promptTokens: number, completionTokens: number, totalTokens: number }",
+          "description": "Token usage statistics for the completion."
         },
         {
           "name": "finishReason",
