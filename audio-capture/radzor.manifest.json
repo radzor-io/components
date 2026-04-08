@@ -3,18 +3,9 @@
   "name": "@radzor/audio-capture",
   "version": "0.1.0",
   "description": "Capture audio from the user's microphone using the Web Audio API and getUserMedia. Provides a real-time audio stream suitable for speech recognition, voice chat, or recording.",
-  "languages": [
-    "typescript"
-  ],
+  "languages": ["typescript"],
   "category": "audio",
-  "runtime": "browser",
-  "tags": [
-    "voice",
-    "webrtc",
-    "microphone",
-    "streaming",
-    "recording"
-  ],
+  "tags": ["voice", "webrtc", "microphone", "streaming", "recording"],
   "inputs": [
     {
       "name": "sampleRate",
@@ -53,25 +44,17 @@
   "events": [
     {
       "name": "onSpeechStart",
-      "payload": {
-        "timestamp": "number"
-      },
+      "payload": { "timestamp": "number" },
       "description": "Fired when voice activity is detected in the audio stream."
     },
     {
       "name": "onSpeechEnd",
-      "payload": {
-        "timestamp": "number",
-        "duration": "number"
-      },
+      "payload": { "timestamp": "number", "duration": "number" },
       "description": "Fired when a speech segment ends (silence detected)."
     },
     {
       "name": "onError",
-      "payload": {
-        "code": "string",
-        "message": "string"
-      },
+      "payload": { "code": "string", "message": "string" },
       "description": "Fired when an error occurs (permission denied, device unavailable, etc.)."
     }
   ],
@@ -116,6 +99,12 @@
         "output": "audioBlob",
         "compatibleWith": [
           "@radzor/speech-to-text.action.transcribe.audio"
+        ]
+      },
+      {
+        "output": "audioStream",
+        "compatibleWith": [
+          "@radzor/audio-visualizer.input.audioStream"
         ]
       }
     ]
