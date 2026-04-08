@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import fs from 'fs';
 import path from 'path';
-import Ajv from 'ajv';
+import Ajv from 'ajv/dist/2020';
 
 describe('RCS Manifest Validation', () => {
   let ajv: Ajv;
