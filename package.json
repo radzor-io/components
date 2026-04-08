@@ -1,0 +1,26 @@
+{
+  "name": "components",
+  "version": "1.0.0",
+  "description": "Official AI-ready components with [RCS manifests](https://github.com/radzor-io/spec).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/radzor-io/components.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/radzor-io/components/issues"
+  },
+  "homepage": "https://github.com/radzor-io/components#readme",
+  "devDependencies": {
+    "@types/node": "^25.5.2",
+    "ajv": "^8.18.0",
+    "vitest": "^4.1.3"
+  }
+}
