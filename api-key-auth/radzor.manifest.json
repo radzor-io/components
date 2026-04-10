@@ -114,10 +114,29 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onValidated",
+        "description": "Log successful API key validations",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      },
+      {
+        "event": "onRevoked",
+        "description": "Notify when API key is revoked",
+        "compatibleWith": [
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/log-aggregator.action.warn.message"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "No external dependencies. Keys are hashed with SHA-256 \u2014 never store plain-text keys. Header name and prefix are configurable."
+    "constraints": "No external dependencies. Keys are hashed with SHA-256 — never store plain-text keys. Header name and prefix are configurable."
   }
 }

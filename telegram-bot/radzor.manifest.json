@@ -146,7 +146,23 @@
     "packages": {}
   },
   "composability": {
-    "connectsTo": []
+    "connectsTo": [
+      {
+        "event": "onMessageSent",
+        "description": "Track Telegram message delivery",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      },
+      {
+        "event": "onError",
+        "description": "Track Telegram bot errors",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message"
+        ]
+      }
+    ]
   },
   "llm": {
     "integrationPrompt": "llm/integration.md",

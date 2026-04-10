@@ -144,7 +144,26 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onFlagEnabled",
+        "description": "Track feature flag evaluations",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      },
+      {
+        "event": "onOverride",
+        "description": "Audit feature flag overrides",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.warn.message",
+          "@radzor/event-tracker.action.track.eventName"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

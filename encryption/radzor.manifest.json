@@ -1,0 +1,184 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/encryption",
+  "version": "0.1.0",
+  "description": "Encrypt and decrypt data with AES-256-GCM authenticated encryption. Generate cryptographic keys, compute secure hashes (SHA-256/384/512), and handle key derivation with PBKDF2.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "security",
+  "runtime": "server",
+  "tags": [
+    "encryption",
+    "aes",
+    "gcm",
+    "crypto",
+    "hash",
+    "security",
+    "decrypt"
+  ],
+  "inputs": [
+    {
+      "name": "key",
+      "type": "string",
+      "description": "AES-256 encryption key as hex string (64 hex chars = 32 bytes). Use generateKey() to create one.",
+      "required": false
+    },
+    {
+      "name": "encoding",
+      "type": "'hex' | 'base64'",
+      "default": "hex",
+      "description": "Output encoding for encrypted data and hashes.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "encryptedPayload",
+      "type": "EncryptedPayload",
+      "description": "Encrypted data with IV and auth tag for authenticated decryption.",
+      "fields": [
+        {
+          "name": "ciphertext",
+          "type": "string",
+          "description": "Encrypted data in the configured encoding."
+        },
+        {
+          "name": "iv",
+          "type": "string",
+          "description": "Initialization vector (hex)."
+        },
+        {
+          "name": "tag",
+          "type": "string",
+          "description": "GCM authentication tag (hex)."
+        },
+        {
+          "name": "encoding",
+          "type": "string",
+          "description": "Encoding used for the ciphertext."
+        }
+      ]
+    },
+    {
+      "name": "hashResult",
+      "type": "string",
+      "description": "Hex or base64 encoded hash digest."
+    }
+  ],
+  "events": [
+    {
+      "name": "onEncrypted",
+      "payload": {
+        "bytesEncrypted": "number"
+      },
+      "description": "Fired after data is encrypted."
+    },
+    {
+      "name": "onDecrypted",
+      "payload": {
+        "bytesDecrypted": "number"
+      },
+      "description": "Fired after data is decrypted."
+    },
+    {
+      "name": "onError",
+      "payload": {
+        "operation": "string",
+        "message": "string"
+      },
+      "description": "Fired when an encryption or decryption operation fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "encrypt",
+      "params": [
+        {
+          "name": "plaintext",
+          "type": "string | Buffer",
+          "description": "Data to encrypt."
+        },
+        {
+          "name": "aad",
+          "type": "string",
+          "description": "Optional additional authenticated data (AAD) for GCM.",
+          "required": false
+        }
+      ],
+      "returns": "EncryptedPayload",
+      "description": "Encrypt data using AES-256-GCM with a random IV."
+    },
+    {
+      "name": "decrypt",
+      "params": [
+        {
+          "name": "payload",
+          "type": "EncryptedPayload",
+          "description": "Encrypted payload from encrypt()."
+        },
+        {
+          "name": "aad",
+          "type": "string",
+          "description": "Additional authenticated data used during encryption.",
+          "required": false
+        }
+      ],
+      "returns": "string",
+      "description": "Decrypt an AES-256-GCM encrypted payload."
+    },
+    {
+      "name": "generateKey",
+      "params": [],
+      "returns": "string",
+      "description": "Generate a cryptographically secure random 256-bit key as a hex string."
+    },
+    {
+      "name": "hash",
+      "params": [
+        {
+          "name": "data",
+          "type": "string | Buffer",
+          "description": "Data to hash."
+        },
+        {
+          "name": "algorithm",
+          "type": "'sha256' | 'sha384' | 'sha512'",
+          "description": "Hash algorithm.",
+          "default": "sha256",
+          "required": false
+        }
+      ],
+      "returns": "string",
+      "description": "Compute a cryptographic hash of the input data."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "encryptedPayload",
+        "compatibleWith": [
+          "@radzor/kv-store.action.set.value",
+          "@radzor/s3-upload.action.upload.body"
+        ],
+        "mapField": "ciphertext"
+      },
+      {
+        "output": "hashResult",
+        "compatibleWith": [
+          "@radzor/kv-store.action.set.value"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "No external dependencies — uses Node.js built-in crypto module. Keys must be exactly 32 bytes (64 hex chars) for AES-256. Never reuse an IV. Store encrypted payloads as structured objects (ciphertext + iv + tag). GCM auth tag prevents tampering."
+  }
+}

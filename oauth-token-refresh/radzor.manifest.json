@@ -179,7 +179,25 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "tokenMeta",
+        "compatibleWith": [
+          "@radzor/session-manager.action.create.data",
+          "@radzor/kv-store.action.set.value"
+        ],
+        "mapField": "accessToken"
+      },
+      {
+        "event": "onExpired",
+        "description": "Alert on token expiration",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.warn.message"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

@@ -123,7 +123,25 @@
     "packages": {},
     "radzor": []
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onSent",
+        "description": "Track SMS delivery for analytics",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      },
+      {
+        "event": "onError",
+        "description": "Track SMS delivery failures",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

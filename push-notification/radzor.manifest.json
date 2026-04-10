@@ -115,7 +115,25 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onSent",
+        "description": "Track push notification delivery",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      },
+      {
+        "event": "onError",
+        "description": "Track push notification failures",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

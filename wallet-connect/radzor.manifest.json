@@ -123,9 +123,27 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onConnected",
+        "description": "Log wallet connections",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      },
+      {
+        "event": "onDisconnected",
+        "description": "Track wallet disconnections",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      }
+    ]
+  },
   "llm": {
-    "constraints": "Browser-only \u2014 requires window.ethereum injected by MetaMask or similar. Not available in Node.js or SSR. Always handle the case where no wallet is installed.",
+    "constraints": "Browser-only — requires window.ethereum injected by MetaMask or similar. Not available in Node.js or SSR. Always handle the case where no wallet is installed.",
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md"
   }

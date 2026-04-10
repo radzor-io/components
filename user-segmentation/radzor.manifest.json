@@ -1,0 +1,134 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/user-segmentation",
+  "version": "0.1.0",
+  "description": "Segment users based on attributes and behavioral rules. Define segments with filter expressions, evaluate users against them, and list matching segments. In-memory rule engine, zero dependencies.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "analytics",
+  "runtime": "server",
+  "tags": [
+    "segmentation",
+    "users",
+    "targeting",
+    "cohort",
+    "filter",
+    "analytics"
+  ],
+  "inputs": [
+    {
+      "name": "segments",
+      "type": "SegmentDefinition[]",
+      "description": "Pre-defined segment definitions with filter rules.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "segmentResult",
+      "type": "SegmentResult",
+      "description": "Result of evaluating a user against segments.",
+      "fields": [
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "The evaluated user ID."
+        },
+        {
+          "name": "matchedSegments",
+          "type": "string[]",
+          "description": "IDs of segments the user belongs to."
+        },
+        {
+          "name": "evaluatedAt",
+          "type": "number",
+          "description": "Timestamp of evaluation."
+        }
+      ]
+    }
+  ],
+  "events": [],
+  "actions": [
+    {
+      "name": "evaluate",
+      "params": [
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "User to evaluate."
+        },
+        {
+          "name": "attributes",
+          "type": "Record<string, unknown>",
+          "description": "User attributes to evaluate against segment rules."
+        }
+      ],
+      "returns": "SegmentResult",
+      "description": "Evaluate which segments a user belongs to based on their attributes."
+    },
+    {
+      "name": "defineSegment",
+      "params": [
+        {
+          "name": "segmentId",
+          "type": "string",
+          "description": "Unique segment identifier."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Human-readable segment name."
+        },
+        {
+          "name": "rules",
+          "type": "SegmentRule[]",
+          "description": "Array of filter rules (ANDed together)."
+        }
+      ],
+      "returns": "void",
+      "description": "Define a new segment with filter rules."
+    },
+    {
+      "name": "listSegments",
+      "params": [],
+      "returns": "SegmentDefinition[]",
+      "description": "List all defined segments."
+    },
+    {
+      "name": "getUserSegments",
+      "params": [
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "User to look up cached segments for."
+        }
+      ],
+      "returns": "string[]",
+      "description": "Get the cached list of segment IDs for a previously evaluated user."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "segmentResult",
+        "compatibleWith": [
+          "@radzor/ab-test.action.getVariant.userId",
+          "@radzor/feature-flag.action.isEnabled.userId",
+          "@radzor/notification-hub.action.send.recipient"
+        ],
+        "mapField": "userId"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Rules are evaluated synchronously in-memory. The cache stores the last evaluation per user — calling evaluate() overwrites the previous result. Supported operators: eq, neq, gt, gte, lt, lte, in, notIn, contains, startsWith, endsWith, exists, regex."
+  }
+}

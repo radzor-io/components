@@ -1,0 +1,207 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/usage-metering",
+  "version": "0.1.0",
+  "description": "Track and bill usage-based metrics. Record usage events against named meters, query usage summaries over time periods, and trigger threshold alerts for overage billing.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "payment",
+  "runtime": "server",
+  "tags": [
+    "usage",
+    "metering",
+    "billing",
+    "consumption",
+    "pay-per-use",
+    "saas"
+  ],
+  "inputs": [
+    {
+      "name": "secretKey",
+      "type": "string",
+      "description": "Stripe secret API key for reporting metered usage to Stripe Billing.",
+      "required": false,
+      "envVar": "STRIPE_SECRET_KEY"
+    },
+    {
+      "name": "flushIntervalMs",
+      "type": "number",
+      "default": 60000,
+      "description": "Interval in milliseconds for flushing batched usage records.",
+      "required": false
+    },
+    {
+      "name": "storageBackend",
+      "type": "'memory' | 'stripe'",
+      "default": "memory",
+      "description": "Where to store usage records. 'memory' for local tracking, 'stripe' to also report to Stripe Billing.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "usageSummary",
+      "type": "UsageSummary",
+      "description": "Aggregated usage data for a customer and meter.",
+      "fields": [
+        {
+          "name": "meterId",
+          "type": "string",
+          "description": "Meter identifier."
+        },
+        {
+          "name": "customerId",
+          "type": "string",
+          "description": "Customer identifier."
+        },
+        {
+          "name": "totalQuantity",
+          "type": "number",
+          "description": "Total usage quantity in the queried period."
+        },
+        {
+          "name": "periodStart",
+          "type": "string",
+          "description": "Start of the reporting period (ISO 8601)."
+        },
+        {
+          "name": "periodEnd",
+          "type": "string",
+          "description": "End of the reporting period (ISO 8601)."
+        },
+        {
+          "name": "recordCount",
+          "type": "number",
+          "description": "Number of individual usage records in the period."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onThresholdReached",
+      "payload": {
+        "meterId": "string",
+        "customerId": "string",
+        "currentUsage": "number",
+        "threshold": "number"
+      },
+      "description": "Fired when a customer's usage crosses a configured threshold."
+    }
+  ],
+  "actions": [
+    {
+      "name": "recordUsage",
+      "params": [
+        {
+          "name": "customerId",
+          "type": "string",
+          "description": "Customer identifier."
+        },
+        {
+          "name": "meterId",
+          "type": "string",
+          "description": "Meter identifier to record usage against."
+        },
+        {
+          "name": "quantity",
+          "type": "number",
+          "description": "Usage quantity to record.",
+          "default": 1,
+          "required": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "description": "Record a usage event against a meter for a customer."
+    },
+    {
+      "name": "getUsageSummary",
+      "params": [
+        {
+          "name": "customerId",
+          "type": "string",
+          "description": "Customer identifier."
+        },
+        {
+          "name": "meterId",
+          "type": "string",
+          "description": "Meter identifier."
+        },
+        {
+          "name": "periodStart",
+          "type": "string",
+          "description": "Start of the period (ISO 8601 date string).",
+          "required": false
+        },
+        {
+          "name": "periodEnd",
+          "type": "string",
+          "description": "End of the period (ISO 8601 date string).",
+          "required": false
+        }
+      ],
+      "returns": "Promise<UsageSummary>",
+      "description": "Get aggregated usage for a customer and meter over a time period."
+    },
+    {
+      "name": "createMeter",
+      "params": [
+        {
+          "name": "meterId",
+          "type": "string",
+          "description": "Unique meter identifier."
+        },
+        {
+          "name": "displayName",
+          "type": "string",
+          "description": "Human-readable meter name."
+        },
+        {
+          "name": "unit",
+          "type": "string",
+          "description": "Unit of measurement (e.g. 'api_calls', 'gb', 'tokens')."
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "description": "Usage threshold that triggers onThresholdReached.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Create a named meter with optional threshold for alerts."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onThresholdReached",
+        "description": "Alert customer when usage threshold reached",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/notification-hub.action.send.body",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ]
+      },
+      {
+        "output": "usageSummary",
+        "compatibleWith": [
+          "@radzor/invoice-generator.action.addLineItem.description",
+          "@radzor/csv-export.action.generate.data"
+        ],
+        "mapField": "meterId"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "In-memory storage is not persistent across restarts. For production, use 'stripe' backend with a valid Stripe secret key. Meters must be created before recording usage. Threshold events fire once per threshold crossing per period."
+  }
+}

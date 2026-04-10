@@ -208,7 +208,25 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onError",
+        "description": "Track HTTP client errors",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message",
+          "@radzor/log-aggregator.action.error.message"
+        ]
+      },
+      {
+        "event": "onRetry",
+        "description": "Log HTTP request retries",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.warn.message"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

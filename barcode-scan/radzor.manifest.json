@@ -145,7 +145,25 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "barcodeBuffer",
+        "compatibleWith": [
+          "@radzor/s3-upload.action.upload.body",
+          "@radzor/file-upload.action.upload.data"
+        ]
+      },
+      {
+        "event": "onScanned",
+        "description": "Process scanned barcode data",
+        "compatibleWith": [
+          "@radzor/search-index.action.search.query",
+          "@radzor/event-tracker.action.track.eventName"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

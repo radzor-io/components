@@ -1,0 +1,232 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/websocket-server",
+  "version": "0.1.0",
+  "description": "WebSocket server with room-based messaging, client management, and broadcasting. Built on the ws library for Node.js.",
+  "languages": [
+    "typescript"
+  ],
+  "category": "networking",
+  "runtime": "server",
+  "tags": [
+    "websocket",
+    "realtime",
+    "server",
+    "rooms",
+    "broadcast",
+    "ws"
+  ],
+  "inputs": [
+    {
+      "name": "port",
+      "type": "number",
+      "description": "Port to listen on.",
+      "required": true
+    },
+    {
+      "name": "path",
+      "type": "string",
+      "description": "URL path for WebSocket connections (default: /).",
+      "required": false,
+      "default": "/"
+    },
+    {
+      "name": "maxPayloadSize",
+      "type": "number",
+      "description": "Maximum message payload size in bytes (default: 1048576 = 1MB).",
+      "required": false,
+      "default": 1048576
+    },
+    {
+      "name": "heartbeatInterval",
+      "type": "number",
+      "description": "Ping interval in milliseconds for detecting dead connections (default: 30000).",
+      "required": false,
+      "default": 30000
+    }
+  ],
+  "outputs": [
+    {
+      "name": "serverInfo",
+      "type": "{ port: number; clientCount: number; roomCount: number }",
+      "description": "Current server status.",
+      "fields": [
+        {
+          "name": "port",
+          "type": "number",
+          "description": "Listening port."
+        },
+        {
+          "name": "clientCount",
+          "type": "number",
+          "description": "Number of connected clients."
+        },
+        {
+          "name": "roomCount",
+          "type": "number",
+          "description": "Number of active rooms."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onConnection",
+      "payload": {
+        "clientId": "string",
+        "remoteAddress": "string"
+      },
+      "description": "Fired when a new client connects."
+    },
+    {
+      "name": "onMessage",
+      "payload": {
+        "clientId": "string",
+        "data": "string",
+        "isBinary": "boolean"
+      },
+      "description": "Fired when a message is received from a client."
+    },
+    {
+      "name": "onDisconnect",
+      "payload": {
+        "clientId": "string",
+        "code": "number",
+        "reason": "string"
+      },
+      "description": "Fired when a client disconnects."
+    }
+  ],
+  "actions": [
+    {
+      "name": "broadcast",
+      "params": [
+        {
+          "name": "data",
+          "type": "string",
+          "description": "Message to broadcast."
+        },
+        {
+          "name": "room",
+          "type": "string",
+          "description": "Room name to broadcast to. If omitted, broadcasts to all clients.",
+          "required": false
+        },
+        {
+          "name": "excludeClientId",
+          "type": "string",
+          "description": "Client ID to exclude from broadcast.",
+          "required": false
+        }
+      ],
+      "returns": "number",
+      "description": "Broadcast a message to all clients or a specific room. Returns count of recipients."
+    },
+    {
+      "name": "sendToClient",
+      "params": [
+        {
+          "name": "clientId",
+          "type": "string",
+          "description": "Target client ID."
+        },
+        {
+          "name": "data",
+          "type": "string",
+          "description": "Message to send."
+        }
+      ],
+      "returns": "boolean",
+      "description": "Send a message to a specific client. Returns false if client not found."
+    },
+    {
+      "name": "joinRoom",
+      "params": [
+        {
+          "name": "clientId",
+          "type": "string",
+          "description": "Client ID to add to room."
+        },
+        {
+          "name": "room",
+          "type": "string",
+          "description": "Room name."
+        }
+      ],
+      "returns": "void",
+      "description": "Add a client to a room."
+    },
+    {
+      "name": "leaveRoom",
+      "params": [
+        {
+          "name": "clientId",
+          "type": "string",
+          "description": "Client ID to remove from room."
+        },
+        {
+          "name": "room",
+          "type": "string",
+          "description": "Room name."
+        }
+      ],
+      "returns": "void",
+      "description": "Remove a client from a room."
+    },
+    {
+      "name": "closeConnection",
+      "params": [
+        {
+          "name": "clientId",
+          "type": "string",
+          "description": "Client ID to disconnect."
+        },
+        {
+          "name": "code",
+          "type": "number",
+          "description": "WebSocket close code (default: 1000).",
+          "required": false
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "description": "Close reason.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Close a client's connection."
+    }
+  ],
+  "dependencies": {
+    "packages": {
+      "ws": "^8.0.0"
+    },
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onConnection",
+        "description": "Log new WebSocket connections",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message",
+          "@radzor/event-tracker.action.track.eventName"
+        ]
+      },
+      {
+        "event": "onDisconnect",
+        "description": "Track disconnections for analytics",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires the 'ws' npm package. Server-only — does not run in browsers. Each client gets a UUID on connection. Rooms are created on first join and removed when empty. heartbeatInterval=0 disables ping/pong."
+  }
+}

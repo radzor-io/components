@@ -1,0 +1,159 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/data-validator",
+  "version": "0.1.0",
+  "description": "Validate data against JSON Schema definitions or custom rule sets. Supports schema registration, type coercion, detailed error reporting, and composable validation pipelines for API inputs, form data, and LLM-generated structured output.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "data",
+  "runtime": "universal",
+  "tags": [
+    "validation",
+    "schema",
+    "json-schema",
+    "data",
+    "type-checking",
+    "coercion",
+    "forms"
+  ],
+  "inputs": [
+    {
+      "name": "coerceTypes",
+      "type": "boolean",
+      "description": "When true, attempt to coerce values to the expected type (e.g. string '42' → number 42).",
+      "default": false,
+      "required": false
+    },
+    {
+      "name": "allErrors",
+      "type": "boolean",
+      "description": "When true, collect all errors instead of stopping at the first one.",
+      "default": true,
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "validationResult",
+      "type": "ValidationResult",
+      "description": "The result of a validation operation.",
+      "fields": [
+        {
+          "name": "valid",
+          "type": "boolean",
+          "description": "Whether the data passed validation."
+        },
+        {
+          "name": "errors",
+          "type": "Array<{ path: string; message: string; rule: string; expected?: unknown; received?: unknown }>",
+          "description": "Detailed list of validation errors."
+        },
+        {
+          "name": "coerced",
+          "type": "unknown",
+          "description": "The coerced data (if coercion was enabled), or the original data."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onValidationFailed",
+      "payload": {
+        "schemaName": "string",
+        "errorCount": "number",
+        "firstError": "string"
+      },
+      "description": "Fired when validation fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "validate",
+      "params": [
+        {
+          "name": "data",
+          "type": "unknown",
+          "description": "The data to validate."
+        },
+        {
+          "name": "schema",
+          "type": "string | SchemaDefinition",
+          "description": "Either a registered schema name or an inline schema definition."
+        }
+      ],
+      "returns": "ValidationResult",
+      "description": "Validate data against a schema."
+    },
+    {
+      "name": "addSchema",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Unique name for the schema."
+        },
+        {
+          "name": "schema",
+          "type": "SchemaDefinition",
+          "description": "The schema definition."
+        }
+      ],
+      "returns": "void",
+      "description": "Register a named schema for reuse."
+    },
+    {
+      "name": "listSchemas",
+      "params": [],
+      "returns": "string[]",
+      "description": "List all registered schema names."
+    },
+    {
+      "name": "coerce",
+      "params": [
+        {
+          "name": "data",
+          "type": "unknown",
+          "description": "The data to coerce."
+        },
+        {
+          "name": "schema",
+          "type": "string | SchemaDefinition",
+          "description": "Schema defining the expected types."
+        }
+      ],
+      "returns": "{ data: unknown; coerced: boolean; changes: string[] }",
+      "description": "Attempt to coerce data to match the schema types without validating constraints."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onValidationFailed",
+        "description": "Log validation failures for debugging",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message",
+          "@radzor/log-aggregator.action.warn.message"
+        ]
+      },
+      {
+        "output": "validationResult",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName"
+        ],
+        "mapField": "valid"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Pure computation — no network calls, no API keys. Implements a subset of JSON Schema (type, required, properties, items, minimum, maximum, minLength, maxLength, pattern, enum). Not a full JSON Schema validator."
+  }
+}

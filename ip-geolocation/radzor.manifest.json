@@ -1,0 +1,161 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/ip-geolocation",
+  "version": "0.1.0",
+  "description": "Look up geographic data from IP addresses using the free ip-api.com service. Get country, city, coordinates, timezone, ISP, and organization info for single or bulk IP lookups.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "security",
+  "runtime": "server",
+  "tags": [
+    "ip",
+    "geolocation",
+    "geo",
+    "location",
+    "country",
+    "security"
+  ],
+  "inputs": [
+    {
+      "name": "cacheTtl",
+      "type": "number",
+      "default": 3600000,
+      "description": "Cache TTL in milliseconds for lookup results (default: 1 hour).",
+      "required": false
+    },
+    {
+      "name": "lang",
+      "type": "string",
+      "default": "en",
+      "description": "Language code for localized city/region names (e.g. 'en', 'de', 'fr', 'ja').",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "geoResult",
+      "type": "GeoResult",
+      "description": "Geographic information for an IP address.",
+      "fields": [
+        {
+          "name": "ip",
+          "type": "string",
+          "description": "The queried IP address."
+        },
+        {
+          "name": "country",
+          "type": "string",
+          "description": "Country name."
+        },
+        {
+          "name": "countryCode",
+          "type": "string",
+          "description": "ISO 3166-1 alpha-2 country code."
+        },
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region or state name."
+        },
+        {
+          "name": "city",
+          "type": "string",
+          "description": "City name."
+        },
+        {
+          "name": "lat",
+          "type": "number",
+          "description": "Latitude."
+        },
+        {
+          "name": "lng",
+          "type": "number",
+          "description": "Longitude."
+        },
+        {
+          "name": "timezone",
+          "type": "string",
+          "description": "IANA timezone identifier."
+        },
+        {
+          "name": "isp",
+          "type": "string",
+          "description": "Internet service provider name."
+        },
+        {
+          "name": "org",
+          "type": "string",
+          "description": "Organization name."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onLookup",
+      "payload": {
+        "ip": "string",
+        "country": "string",
+        "cached": "boolean"
+      },
+      "description": "Fired after a successful IP lookup."
+    },
+    {
+      "name": "onError",
+      "payload": {
+        "ip": "string",
+        "message": "string"
+      },
+      "description": "Fired when a lookup fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "lookup",
+      "params": [
+        {
+          "name": "ip",
+          "type": "string",
+          "description": "IPv4 or IPv6 address to look up."
+        }
+      ],
+      "returns": "Promise<GeoResult>",
+      "description": "Look up geographic data for a single IP address."
+    },
+    {
+      "name": "bulkLookup",
+      "params": [
+        {
+          "name": "ips",
+          "type": "string[]",
+          "description": "Array of IP addresses to look up (max 100 per batch)."
+        }
+      ],
+      "returns": "Promise<GeoResult[]>",
+      "description": "Look up geographic data for multiple IP addresses in a single batch request."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "geoResult",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.properties",
+          "@radzor/log-aggregator.action.info.message"
+        ],
+        "mapField": "country"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Uses the free ip-api.com service which is limited to 45 requests/minute for non-commercial use (HTTP only). For production, consider a paid plan or self-hosted MaxMind database. Bulk lookups are limited to 100 IPs per batch. Results are cached in-memory."
+  }
+}

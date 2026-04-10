@@ -174,10 +174,28 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onCreated",
+        "description": "Track new sessions for analytics",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      },
+      {
+        "event": "onExpired",
+        "description": "Log session expirations",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Memory store loses all sessions on restart \u2014 use redis or postgres for production. Set secure: false only in local development. Always use HTTPS in production to prevent session hijacking."
+    "constraints": "Memory store loses all sessions on restart — use redis or postgres for production. Set secure: false only in local development. Always use HTTPS in production to prevent session hijacking."
   }
 }

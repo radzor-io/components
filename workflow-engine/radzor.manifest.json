@@ -1,0 +1,220 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/workflow-engine",
+  "version": "0.1.0",
+  "description": "Define and execute multi-step workflows with branching, parallel execution, and error handling. Supports conditional logic, retries, and workflow persistence for complex orchestration scenarios.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "automation",
+  "runtime": "server",
+  "tags": [
+    "workflow",
+    "orchestration",
+    "automation",
+    "pipeline",
+    "branching",
+    "steps"
+  ],
+  "inputs": [
+    {
+      "name": "maxConcurrency",
+      "type": "number",
+      "default": 5,
+      "description": "Maximum number of parallel steps that can run simultaneously.",
+      "required": false
+    },
+    {
+      "name": "defaultTimeout",
+      "type": "number",
+      "default": 30000,
+      "description": "Default timeout in milliseconds for each step.",
+      "required": false
+    },
+    {
+      "name": "retryAttempts",
+      "type": "number",
+      "default": 0,
+      "description": "Default number of retry attempts for failed steps.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "workflowResult",
+      "type": "WorkflowResult",
+      "description": "Final result of a completed workflow execution.",
+      "fields": [
+        {
+          "name": "status",
+          "type": "'completed' | 'failed' | 'cancelled'",
+          "description": "Terminal status of the workflow."
+        },
+        {
+          "name": "steps",
+          "type": "StepResult[]",
+          "description": "Ordered list of step results with status and output."
+        },
+        {
+          "name": "output",
+          "type": "Record<string, unknown>",
+          "description": "Aggregated output from all completed steps."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "description": "Total execution time in milliseconds."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onStepComplete",
+      "payload": {
+        "workflowId": "string",
+        "stepId": "string",
+        "stepName": "string",
+        "output": "unknown",
+        "duration": "number"
+      },
+      "description": "Fired when an individual step finishes successfully."
+    },
+    {
+      "name": "onWorkflowComplete",
+      "payload": {
+        "workflowId": "string",
+        "status": "string",
+        "duration": "number"
+      },
+      "description": "Fired when the entire workflow finishes."
+    },
+    {
+      "name": "onWorkflowFailed",
+      "payload": {
+        "workflowId": "string",
+        "stepId": "string",
+        "error": "string"
+      },
+      "description": "Fired when a workflow fails due to a step error."
+    }
+  ],
+  "actions": [
+    {
+      "name": "defineWorkflow",
+      "params": [
+        {
+          "name": "definition",
+          "type": "WorkflowDefinition",
+          "description": "Workflow definition with steps, branches, and configuration."
+        }
+      ],
+      "returns": "string",
+      "description": "Register a workflow definition and return its ID."
+    },
+    {
+      "name": "execute",
+      "params": [
+        {
+          "name": "workflowId",
+          "type": "string",
+          "description": "ID of the registered workflow to execute."
+        },
+        {
+          "name": "input",
+          "type": "Record<string, unknown>",
+          "description": "Input data passed to the first step.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<WorkflowResult>",
+      "description": "Execute a registered workflow with optional input data."
+    },
+    {
+      "name": "pause",
+      "params": [
+        {
+          "name": "executionId",
+          "type": "string",
+          "description": "ID of the running execution to pause."
+        }
+      ],
+      "returns": "void",
+      "description": "Pause a running workflow execution."
+    },
+    {
+      "name": "resume",
+      "params": [
+        {
+          "name": "executionId",
+          "type": "string",
+          "description": "ID of the paused execution to resume."
+        }
+      ],
+      "returns": "Promise<WorkflowResult>",
+      "description": "Resume a paused workflow execution."
+    },
+    {
+      "name": "cancel",
+      "params": [
+        {
+          "name": "executionId",
+          "type": "string",
+          "description": "ID of the execution to cancel."
+        }
+      ],
+      "returns": "void",
+      "description": "Cancel a running or paused workflow execution."
+    },
+    {
+      "name": "getStatus",
+      "params": [
+        {
+          "name": "executionId",
+          "type": "string",
+          "description": "ID of the execution to inspect."
+        }
+      ],
+      "returns": "ExecutionStatus",
+      "description": "Get the current status of a workflow execution."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onWorkflowFailed",
+        "description": "Alert team on workflow failure",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message",
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/notification-hub.action.send.body"
+        ]
+      },
+      {
+        "event": "onWorkflowComplete",
+        "description": "Notify on workflow completion",
+        "compatibleWith": [
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/email-send.action.send.message"
+        ]
+      },
+      {
+        "output": "workflowResult",
+        "compatibleWith": [
+          "@radzor/csv-export.action.generate.data"
+        ],
+        "mapField": "status"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Workflows are stored in-memory; state is lost on process restart. Steps run sequentially by default; use parallel groups for concurrency. Each step handler receives the aggregated output of prior steps."
+  }
+}

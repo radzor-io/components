@@ -204,7 +204,26 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "uploadResult",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ],
+        "mapField": "url"
+      },
+      {
+        "event": "onComplete",
+        "description": "Notify on upload completion",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

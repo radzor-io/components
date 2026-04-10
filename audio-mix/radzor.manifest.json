@@ -1,0 +1,214 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/audio-mix",
+  "version": "0.1.0",
+  "description": "Mix, trim, and concatenate audio tracks using FFmpeg subprocess. Supports volume adjustment, format conversion, and metadata extraction for server-side audio processing.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "media",
+  "runtime": "server",
+  "tags": [
+    "audio",
+    "mixing",
+    "ffmpeg",
+    "trim",
+    "concatenate",
+    "media"
+  ],
+  "inputs": [
+    {
+      "name": "ffmpegPath",
+      "type": "string",
+      "default": "ffmpeg",
+      "description": "Path to the ffmpeg binary.",
+      "required": false
+    },
+    {
+      "name": "ffprobePath",
+      "type": "string",
+      "default": "ffprobe",
+      "description": "Path to the ffprobe binary.",
+      "required": false
+    },
+    {
+      "name": "outputDir",
+      "type": "string",
+      "description": "Default output directory for processed audio files.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "mixResult",
+      "type": "MixResult",
+      "description": "Result of an audio processing operation.",
+      "fields": [
+        {
+          "name": "outputPath",
+          "type": "string",
+          "description": "Path to the output audio file."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "description": "Duration of the output in seconds."
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "description": "Audio format (e.g. mp3, wav, aac)."
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "description": "File size in bytes."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onMixComplete",
+      "payload": {
+        "outputPath": "string",
+        "duration": "number",
+        "trackCount": "number"
+      },
+      "description": "Fired when an audio processing operation completes."
+    }
+  ],
+  "actions": [
+    {
+      "name": "mix",
+      "params": [
+        {
+          "name": "tracks",
+          "type": "TrackInput[]",
+          "description": "Array of audio tracks to mix together."
+        },
+        {
+          "name": "outputPath",
+          "type": "string",
+          "description": "Path for the output mixed file."
+        },
+        {
+          "name": "options",
+          "type": "MixOptions",
+          "description": "Mixing options (output format, sample rate, etc.).",
+          "required": false
+        }
+      ],
+      "returns": "Promise<MixResult>",
+      "description": "Mix multiple audio tracks into a single output file."
+    },
+    {
+      "name": "trim",
+      "params": [
+        {
+          "name": "inputPath",
+          "type": "string",
+          "description": "Path to the input audio file."
+        },
+        {
+          "name": "outputPath",
+          "type": "string",
+          "description": "Path for the trimmed output file."
+        },
+        {
+          "name": "startTime",
+          "type": "number",
+          "description": "Start time in seconds."
+        },
+        {
+          "name": "endTime",
+          "type": "number",
+          "description": "End time in seconds.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<MixResult>",
+      "description": "Trim an audio file to a specific time range."
+    },
+    {
+      "name": "concatenate",
+      "params": [
+        {
+          "name": "inputPaths",
+          "type": "string[]",
+          "description": "Ordered list of audio file paths to concatenate."
+        },
+        {
+          "name": "outputPath",
+          "type": "string",
+          "description": "Path for the concatenated output file."
+        }
+      ],
+      "returns": "Promise<MixResult>",
+      "description": "Concatenate multiple audio files sequentially."
+    },
+    {
+      "name": "adjustVolume",
+      "params": [
+        {
+          "name": "inputPath",
+          "type": "string",
+          "description": "Path to the input audio file."
+        },
+        {
+          "name": "outputPath",
+          "type": "string",
+          "description": "Path for the output file."
+        },
+        {
+          "name": "volume",
+          "type": "number",
+          "description": "Volume multiplier (1.0 = original, 0.5 = half, 2.0 = double)."
+        }
+      ],
+      "returns": "Promise<MixResult>",
+      "description": "Adjust the volume of an audio file."
+    },
+    {
+      "name": "getMetadata",
+      "params": [
+        {
+          "name": "inputPath",
+          "type": "string",
+          "description": "Path to the audio file."
+        }
+      ],
+      "returns": "Promise<AudioMetadata>",
+      "description": "Get metadata (duration, format, bitrate, etc.) from an audio file."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "mixResult",
+        "compatibleWith": [
+          "@radzor/s3-upload.action.upload.key",
+          "@radzor/file-upload.action.upload.data"
+        ],
+        "mapField": "outputPath"
+      },
+      {
+        "event": "onMixComplete",
+        "description": "Upload mixed audio to cloud storage",
+        "compatibleWith": [
+          "@radzor/s3-upload.action.upload.key"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires FFmpeg and FFprobe installed on the system. Server-only (uses child_process). Operations are synchronous per job; queue externally for high throughput."
+  }
+}

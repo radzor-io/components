@@ -1,0 +1,183 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/ai-classifier",
+  "version": "0.1.0",
+  "description": "Classify text into categories using LLM-powered classification or rule-based approaches. Supports single and batch classification, custom category definitions with descriptions, and a trainable keyword-based fallback for offline use.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "ai",
+  "runtime": "server",
+  "tags": [
+    "classifier",
+    "classification",
+    "nlp",
+    "text",
+    "ai",
+    "llm",
+    "categorization",
+    "intent"
+  ],
+  "inputs": [
+    {
+      "name": "apiKey",
+      "type": "string",
+      "description": "API key for the LLM used for classification (OpenAI-compatible).",
+      "required": false,
+      "envVar": "OPENAI_API_KEY"
+    },
+    {
+      "name": "model",
+      "type": "string",
+      "description": "Model to use for LLM-based classification.",
+      "default": "gpt-4o-mini",
+      "required": false
+    },
+    {
+      "name": "baseUrl",
+      "type": "string",
+      "description": "Base URL for the classification API.",
+      "default": "https://api.openai.com/v1",
+      "required": false
+    },
+    {
+      "name": "mode",
+      "type": "'llm' | 'rules' | 'hybrid'",
+      "description": "Classification mode: llm (API-based), rules (keyword-based), or hybrid (rules first, LLM fallback).",
+      "default": "llm",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "classificationResult",
+      "type": "ClassificationResult",
+      "description": "The classification result with category, confidence, and per-category scores.",
+      "fields": [
+        {
+          "name": "category",
+          "type": "string",
+          "description": "The predicted category label."
+        },
+        {
+          "name": "confidence",
+          "type": "number",
+          "description": "Confidence score for the top category (0-1)."
+        },
+        {
+          "name": "scores",
+          "type": "Record<string, number>",
+          "description": "Confidence scores for all categories."
+        },
+        {
+          "name": "method",
+          "type": "string",
+          "description": "The method used: 'llm' or 'rules'."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onClassified",
+      "payload": {
+        "text": "string",
+        "category": "string",
+        "confidence": "number",
+        "method": "string"
+      },
+      "description": "Fired after each successful classification."
+    }
+  ],
+  "actions": [
+    {
+      "name": "classify",
+      "params": [
+        {
+          "name": "text",
+          "type": "string",
+          "description": "The text to classify."
+        }
+      ],
+      "returns": "Promise<ClassificationResult>",
+      "description": "Classify a single text into one of the defined categories."
+    },
+    {
+      "name": "batchClassify",
+      "params": [
+        {
+          "name": "texts",
+          "type": "string[]",
+          "description": "Array of texts to classify."
+        }
+      ],
+      "returns": "Promise<ClassificationResult[]>",
+      "description": "Classify multiple texts. Processes sequentially for LLM mode, in parallel for rules mode."
+    },
+    {
+      "name": "defineCategory",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Category label."
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "description": "Description of what belongs in this category (used by LLM classifier)."
+        },
+        {
+          "name": "keywords",
+          "type": "string[]",
+          "description": "Keywords for rule-based matching.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Define a classification category with its description and optional keywords."
+    },
+    {
+      "name": "train",
+      "params": [
+        {
+          "name": "examples",
+          "type": "Array<{ text: string; category: string }>",
+          "description": "Labeled examples to extract keywords from for rule-based classification."
+        }
+      ],
+      "returns": "{ categoriesUpdated: number; keywordsAdded: number }",
+      "description": "Train the rule-based classifier by extracting keywords from labeled examples."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "classificationResult",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ],
+        "mapField": "category"
+      },
+      {
+        "event": "onClassified",
+        "description": "Route classified content to appropriate handler",
+        "compatibleWith": [
+          "@radzor/agent-router.action.route.prompt",
+          "@radzor/notification-hub.action.send.body"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "LLM mode requires an OpenAI-compatible API key. Rules mode works offline with no API key. Hybrid mode tries rules first and falls back to LLM when rule confidence is low."
+  }
+}

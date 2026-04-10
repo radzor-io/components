@@ -1,0 +1,213 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/ab-test",
+  "version": "0.1.0",
+  "description": "Run A/B tests with deterministic variant assignment and conversion tracking. Supports multi-variant experiments, traffic allocation, and statistical significance calculation. Zero dependencies.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "analytics",
+  "runtime": "server",
+  "tags": [
+    "ab-test",
+    "experiment",
+    "variant",
+    "conversion",
+    "analytics",
+    "split-test"
+  ],
+  "inputs": [
+    {
+      "name": "experiments",
+      "type": "ExperimentDefinition[]",
+      "description": "Array of experiment definitions with names, variants, and traffic allocation.",
+      "required": false
+    },
+    {
+      "name": "salt",
+      "type": "string",
+      "description": "Global salt for hash-based variant assignment. Change to re-randomize all assignments.",
+      "default": "radzor-ab",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "variantAssignment",
+      "type": "VariantAssignment",
+      "description": "Result of assigning a user to an experiment variant.",
+      "fields": [
+        {
+          "name": "experimentId",
+          "type": "string",
+          "description": "Experiment identifier."
+        },
+        {
+          "name": "variant",
+          "type": "string",
+          "description": "Assigned variant name."
+        },
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "User who was assigned."
+        },
+        {
+          "name": "inExperiment",
+          "type": "boolean",
+          "description": "Whether the user is in the experiment (false if excluded by traffic allocation)."
+        }
+      ]
+    },
+    {
+      "name": "experimentResults",
+      "type": "ExperimentResults",
+      "description": "Aggregated results for an experiment.",
+      "fields": [
+        {
+          "name": "experimentId",
+          "type": "string",
+          "description": "Experiment identifier."
+        },
+        {
+          "name": "variants",
+          "type": "VariantStats[]",
+          "description": "Per-variant statistics."
+        },
+        {
+          "name": "totalParticipants",
+          "type": "number",
+          "description": "Total number of participants."
+        },
+        {
+          "name": "totalConversions",
+          "type": "number",
+          "description": "Total number of conversions across all variants."
+        },
+        {
+          "name": "significant",
+          "type": "boolean",
+          "description": "Whether the result is statistically significant (p < 0.05)."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onConversion",
+      "payload": {
+        "experimentId": "string",
+        "variant": "string",
+        "userId": "string",
+        "value": "number"
+      },
+      "description": "Fired when a conversion is tracked for an experiment."
+    }
+  ],
+  "actions": [
+    {
+      "name": "getVariant",
+      "params": [
+        {
+          "name": "experimentId",
+          "type": "string",
+          "description": "Experiment to assign the user to."
+        },
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "Unique user identifier for deterministic assignment."
+        }
+      ],
+      "returns": "VariantAssignment",
+      "description": "Deterministically assign a user to a variant. Same userId always gets the same variant."
+    },
+    {
+      "name": "trackConversion",
+      "params": [
+        {
+          "name": "experimentId",
+          "type": "string",
+          "description": "Experiment the conversion belongs to."
+        },
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "User who converted."
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "description": "Numeric conversion value (e.g. revenue).",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Record a conversion event for a user in an experiment."
+    },
+    {
+      "name": "createExperiment",
+      "params": [
+        {
+          "name": "experimentId",
+          "type": "string",
+          "description": "Unique experiment identifier."
+        },
+        {
+          "name": "variants",
+          "type": "string[]",
+          "description": "List of variant names (e.g. ['control', 'variant-a', 'variant-b'])."
+        },
+        {
+          "name": "trafficPercent",
+          "type": "number",
+          "description": "Percentage of users included in the experiment (0-100).",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Define a new experiment at runtime."
+    },
+    {
+      "name": "getResults",
+      "params": [
+        {
+          "name": "experimentId",
+          "type": "string",
+          "description": "Experiment to get results for."
+        }
+      ],
+      "returns": "ExperimentResults",
+      "description": "Get aggregated results with conversion rates and statistical significance."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onConversion",
+        "description": "Track conversion events in analytics pipeline",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/funnel-report.action.recordStep.userId"
+        ]
+      },
+      {
+        "output": "experimentResults",
+        "compatibleWith": [
+          "@radzor/csv-export.action.generate.data"
+        ],
+        "mapField": "experimentId"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Variant assignment is deterministic using a hash of (salt + experimentId + userId). All data is in-memory — results reset on restart. For persistent experiments, store assignments and conversions in a database. Statistical significance uses a chi-squared approximation and requires at least 30 participants per variant."
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/kv-store",
+  "version": "0.1.0",
+  "description": "Key-value store with TTL support. Operates in-memory by default with optional Redis backend via raw RESP protocol. Supports expiration callbacks and namespace isolation.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "storage",
+  "runtime": "server",
+  "tags": [
+    "kv",
+    "key-value",
+    "store",
+    "redis",
+    "ttl",
+    "cache",
+    "memory"
+  ],
+  "inputs": [
+    {
+      "name": "mode",
+      "type": "\"memory\" | \"redis\"",
+      "description": "Storage backend (default: memory).",
+      "required": false,
+      "default": "memory"
+    },
+    {
+      "name": "redisUrl",
+      "type": "string",
+      "description": "Redis connection URL (required when mode is 'redis').",
+      "required": false,
+      "envVar": "REDIS_URL"
+    },
+    {
+      "name": "namespace",
+      "type": "string",
+      "description": "Key prefix for namespace isolation (default: none).",
+      "required": false
+    },
+    {
+      "name": "defaultTtl",
+      "type": "number",
+      "description": "Default TTL in milliseconds (0 = no expiry, default: 0).",
+      "required": false,
+      "default": 0
+    }
+  ],
+  "outputs": [
+    {
+      "name": "storeStats",
+      "type": "{ size: number; mode: string; namespace: string }",
+      "description": "Current store statistics.",
+      "fields": [
+        {
+          "name": "size",
+          "type": "number",
+          "description": "Number of keys in the store."
+        },
+        {
+          "name": "mode",
+          "type": "string",
+          "description": "Active storage mode."
+        },
+        {
+          "name": "namespace",
+          "type": "string",
+          "description": "Current namespace prefix."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onExpired",
+      "payload": {
+        "key": "string",
+        "value": "string"
+      },
+      "description": "Fired when a key expires (in-memory mode only, checked on access or sweep)."
+    }
+  ],
+  "actions": [
+    {
+      "name": "get",
+      "params": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Key to retrieve."
+        }
+      ],
+      "returns": "Promise<string | null>",
+      "description": "Get a value by key. Returns null if not found or expired."
+    },
+    {
+      "name": "set",
+      "params": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Key to set."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "description": "Value to store."
+        },
+        {
+          "name": "ttl",
+          "type": "number",
+          "description": "TTL in milliseconds. Overrides defaultTtl.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<void>",
+      "description": "Set a key-value pair with optional TTL."
+    },
+    {
+      "name": "delete",
+      "params": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Key to delete."
+        }
+      ],
+      "returns": "Promise<boolean>",
+      "description": "Delete a key. Returns true if it existed."
+    },
+    {
+      "name": "has",
+      "params": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Key to check."
+        }
+      ],
+      "returns": "Promise<boolean>",
+      "description": "Check if a key exists and is not expired."
+    },
+    {
+      "name": "keys",
+      "params": [
+        {
+          "name": "pattern",
+          "type": "string",
+          "description": "Glob pattern to filter keys (default: *).",
+          "required": false
+        }
+      ],
+      "returns": "Promise<string[]>",
+      "description": "List all keys matching a pattern."
+    },
+    {
+      "name": "clear",
+      "params": [],
+      "returns": "Promise<void>",
+      "description": "Delete all keys in the current namespace."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onExpired",
+        "description": "Log key expirations for debugging",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message",
+          "@radzor/event-tracker.action.track.eventName"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "In-memory mode requires no dependencies and is lost on process restart. Redis mode uses raw RESP protocol over TCP (no npm packages). TTL is in milliseconds. Namespace prefixes are applied transparently — keys() returns unprefixed keys."
+  }
+}

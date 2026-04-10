@@ -1,0 +1,175 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/health-check",
+  "version": "0.1.0",
+  "description": "Health check endpoint with dependency monitoring. Register dependencies (databases, APIs, caches), run periodic checks, and expose a unified health report. Zero dependencies.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "monitoring",
+  "runtime": "server",
+  "tags": [
+    "health",
+    "monitoring",
+    "uptime",
+    "dependency",
+    "readiness",
+    "liveness"
+  ],
+  "inputs": [
+    {
+      "name": "intervalMs",
+      "type": "number",
+      "description": "Interval in ms between automatic health checks.",
+      "default": 30000,
+      "required": false
+    },
+    {
+      "name": "timeout",
+      "type": "number",
+      "description": "Timeout in ms for each individual dependency check.",
+      "default": 5000,
+      "required": false
+    },
+    {
+      "name": "historySize",
+      "type": "number",
+      "description": "Number of historical check results to retain per dependency.",
+      "default": 100,
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "healthReport",
+      "type": "HealthReport",
+      "description": "Aggregated health status of all registered dependencies.",
+      "fields": [
+        {
+          "name": "status",
+          "type": "'healthy' | 'degraded' | 'unhealthy'",
+          "description": "Overall system health status."
+        },
+        {
+          "name": "dependencies",
+          "type": "DependencyReport[]",
+          "description": "Per-dependency health details."
+        },
+        {
+          "name": "checkedAt",
+          "type": "number",
+          "description": "Timestamp of the health check."
+        },
+        {
+          "name": "uptimeMs",
+          "type": "number",
+          "description": "Process uptime in ms."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onHealthy",
+      "payload": {
+        "status": "string",
+        "checkedAt": "number"
+      },
+      "description": "Fired when all dependencies are healthy."
+    },
+    {
+      "name": "onUnhealthy",
+      "payload": {
+        "status": "string",
+        "failedDependencies": "string[]",
+        "checkedAt": "number"
+      },
+      "description": "Fired when one or more dependencies are unhealthy."
+    }
+  ],
+  "actions": [
+    {
+      "name": "check",
+      "params": [],
+      "returns": "Promise<HealthReport>",
+      "description": "Run all dependency health checks and return the aggregated report."
+    },
+    {
+      "name": "registerDependency",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Unique name for the dependency (e.g. 'postgres', 'redis', 'stripe-api')."
+        },
+        {
+          "name": "checker",
+          "type": "() => Promise<boolean>",
+          "description": "Async function that returns true if the dependency is healthy."
+        },
+        {
+          "name": "critical",
+          "type": "boolean",
+          "description": "If true, a failure makes the overall status 'unhealthy'. If false, status is 'degraded'.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Register a dependency with its health check function."
+    },
+    {
+      "name": "removeDependency",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Name of the dependency to remove."
+        }
+      ],
+      "returns": "void",
+      "description": "Unregister a dependency."
+    },
+    {
+      "name": "getHistory",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Dependency name to get history for."
+        }
+      ],
+      "returns": "DependencyCheckResult[]",
+      "description": "Get the historical check results for a specific dependency."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onUnhealthy",
+        "description": "Alert when service dependencies are unhealthy",
+        "compatibleWith": [
+          "@radzor/notification-hub.action.send.body",
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/email-send.action.send.message"
+        ]
+      },
+      {
+        "output": "healthReport",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message"
+        ],
+        "mapField": "status"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Each dependency check is wrapped in a timeout — a check that takes longer than `timeout` ms is considered failed. The checker function must return a Promise<boolean>. The auto-check interval timer is unref'd and won't keep the process alive."
+  }
+}

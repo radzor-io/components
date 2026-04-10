@@ -120,7 +120,26 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onCallResult",
+        "description": "Log smart contract call results",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      },
+      {
+        "event": "onError",
+        "description": "Track smart contract errors",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message",
+          "@radzor/notification-hub.action.send.body"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

@@ -1,0 +1,222 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/jwt-auth",
+  "version": "0.1.0",
+  "description": "Create and verify JWT tokens using HMAC-SHA256/384/512 with no external dependencies. Sign tokens with custom claims and expiration, verify signatures, decode without verification, and refresh expiring tokens.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "security",
+  "runtime": "server",
+  "tags": [
+    "jwt",
+    "auth",
+    "token",
+    "authentication",
+    "security",
+    "hmac"
+  ],
+  "inputs": [
+    {
+      "name": "secret",
+      "type": "string",
+      "description": "HMAC secret key for signing and verifying tokens. Minimum 32 characters recommended.",
+      "required": true,
+      "envVar": "JWT_SECRET"
+    },
+    {
+      "name": "algorithm",
+      "type": "'HS256' | 'HS384' | 'HS512'",
+      "default": "HS256",
+      "description": "HMAC algorithm for JWT signatures.",
+      "required": false
+    },
+    {
+      "name": "issuer",
+      "type": "string",
+      "description": "Default 'iss' claim for issued tokens.",
+      "required": false
+    },
+    {
+      "name": "audience",
+      "type": "string",
+      "description": "Default 'aud' claim for issued tokens.",
+      "required": false
+    },
+    {
+      "name": "expiresIn",
+      "type": "number",
+      "default": 3600,
+      "description": "Default token lifetime in seconds (default: 1 hour).",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "tokenPayload",
+      "type": "TokenPayload",
+      "description": "Decoded JWT payload with standard and custom claims.",
+      "fields": [
+        {
+          "name": "sub",
+          "type": "string",
+          "description": "Subject (user ID).",
+          "required": false
+        },
+        {
+          "name": "iss",
+          "type": "string",
+          "description": "Issuer.",
+          "required": false
+        },
+        {
+          "name": "aud",
+          "type": "string",
+          "description": "Audience.",
+          "required": false
+        },
+        {
+          "name": "exp",
+          "type": "number",
+          "description": "Expiration time (Unix timestamp)."
+        },
+        {
+          "name": "iat",
+          "type": "number",
+          "description": "Issued-at time (Unix timestamp)."
+        },
+        {
+          "name": "jti",
+          "type": "string",
+          "description": "Unique token ID.",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onSigned",
+      "payload": {
+        "sub": "string",
+        "expiresAt": "number"
+      },
+      "description": "Fired when a new token is signed."
+    },
+    {
+      "name": "onVerified",
+      "payload": {
+        "sub": "string",
+        "valid": "boolean"
+      },
+      "description": "Fired when a token is verified."
+    },
+    {
+      "name": "onExpired",
+      "payload": {
+        "sub": "string",
+        "expiredAt": "number"
+      },
+      "description": "Fired when verification detects an expired token."
+    },
+    {
+      "name": "onError",
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
+      "description": "Fired on signing or verification errors."
+    }
+  ],
+  "actions": [
+    {
+      "name": "sign",
+      "params": [
+        {
+          "name": "claims",
+          "type": "Record<string, unknown>",
+          "description": "Custom claims to include in the token (e.g. sub, role, permissions)."
+        },
+        {
+          "name": "expiresIn",
+          "type": "number",
+          "description": "Override default expiration (seconds from now).",
+          "required": false
+        }
+      ],
+      "returns": "string",
+      "description": "Sign a new JWT token with the given claims."
+    },
+    {
+      "name": "verify",
+      "params": [
+        {
+          "name": "token",
+          "type": "string",
+          "description": "JWT token string to verify."
+        }
+      ],
+      "returns": "TokenPayload",
+      "description": "Verify a JWT token's signature and expiration. Throws on invalid or expired tokens."
+    },
+    {
+      "name": "decode",
+      "params": [
+        {
+          "name": "token",
+          "type": "string",
+          "description": "JWT token string to decode."
+        }
+      ],
+      "returns": "TokenPayload",
+      "description": "Decode a JWT token without verifying the signature. Useful for inspecting claims."
+    },
+    {
+      "name": "refresh",
+      "params": [
+        {
+          "name": "token",
+          "type": "string",
+          "description": "Current JWT token to refresh."
+        },
+        {
+          "name": "expiresIn",
+          "type": "number",
+          "description": "New token lifetime in seconds.",
+          "required": false
+        }
+      ],
+      "returns": "string",
+      "description": "Verify an existing token and issue a new one with refreshed expiration."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "tokenPayload",
+        "compatibleWith": [
+          "@radzor/session-manager.action.create.data",
+          "@radzor/rbac.action.checkPermission.userId"
+        ],
+        "mapField": "sub"
+      },
+      {
+        "event": "onExpired",
+        "description": "Trigger token refresh on expiry",
+        "compatibleWith": [
+          "@radzor/oauth-token-refresh.action.refresh.refreshToken"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "No external dependencies — uses Node.js built-in crypto module. Only supports HMAC algorithms (HS256/384/512), not RSA or ECDSA. Secret must be kept server-side. Use decode() only for non-security-critical reads — always verify() before trusting claims."
+  }
+}

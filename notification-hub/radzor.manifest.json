@@ -1,0 +1,187 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/notification-hub",
+  "version": "0.1.0",
+  "description": "Fan-out notifications to multiple channels including email (SMTP/SendGrid), SMS (Twilio), push (FCM), and Slack webhooks. Register channels dynamically and track delivery status.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "messaging",
+  "runtime": "server",
+  "tags": [
+    "notification",
+    "email",
+    "sms",
+    "push",
+    "slack",
+    "fan-out",
+    "multi-channel"
+  ],
+  "inputs": [
+    {
+      "name": "defaultChannels",
+      "type": "string[]",
+      "description": "Default channel names to send to when none specified (e.g. [\"email\", \"slack\"]).",
+      "required": false,
+      "default": []
+    },
+    {
+      "name": "retryAttempts",
+      "type": "number",
+      "description": "Number of retry attempts on delivery failure (default: 2).",
+      "required": false,
+      "default": 2
+    }
+  ],
+  "outputs": [
+    {
+      "name": "deliveryReport",
+      "type": "{ channelName: string; success: boolean; messageId: string; error?: string }",
+      "description": "Per-channel delivery report.",
+      "fields": [
+        {
+          "name": "channelName",
+          "type": "string",
+          "description": "Channel that processed the notification."
+        },
+        {
+          "name": "success",
+          "type": "boolean",
+          "description": "Whether delivery succeeded."
+        },
+        {
+          "name": "messageId",
+          "type": "string",
+          "description": "Channel-specific message identifier."
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "description": "Error message if delivery failed.",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onDelivered",
+      "payload": {
+        "channelName": "string",
+        "messageId": "string",
+        "recipient": "string"
+      },
+      "description": "Fired when a notification is successfully delivered to a channel."
+    },
+    {
+      "name": "onFailed",
+      "payload": {
+        "channelName": "string",
+        "error": "string",
+        "recipient": "string",
+        "attempts": "number"
+      },
+      "description": "Fired when delivery fails after all retry attempts."
+    }
+  ],
+  "actions": [
+    {
+      "name": "send",
+      "params": [
+        {
+          "name": "title",
+          "type": "string",
+          "description": "Notification title / subject."
+        },
+        {
+          "name": "body",
+          "type": "string",
+          "description": "Notification body / message."
+        },
+        {
+          "name": "recipient",
+          "type": "string",
+          "description": "Recipient identifier (email, phone, device token, or channel ID depending on channel type)."
+        },
+        {
+          "name": "channels",
+          "type": "string[]",
+          "description": "Channel names to send to. Uses defaultChannels if omitted.",
+          "required": false
+        },
+        {
+          "name": "metadata",
+          "type": "Record<string, string>",
+          "description": "Arbitrary key-value metadata passed to channel handlers.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<{ results: Array<{ channel: string; success: boolean; messageId?: string; error?: string }> }>",
+      "description": "Send a notification to one or more channels."
+    },
+    {
+      "name": "registerChannel",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Unique channel name (e.g. \"email\", \"slack-ops\")."
+        },
+        {
+          "name": "type",
+          "type": "\"email\" | \"sms\" | \"push\" | \"slack\" | \"webhook\"",
+          "description": "Channel transport type."
+        },
+        {
+          "name": "config",
+          "type": "Record<string, string>",
+          "description": "Channel-specific configuration (API keys, URLs, etc.)."
+        }
+      ],
+      "returns": "void",
+      "description": "Register a notification channel with its transport configuration."
+    },
+    {
+      "name": "removeChannel",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Channel name to remove."
+        }
+      ],
+      "returns": "boolean",
+      "description": "Remove a registered channel. Returns true if it existed."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onFailed",
+        "description": "Track failed notification deliveries",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message",
+          "@radzor/log-aggregator.action.error.message"
+        ]
+      },
+      {
+        "output": "deliveryReport",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ],
+        "mapField": "channelName"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Each channel type requires its own credentials in the config parameter: email needs SMTP host/port/user/pass or SendGrid API key; sms needs Twilio SID/token/from; push needs FCM server key; slack needs webhook URL. No external dependencies — all transports use raw fetch."
+  }
+}

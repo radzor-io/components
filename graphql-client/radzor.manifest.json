@@ -1,0 +1,208 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/graphql-client",
+  "version": "0.1.0",
+  "description": "Execute GraphQL queries and mutations with automatic batching, response caching, and subscription support via WebSocket. Uses raw fetch for HTTP transport and native WebSocket for subscriptions.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "data",
+  "runtime": "universal",
+  "tags": [
+    "graphql",
+    "client",
+    "query",
+    "mutation",
+    "subscription",
+    "caching",
+    "batching",
+    "api"
+  ],
+  "inputs": [
+    {
+      "name": "endpoint",
+      "type": "string",
+      "description": "The GraphQL HTTP endpoint URL.",
+      "required": true
+    },
+    {
+      "name": "headers",
+      "type": "Record<string, string>",
+      "description": "Default headers to send with every request (e.g. authorization).",
+      "required": false
+    },
+    {
+      "name": "cacheEnabled",
+      "type": "boolean",
+      "description": "Whether to enable in-memory response caching for queries.",
+      "default": false,
+      "required": false
+    },
+    {
+      "name": "cacheTtlMs",
+      "type": "number",
+      "description": "Cache TTL in milliseconds.",
+      "default": 60000,
+      "required": false
+    },
+    {
+      "name": "batchEnabled",
+      "type": "boolean",
+      "description": "Whether to enable request batching.",
+      "default": false,
+      "required": false
+    },
+    {
+      "name": "batchIntervalMs",
+      "type": "number",
+      "description": "Batching window in milliseconds. Requests within this window are combined.",
+      "default": 50,
+      "required": false
+    },
+    {
+      "name": "wsEndpoint",
+      "type": "string",
+      "description": "WebSocket endpoint for GraphQL subscriptions. Defaults to the HTTP endpoint with ws(s):// protocol.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "graphqlResult",
+      "type": "GraphQLResult",
+      "description": "The result of a GraphQL operation.",
+      "fields": [
+        {
+          "name": "data",
+          "type": "unknown",
+          "description": "The response data."
+        },
+        {
+          "name": "errors",
+          "type": "Array<{ message: string; path?: string[]; extensions?: Record<string, unknown> }>",
+          "description": "GraphQL errors, if any.",
+          "required": false
+        },
+        {
+          "name": "cached",
+          "type": "boolean",
+          "description": "Whether this result was served from cache."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onError",
+      "payload": {
+        "operation": "string",
+        "message": "string",
+        "status": "number"
+      },
+      "description": "Fired when a GraphQL request fails at the HTTP level."
+    }
+  ],
+  "actions": [
+    {
+      "name": "query",
+      "params": [
+        {
+          "name": "query",
+          "type": "string",
+          "description": "The GraphQL query string."
+        },
+        {
+          "name": "variables",
+          "type": "Record<string, unknown>",
+          "description": "Query variables.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<GraphQLResult>",
+      "description": "Execute a GraphQL query. May return cached results if caching is enabled."
+    },
+    {
+      "name": "mutate",
+      "params": [
+        {
+          "name": "mutation",
+          "type": "string",
+          "description": "The GraphQL mutation string."
+        },
+        {
+          "name": "variables",
+          "type": "Record<string, unknown>",
+          "description": "Mutation variables.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<GraphQLResult>",
+      "description": "Execute a GraphQL mutation. Never cached."
+    },
+    {
+      "name": "subscribe",
+      "params": [
+        {
+          "name": "subscription",
+          "type": "string",
+          "description": "The GraphQL subscription string."
+        },
+        {
+          "name": "variables",
+          "type": "Record<string, unknown>",
+          "description": "Subscription variables.",
+          "required": false
+        },
+        {
+          "name": "onData",
+          "type": "(data: unknown) => void",
+          "description": "Callback invoked for each subscription event."
+        }
+      ],
+      "returns": "{ unsubscribe: () => void }",
+      "description": "Start a GraphQL subscription over WebSocket."
+    },
+    {
+      "name": "setBatchInterval",
+      "params": [
+        {
+          "name": "ms",
+          "type": "number",
+          "description": "New batch interval in milliseconds."
+        }
+      ],
+      "returns": "void",
+      "description": "Update the batching window interval."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "graphqlResult",
+        "compatibleWith": [
+          "@radzor/json-transform.action.transform.data",
+          "@radzor/data-validator.action.validate.data"
+        ],
+        "mapField": "data"
+      },
+      {
+        "event": "onError",
+        "description": "Track GraphQL errors",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message",
+          "@radzor/log-aggregator.action.error.message"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Uses native fetch for HTTP and WebSocket for subscriptions. Node.js 18+ required. Subscriptions follow the graphql-ws protocol. Caching is in-memory only."
+  }
+}

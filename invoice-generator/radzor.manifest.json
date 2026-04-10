@@ -1,0 +1,205 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/invoice-generator",
+  "version": "0.1.0",
+  "description": "Generate PDF invoices from structured data. Build invoices with line items, customer info, tax calculations, and export as PDF buffers or structured JSON.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "payment",
+  "runtime": "server",
+  "tags": [
+    "invoice",
+    "pdf",
+    "billing",
+    "payment",
+    "accounting",
+    "finance"
+  ],
+  "inputs": [
+    {
+      "name": "companyName",
+      "type": "string",
+      "description": "Your company or business name for the invoice header.",
+      "required": true
+    },
+    {
+      "name": "companyAddress",
+      "type": "string",
+      "description": "Your company address for the invoice header.",
+      "required": false
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "default": "USD",
+      "description": "Currency code (ISO 4217) for monetary amounts.",
+      "required": false
+    },
+    {
+      "name": "taxRate",
+      "type": "number",
+      "default": 0,
+      "description": "Default tax rate as a percentage (e.g. 20 for 20%).",
+      "required": false
+    },
+    {
+      "name": "invoicePrefix",
+      "type": "string",
+      "default": "INV",
+      "description": "Prefix for auto-generated invoice numbers.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "invoicePdf",
+      "type": "Buffer",
+      "description": "Generated PDF invoice as a Node.js Buffer."
+    },
+    {
+      "name": "invoiceData",
+      "type": "InvoiceData",
+      "description": "Structured invoice data with totals and line items.",
+      "fields": [
+        {
+          "name": "invoiceNumber",
+          "type": "string",
+          "description": "Unique invoice number."
+        },
+        {
+          "name": "date",
+          "type": "string",
+          "description": "Invoice date (ISO 8601)."
+        },
+        {
+          "name": "customer",
+          "type": "CustomerInfo",
+          "description": "Customer name, email, and address."
+        },
+        {
+          "name": "lineItems",
+          "type": "LineItem[]",
+          "description": "Array of line items with description, quantity, unit price, and total."
+        },
+        {
+          "name": "subtotal",
+          "type": "number",
+          "description": "Sum of all line item totals before tax."
+        },
+        {
+          "name": "taxAmount",
+          "type": "number",
+          "description": "Tax amount calculated from subtotal."
+        },
+        {
+          "name": "total",
+          "type": "number",
+          "description": "Final total including tax."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onGenerated",
+      "payload": {
+        "invoiceNumber": "string",
+        "total": "number",
+        "customerEmail": "string"
+      },
+      "description": "Fired when a PDF invoice is successfully generated."
+    },
+    {
+      "name": "onError",
+      "payload": {
+        "code": "string",
+        "message": "string"
+      },
+      "description": "Fired when invoice generation fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "generate",
+      "params": [],
+      "returns": "Promise<{ pdf: Buffer; data: InvoiceData }>",
+      "description": "Generate the PDF invoice from accumulated line items and customer info. Returns the PDF buffer and structured data."
+    },
+    {
+      "name": "addLineItem",
+      "params": [
+        {
+          "name": "description",
+          "type": "string",
+          "description": "Description of the line item."
+        },
+        {
+          "name": "quantity",
+          "type": "number",
+          "description": "Quantity of items."
+        },
+        {
+          "name": "unitPrice",
+          "type": "number",
+          "description": "Price per unit in the configured currency."
+        }
+      ],
+      "returns": "void",
+      "description": "Add a line item to the current invoice."
+    },
+    {
+      "name": "setCustomer",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Customer full name or company name."
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "description": "Customer email address."
+        },
+        {
+          "name": "address",
+          "type": "string",
+          "description": "Customer billing address.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Set the customer details for the invoice."
+    }
+  ],
+  "dependencies": {
+    "packages": {
+      "pdfkit": "^0.15.0"
+    },
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "invoicePdf",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/s3-upload.action.upload.body"
+        ]
+      },
+      {
+        "output": "invoiceData",
+        "compatibleWith": [
+          "@radzor/csv-export.action.generate.data"
+        ],
+        "mapField": "invoiceNumber"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Server-side only. PDF generation requires pdfkit. Line items must be added before calling generate(). Customer must be set before generating."
+  }
+}

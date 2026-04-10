@@ -1,0 +1,189 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/event-tracker",
+  "version": "0.1.0",
+  "description": "Track user events and page views for analytics. Buffers events in memory and flushes them in batches to a configurable HTTP endpoint. Zero dependencies — uses raw fetch.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "analytics",
+  "runtime": "universal",
+  "tags": [
+    "analytics",
+    "tracking",
+    "events",
+    "pageview",
+    "metrics",
+    "telemetry"
+  ],
+  "inputs": [
+    {
+      "name": "endpoint",
+      "type": "string",
+      "description": "HTTP endpoint to POST event batches to.",
+      "required": true,
+      "envVar": "EVENT_TRACKER_ENDPOINT"
+    },
+    {
+      "name": "batchSize",
+      "type": "number",
+      "description": "Number of events to buffer before auto-flushing.",
+      "default": 20,
+      "required": false
+    },
+    {
+      "name": "flushIntervalMs",
+      "type": "number",
+      "description": "Max time in ms between automatic flushes.",
+      "default": 5000,
+      "required": false
+    },
+    {
+      "name": "headers",
+      "type": "Record<string, string>",
+      "description": "Additional HTTP headers sent with each flush (e.g. auth tokens).",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "trackingResult",
+      "type": "TrackingResult",
+      "description": "Result of a flush operation.",
+      "fields": [
+        {
+          "name": "eventCount",
+          "type": "number",
+          "description": "Number of events flushed."
+        },
+        {
+          "name": "success",
+          "type": "boolean",
+          "description": "Whether the flush succeeded."
+        },
+        {
+          "name": "statusCode",
+          "type": "number",
+          "description": "HTTP status code from the endpoint.",
+          "required": false
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "description": "Error message if flush failed.",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onEventTracked",
+      "payload": {
+        "eventName": "string",
+        "userId": "string",
+        "timestamp": "number",
+        "bufferSize": "number"
+      },
+      "description": "Fired each time an event is added to the buffer."
+    },
+    {
+      "name": "onFlush",
+      "payload": {
+        "eventCount": "number",
+        "success": "boolean"
+      },
+      "description": "Fired when the event buffer is flushed to the endpoint."
+    }
+  ],
+  "actions": [
+    {
+      "name": "track",
+      "params": [
+        {
+          "name": "eventName",
+          "type": "string",
+          "description": "Name of the event (e.g. 'button_click', 'signup')."
+        },
+        {
+          "name": "properties",
+          "type": "Record<string, unknown>",
+          "description": "Arbitrary key-value properties for the event.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Track a custom event with optional properties."
+    },
+    {
+      "name": "identify",
+      "params": [
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "Unique user identifier."
+        },
+        {
+          "name": "traits",
+          "type": "Record<string, unknown>",
+          "description": "User traits (e.g. email, plan, company).",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Associate subsequent events with a user identity."
+    },
+    {
+      "name": "pageView",
+      "params": [
+        {
+          "name": "url",
+          "type": "string",
+          "description": "URL or path of the page."
+        },
+        {
+          "name": "referrer",
+          "type": "string",
+          "description": "Referrer URL.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Track a page view event."
+    },
+    {
+      "name": "flush",
+      "params": [],
+      "returns": "Promise<TrackingResult>",
+      "description": "Immediately flush all buffered events to the endpoint."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onFlush",
+        "description": "Log batch flush results",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      },
+      {
+        "output": "trackingResult",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message"
+        ],
+        "mapField": "eventCount"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Events are buffered in memory; if the process crashes before a flush, buffered events are lost. The endpoint must accept POST with a JSON array body. Uses fetch() — in Node.js < 18, a polyfill is required."
+  }
+}

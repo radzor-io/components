@@ -136,7 +136,25 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onPostCreated",
+        "description": "Track Reddit post creation",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ]
+      },
+      {
+        "event": "onError",
+        "description": "Track Reddit posting errors",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

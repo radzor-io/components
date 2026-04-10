@@ -1,0 +1,240 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/uptime-monitor",
+  "version": "0.1.0",
+  "description": "Monitor URL uptime with configurable check intervals, latency tracking, and status change alerts. Supports multiple targets, pause/resume, and downtime history. Zero dependencies — uses raw fetch.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "monitoring",
+  "runtime": "server",
+  "tags": [
+    "uptime",
+    "monitoring",
+    "availability",
+    "latency",
+    "alerting",
+    "ping"
+  ],
+  "inputs": [
+    {
+      "name": "intervalMs",
+      "type": "number",
+      "description": "Default check interval in milliseconds.",
+      "default": 60000,
+      "required": false
+    },
+    {
+      "name": "timeout",
+      "type": "number",
+      "description": "HTTP request timeout in milliseconds per check.",
+      "default": 10000,
+      "required": false
+    },
+    {
+      "name": "latencyThresholdMs",
+      "type": "number",
+      "description": "Latency threshold in ms; exceeding it fires onLatencySpike.",
+      "default": 2000,
+      "required": false
+    },
+    {
+      "name": "headers",
+      "type": "Record<string, string>",
+      "description": "Default HTTP headers sent with each check request.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "uptimeReport",
+      "type": "UptimeReport",
+      "description": "Status report for a monitored target.",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "description": "Monitored URL."
+        },
+        {
+          "name": "status",
+          "type": "'up' | 'down' | 'unknown'",
+          "description": "Current status."
+        },
+        {
+          "name": "latencyMs",
+          "type": "number",
+          "description": "Latest response latency in ms."
+        },
+        {
+          "name": "uptimePercent",
+          "type": "number",
+          "description": "Uptime percentage based on check history."
+        },
+        {
+          "name": "lastChecked",
+          "type": "number",
+          "description": "Timestamp of last check."
+        },
+        {
+          "name": "consecutiveFailures",
+          "type": "number",
+          "description": "Number of consecutive failed checks."
+        },
+        {
+          "name": "totalChecks",
+          "type": "number",
+          "description": "Total number of checks performed."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onDown",
+      "payload": {
+        "url": "string",
+        "error": "string",
+        "consecutiveFailures": "number",
+        "timestamp": "number"
+      },
+      "description": "Fired when a target goes down (first failure after being up)."
+    },
+    {
+      "name": "onRecovered",
+      "payload": {
+        "url": "string",
+        "downtimeMs": "number",
+        "timestamp": "number"
+      },
+      "description": "Fired when a target recovers after being down."
+    },
+    {
+      "name": "onLatencySpike",
+      "payload": {
+        "url": "string",
+        "latencyMs": "number",
+        "threshold": "number",
+        "timestamp": "number"
+      },
+      "description": "Fired when response latency exceeds the configured threshold."
+    }
+  ],
+  "actions": [
+    {
+      "name": "addTarget",
+      "params": [
+        {
+          "name": "url",
+          "type": "string",
+          "description": "URL to monitor."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Human-readable name for the target.",
+          "required": false
+        },
+        {
+          "name": "intervalMs",
+          "type": "number",
+          "description": "Override the default check interval for this target.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Add a URL to the monitoring list and start checking it."
+    },
+    {
+      "name": "removeTarget",
+      "params": [
+        {
+          "name": "url",
+          "type": "string",
+          "description": "URL to stop monitoring."
+        }
+      ],
+      "returns": "void",
+      "description": "Remove a target and stop its checks."
+    },
+    {
+      "name": "getStatus",
+      "params": [
+        {
+          "name": "url",
+          "type": "string",
+          "description": "URL to get status for. If omitted, returns all targets.",
+          "required": false
+        }
+      ],
+      "returns": "UptimeReport | UptimeReport[]",
+      "description": "Get the current status report for one or all targets."
+    },
+    {
+      "name": "pause",
+      "params": [
+        {
+          "name": "url",
+          "type": "string",
+          "description": "URL to pause monitoring for.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Pause monitoring for a target (or all if URL omitted)."
+    },
+    {
+      "name": "resume",
+      "params": [
+        {
+          "name": "url",
+          "type": "string",
+          "description": "URL to resume monitoring for.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Resume monitoring for a paused target (or all if URL omitted)."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onDown",
+        "description": "Alert team when a monitored service goes down",
+        "compatibleWith": [
+          "@radzor/notification-hub.action.send.body",
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/email-send.action.send.message",
+          "@radzor/push-notification.action.sendToDevice.token"
+        ]
+      },
+      {
+        "event": "onRecovered",
+        "description": "Notify when service recovers",
+        "compatibleWith": [
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/notification-hub.action.send.body"
+        ]
+      },
+      {
+        "event": "onLatencySpike",
+        "description": "Alert on latency spikes",
+        "compatibleWith": [
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/log-aggregator.action.warn.message"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Uses raw fetch() for HTTP checks — the target must be reachable from the server. Check intervals are managed via setInterval with unref() to avoid keeping the process alive. A target is considered 'down' if fetch throws or the HTTP status is >= 500. Status codes 2xx-4xx are considered 'up'."
+  }
+}

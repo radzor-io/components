@@ -1,0 +1,159 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/email-verify",
+  "version": "0.1.0",
+  "description": "Verify email addresses by checking syntax, MX record existence, and disposable email provider detection. Supports single and bulk verification with no external API dependencies.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "email",
+  "runtime": "server",
+  "tags": [
+    "email",
+    "verification",
+    "validation",
+    "mx",
+    "disposable",
+    "spam"
+  ],
+  "inputs": [
+    {
+      "name": "checkMx",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to perform MX record lookup (requires DNS access).",
+      "required": false
+    },
+    {
+      "name": "checkDisposable",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to check against known disposable email providers.",
+      "required": false
+    },
+    {
+      "name": "timeout",
+      "type": "number",
+      "default": 5000,
+      "description": "Timeout in milliseconds for DNS lookups.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "verificationResult",
+      "type": "VerificationResult",
+      "description": "Detailed email verification result.",
+      "fields": [
+        {
+          "name": "email",
+          "type": "string",
+          "description": "The email address that was verified."
+        },
+        {
+          "name": "valid",
+          "type": "boolean",
+          "description": "Whether the email passes all checks."
+        },
+        {
+          "name": "syntaxValid",
+          "type": "boolean",
+          "description": "Whether the email has valid syntax."
+        },
+        {
+          "name": "mxExists",
+          "type": "boolean",
+          "description": "Whether MX records exist for the domain."
+        },
+        {
+          "name": "disposable",
+          "type": "boolean",
+          "description": "Whether the domain is a known disposable provider."
+        },
+        {
+          "name": "domain",
+          "type": "string",
+          "description": "Extracted domain from the email."
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "description": "Human-readable reason if invalid.",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onVerified",
+      "payload": {
+        "email": "string",
+        "valid": "boolean"
+      },
+      "description": "Fired after an email address is verified."
+    },
+    {
+      "name": "onError",
+      "payload": {
+        "email": "string",
+        "message": "string"
+      },
+      "description": "Fired when verification encounters an error (e.g. DNS timeout)."
+    }
+  ],
+  "actions": [
+    {
+      "name": "verify",
+      "params": [
+        {
+          "name": "email",
+          "type": "string",
+          "description": "Email address to verify."
+        }
+      ],
+      "returns": "Promise<VerificationResult>",
+      "description": "Verify a single email address."
+    },
+    {
+      "name": "bulkVerify",
+      "params": [
+        {
+          "name": "emails",
+          "type": "string[]",
+          "description": "Array of email addresses to verify."
+        },
+        {
+          "name": "concurrency",
+          "type": "number",
+          "description": "Max concurrent verifications.",
+          "default": 10,
+          "required": false
+        }
+      ],
+      "returns": "Promise<VerificationResult[]>",
+      "description": "Verify multiple email addresses concurrently."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "verificationResult",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message"
+        ],
+        "mapField": "email"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "No external dependencies — uses Node.js built-in dns module. MX checks require network access. Disposable email list is bundled (not exhaustive). Does not perform SMTP mailbox verification."
+  }
+}

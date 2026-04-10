@@ -121,9 +121,27 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onCallEnded",
+        "description": "Track call duration for analytics",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      },
+      {
+        "event": "onError",
+        "description": "Track video call errors",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message"
+        ]
+      }
+    ]
+  },
   "llm": {
-    "constraints": "Browser-only \u2014 uses WebRTC and getUserMedia APIs not available in Node.js. Requires HTTPS in production. For peer discovery and signaling, a WebSocket server is needed.",
+    "constraints": "Browser-only — uses WebRTC and getUserMedia APIs not available in Node.js. Requires HTTPS in production. For peer discovery and signaling, a WebSocket server is needed.",
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md"
   }

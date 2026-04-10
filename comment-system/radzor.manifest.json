@@ -1,0 +1,267 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/comment-system",
+  "version": "0.1.0",
+  "description": "Threaded comment system with moderation, reactions, and pagination. Supports nested replies, content moderation actions, and reaction tracking with an in-memory store.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "chat",
+  "runtime": "server",
+  "tags": [
+    "comments",
+    "threads",
+    "moderation",
+    "reactions",
+    "discussion",
+    "social"
+  ],
+  "inputs": [
+    {
+      "name": "maxDepth",
+      "type": "number",
+      "default": 5,
+      "description": "Maximum nesting depth for threaded replies.",
+      "required": false
+    },
+    {
+      "name": "pageSize",
+      "type": "number",
+      "default": 20,
+      "description": "Default number of comments per page.",
+      "required": false
+    },
+    {
+      "name": "allowedReactions",
+      "type": "string[]",
+      "default": [
+        "like",
+        "dislike",
+        "love",
+        "laugh",
+        "sad",
+        "angry"
+      ],
+      "description": "Allowed reaction types.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "commentThread",
+      "type": "CommentThread",
+      "description": "Paginated list of comments with threading.",
+      "fields": [
+        {
+          "name": "comments",
+          "type": "Comment[]",
+          "description": "Array of top-level comments with nested replies."
+        },
+        {
+          "name": "totalCount",
+          "type": "number",
+          "description": "Total number of comments in the thread."
+        },
+        {
+          "name": "hasMore",
+          "type": "boolean",
+          "description": "Whether more comments are available."
+        },
+        {
+          "name": "page",
+          "type": "number",
+          "description": "Current page number."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onCommentAdded",
+      "payload": {
+        "commentId": "string",
+        "authorId": "string",
+        "threadId": "string",
+        "parentId": "string"
+      },
+      "description": "Fired when a new comment is added."
+    },
+    {
+      "name": "onCommentModerated",
+      "payload": {
+        "commentId": "string",
+        "action": "string",
+        "moderatorId": "string"
+      },
+      "description": "Fired when a comment is moderated (approved, rejected, flagged)."
+    }
+  ],
+  "actions": [
+    {
+      "name": "addComment",
+      "params": [
+        {
+          "name": "threadId",
+          "type": "string",
+          "description": "Thread or resource identifier."
+        },
+        {
+          "name": "authorId",
+          "type": "string",
+          "description": "Author's user identifier."
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "description": "Comment text content."
+        },
+        {
+          "name": "parentId",
+          "type": "string",
+          "description": "Parent comment ID for replies.",
+          "required": false
+        }
+      ],
+      "returns": "Comment",
+      "description": "Add a new comment or reply to a thread."
+    },
+    {
+      "name": "deleteComment",
+      "params": [
+        {
+          "name": "commentId",
+          "type": "string",
+          "description": "ID of the comment to delete."
+        },
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "ID of the user requesting deletion (must be author or moderator)."
+        }
+      ],
+      "returns": "boolean",
+      "description": "Soft-delete a comment (content replaced with '[deleted]')."
+    },
+    {
+      "name": "editComment",
+      "params": [
+        {
+          "name": "commentId",
+          "type": "string",
+          "description": "ID of the comment to edit."
+        },
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "ID of the user requesting the edit (must be author)."
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "description": "New comment content."
+        }
+      ],
+      "returns": "Comment",
+      "description": "Edit an existing comment."
+    },
+    {
+      "name": "addReaction",
+      "params": [
+        {
+          "name": "commentId",
+          "type": "string",
+          "description": "ID of the comment to react to."
+        },
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "User adding the reaction."
+        },
+        {
+          "name": "reaction",
+          "type": "string",
+          "description": "Reaction type (must be in allowedReactions)."
+        }
+      ],
+      "returns": "Comment",
+      "description": "Toggle a reaction on a comment. Adding the same reaction again removes it."
+    },
+    {
+      "name": "moderate",
+      "params": [
+        {
+          "name": "commentId",
+          "type": "string",
+          "description": "ID of the comment to moderate."
+        },
+        {
+          "name": "moderatorId",
+          "type": "string",
+          "description": "Moderator's user identifier."
+        },
+        {
+          "name": "action",
+          "type": "'approve' | 'reject' | 'flag'",
+          "description": "Moderation action."
+        }
+      ],
+      "returns": "Comment",
+      "description": "Apply a moderation action to a comment."
+    },
+    {
+      "name": "listComments",
+      "params": [
+        {
+          "name": "threadId",
+          "type": "string",
+          "description": "Thread or resource identifier."
+        },
+        {
+          "name": "page",
+          "type": "number",
+          "description": "Page number (1-indexed).",
+          "required": false
+        },
+        {
+          "name": "sortBy",
+          "type": "'newest' | 'oldest' | 'popular'",
+          "description": "Sort order for comments.",
+          "required": false
+        }
+      ],
+      "returns": "CommentThread",
+      "description": "List comments for a thread with pagination."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onCommentAdded",
+        "description": "Notify content owner of new comments",
+        "compatibleWith": [
+          "@radzor/notification-hub.action.send.body",
+          "@radzor/email-send.action.send.message",
+          "@radzor/push-notification.action.sendToDevice.token"
+        ]
+      },
+      {
+        "event": "onCommentModerated",
+        "description": "Log moderation actions",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message",
+          "@radzor/event-tracker.action.track.eventName"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "In-memory store; data is lost on restart. Soft-deletes preserve thread structure. Reaction toggling is idempotent. Thread IDs are opaque strings — use your resource identifier."
+  }
+}

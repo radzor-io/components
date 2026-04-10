@@ -1,0 +1,171 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/payment-refund",
+  "version": "0.1.0",
+  "description": "Process full and partial refunds via Stripe. Create refunds against payment intents or charges, check refund status, and react to refund lifecycle events.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "payment",
+  "runtime": "server",
+  "tags": [
+    "stripe",
+    "refund",
+    "payment",
+    "chargeback",
+    "billing"
+  ],
+  "inputs": [
+    {
+      "name": "secretKey",
+      "type": "string",
+      "description": "Stripe secret API key (sk_live_... or sk_test_...).",
+      "required": true,
+      "envVar": "STRIPE_SECRET_KEY"
+    },
+    {
+      "name": "webhookSecret",
+      "type": "string",
+      "description": "Stripe webhook signing secret for verifying refund events.",
+      "required": true,
+      "envVar": "STRIPE_WEBHOOK_SECRET"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "refundResult",
+      "type": "RefundResult",
+      "description": "Result of a refund operation.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Stripe refund ID."
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "description": "Refund amount in smallest currency unit (e.g. cents)."
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "description": "Currency of the refund."
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "description": "Refund status (pending, succeeded, failed, canceled)."
+        },
+        {
+          "name": "paymentIntentId",
+          "type": "string",
+          "description": "Associated payment intent ID."
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "description": "Reason for the refund.",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onRefundCompleted",
+      "payload": {
+        "refundId": "string",
+        "paymentIntentId": "string",
+        "amount": "number",
+        "currency": "string"
+      },
+      "description": "Fired when a refund is successfully processed."
+    },
+    {
+      "name": "onRefundFailed",
+      "payload": {
+        "refundId": "string",
+        "paymentIntentId": "string",
+        "reason": "string"
+      },
+      "description": "Fired when a refund fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "createRefund",
+      "params": [
+        {
+          "name": "paymentIntentId",
+          "type": "string",
+          "description": "Stripe payment intent ID to refund."
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "description": "Amount to refund in smallest currency unit. Omit for full refund.",
+          "required": false
+        },
+        {
+          "name": "reason",
+          "type": "'duplicate' | 'fraudulent' | 'requested_by_customer'",
+          "description": "Reason for the refund.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<RefundResult>",
+      "description": "Create a full or partial refund for a payment."
+    },
+    {
+      "name": "getRefundStatus",
+      "params": [
+        {
+          "name": "refundId",
+          "type": "string",
+          "description": "Stripe refund ID to check."
+        }
+      ],
+      "returns": "Promise<RefundResult>",
+      "description": "Get the current status of a refund."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "refundResult",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/notification-hub.action.send.body"
+        ],
+        "mapField": "id"
+      },
+      {
+        "event": "onRefundCompleted",
+        "description": "Notify customer of successful refund",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ]
+      },
+      {
+        "event": "onRefundFailed",
+        "description": "Alert on failed refund",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires Stripe secret key (server-side only). Refunds can only be issued for payments less than 180 days old. Partial refunds reduce the original charge amount. Webhook endpoint must be publicly accessible."
+  }
+}

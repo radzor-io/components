@@ -190,7 +190,24 @@
     "packages": {}
   },
   "composability": {
-    "connectsTo": []
+    "connectsTo": [
+      {
+        "event": "onError",
+        "description": "Track Slack bot errors",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message",
+          "@radzor/log-aggregator.action.error.message"
+        ]
+      },
+      {
+        "output": "messageResult",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ],
+        "mapField": "channel"
+      }
+    ]
   },
   "llm": {
     "integrationPrompt": "llm/integration.md",

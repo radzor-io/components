@@ -131,7 +131,23 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "hashResult",
+        "compatibleWith": [
+          "@radzor/kv-store.action.set.value"
+        ]
+      },
+      {
+        "event": "onError",
+        "description": "Track hashing errors",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

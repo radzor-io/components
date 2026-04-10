@@ -1,0 +1,241 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/subscription-billing",
+  "version": "0.1.0",
+  "description": "Manage recurring subscriptions with Stripe Billing. Create, update, cancel subscriptions, and handle lifecycle events like payment failures and renewals.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "payment",
+  "runtime": "server",
+  "tags": [
+    "stripe",
+    "subscription",
+    "billing",
+    "recurring",
+    "payment",
+    "saas"
+  ],
+  "inputs": [
+    {
+      "name": "secretKey",
+      "type": "string",
+      "description": "Stripe secret API key (sk_live_... or sk_test_...).",
+      "required": true,
+      "envVar": "STRIPE_SECRET_KEY"
+    },
+    {
+      "name": "webhookSecret",
+      "type": "string",
+      "description": "Stripe webhook signing secret for verifying subscription events.",
+      "required": true,
+      "envVar": "STRIPE_WEBHOOK_SECRET"
+    },
+    {
+      "name": "defaultCurrency",
+      "type": "string",
+      "default": "usd",
+      "description": "Default currency for new subscriptions (ISO 4217).",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "subscription",
+      "type": "SubscriptionData",
+      "description": "The current subscription object with status, billing details, and plan info.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Stripe subscription ID."
+        },
+        {
+          "name": "customerId",
+          "type": "string",
+          "description": "Stripe customer ID."
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "description": "Subscription status (active, past_due, canceled, etc.)."
+        },
+        {
+          "name": "priceId",
+          "type": "string",
+          "description": "Stripe price ID for the subscribed plan."
+        },
+        {
+          "name": "currentPeriodEnd",
+          "type": "number",
+          "description": "Unix timestamp of current billing period end."
+        },
+        {
+          "name": "cancelAtPeriodEnd",
+          "type": "boolean",
+          "description": "Whether the subscription is set to cancel at period end."
+        }
+      ]
+    },
+    {
+      "name": "subscriptionList",
+      "type": "SubscriptionData[]",
+      "description": "Array of subscriptions returned by listSubscriptions."
+    }
+  ],
+  "events": [
+    {
+      "name": "onSubscriptionCreated",
+      "payload": {
+        "subscriptionId": "string",
+        "customerId": "string",
+        "priceId": "string",
+        "status": "string"
+      },
+      "description": "Fired when a new subscription is created."
+    },
+    {
+      "name": "onSubscriptionCancelled",
+      "payload": {
+        "subscriptionId": "string",
+        "customerId": "string",
+        "cancelAt": "number"
+      },
+      "description": "Fired when a subscription is cancelled."
+    },
+    {
+      "name": "onPaymentFailed",
+      "payload": {
+        "subscriptionId": "string",
+        "customerId": "string",
+        "invoiceId": "string",
+        "attemptCount": "number"
+      },
+      "description": "Fired when a subscription payment attempt fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "createSubscription",
+      "params": [
+        {
+          "name": "customerId",
+          "type": "string",
+          "description": "Stripe customer ID."
+        },
+        {
+          "name": "priceId",
+          "type": "string",
+          "description": "Stripe price ID for the plan."
+        },
+        {
+          "name": "trialDays",
+          "type": "number",
+          "description": "Optional trial period in days.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<SubscriptionData>",
+      "description": "Create a new subscription for a customer."
+    },
+    {
+      "name": "cancelSubscription",
+      "params": [
+        {
+          "name": "subscriptionId",
+          "type": "string",
+          "description": "Stripe subscription ID to cancel."
+        },
+        {
+          "name": "immediate",
+          "type": "boolean",
+          "description": "If true, cancel immediately. Otherwise cancel at period end.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<SubscriptionData>",
+      "description": "Cancel a subscription immediately or at the end of the current billing period."
+    },
+    {
+      "name": "updateSubscription",
+      "params": [
+        {
+          "name": "subscriptionId",
+          "type": "string",
+          "description": "Stripe subscription ID to update."
+        },
+        {
+          "name": "newPriceId",
+          "type": "string",
+          "description": "New Stripe price ID for plan change.",
+          "required": false
+        },
+        {
+          "name": "quantity",
+          "type": "number",
+          "description": "New seat/unit quantity.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<SubscriptionData>",
+      "description": "Update an existing subscription (change plan, adjust quantity)."
+    },
+    {
+      "name": "listSubscriptions",
+      "params": [
+        {
+          "name": "customerId",
+          "type": "string",
+          "description": "Stripe customer ID to list subscriptions for."
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "description": "Filter by status (active, past_due, canceled, all).",
+          "required": false
+        }
+      ],
+      "returns": "Promise<SubscriptionData[]>",
+      "description": "List all subscriptions for a customer, optionally filtered by status."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onPaymentFailed",
+        "description": "Alert on failed subscription payment",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/notification-hub.action.send.body"
+        ]
+      },
+      {
+        "output": "subscription",
+        "compatibleWith": [
+          "@radzor/invoice-generator.action.setCustomer.name",
+          "@radzor/usage-metering.action.recordUsage.customerId"
+        ],
+        "mapField": "customerId"
+      },
+      {
+        "event": "onSubscriptionCancelled",
+        "description": "Notify team of subscription cancellation",
+        "compatibleWith": [
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/email-send.action.send.message"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires Stripe secret key (server-side only). Webhook endpoint must be publicly accessible. Customers must be created in Stripe before subscriptions. Use test keys during development."
+  }
+}

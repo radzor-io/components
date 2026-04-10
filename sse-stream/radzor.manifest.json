@@ -1,0 +1,168 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/sse-stream",
+  "version": "0.1.0",
+  "description": "Server-Sent Events (SSE) streaming server. Create named streams, push typed events, and manage client connections with automatic reconnection support.",
+  "languages": [
+    "typescript"
+  ],
+  "category": "networking",
+  "runtime": "server",
+  "tags": [
+    "sse",
+    "server-sent-events",
+    "streaming",
+    "realtime",
+    "http",
+    "push"
+  ],
+  "inputs": [
+    {
+      "name": "retryMs",
+      "type": "number",
+      "description": "Reconnection interval hint sent to clients (default: 3000ms).",
+      "required": false,
+      "default": 3000
+    },
+    {
+      "name": "keepAliveInterval",
+      "type": "number",
+      "description": "Interval in ms for sending keep-alive comments to prevent connection timeout (default: 15000).",
+      "required": false,
+      "default": 15000
+    },
+    {
+      "name": "maxClients",
+      "type": "number",
+      "description": "Maximum number of concurrent SSE clients per stream (default: 1000).",
+      "required": false,
+      "default": 1000
+    }
+  ],
+  "outputs": [
+    {
+      "name": "streamInfo",
+      "type": "{ streamId: string; clientCount: number; totalEventsSent: number }",
+      "description": "Current stream statistics.",
+      "fields": [
+        {
+          "name": "streamId",
+          "type": "string",
+          "description": "Stream identifier."
+        },
+        {
+          "name": "clientCount",
+          "type": "number",
+          "description": "Number of connected clients."
+        },
+        {
+          "name": "totalEventsSent",
+          "type": "number",
+          "description": "Total events pushed to this stream."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onClientConnected",
+      "payload": {
+        "streamId": "string",
+        "clientId": "string",
+        "lastEventId": "string"
+      },
+      "description": "Fired when a client subscribes to a stream."
+    },
+    {
+      "name": "onClientDisconnected",
+      "payload": {
+        "streamId": "string",
+        "clientId": "string"
+      },
+      "description": "Fired when a client disconnects from a stream."
+    }
+  ],
+  "actions": [
+    {
+      "name": "createStream",
+      "params": [
+        {
+          "name": "streamId",
+          "type": "string",
+          "description": "Unique stream identifier."
+        }
+      ],
+      "returns": "{ streamId: string; handler: (req: IncomingMessage, res: ServerResponse) => void }",
+      "description": "Create a named SSE stream and return the HTTP handler to mount on your server."
+    },
+    {
+      "name": "pushEvent",
+      "params": [
+        {
+          "name": "streamId",
+          "type": "string",
+          "description": "Target stream ID."
+        },
+        {
+          "name": "data",
+          "type": "string | object",
+          "description": "Event data (objects are JSON-serialized)."
+        },
+        {
+          "name": "eventType",
+          "type": "string",
+          "description": "SSE event type (maps to 'event:' field). Default: 'message'.",
+          "required": false
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Event ID for Last-Event-ID tracking.",
+          "required": false
+        }
+      ],
+      "returns": "number",
+      "description": "Push an event to all clients on a stream. Returns number of clients reached."
+    },
+    {
+      "name": "closeStream",
+      "params": [
+        {
+          "name": "streamId",
+          "type": "string",
+          "description": "Stream to close."
+        }
+      ],
+      "returns": "void",
+      "description": "Close a stream and disconnect all its clients."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onClientConnected",
+        "description": "Log SSE client connections",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message",
+          "@radzor/event-tracker.action.track.eventName"
+        ]
+      },
+      {
+        "event": "onClientDisconnected",
+        "description": "Track client disconnections",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Server-only. The createStream handler must be mounted on an HTTP server (Node http module, Express, Fastify, etc.). No external dependencies. Clients reconnect automatically via the retry field. Use keepAliveInterval to prevent proxy/load-balancer timeouts."
+  }
+}

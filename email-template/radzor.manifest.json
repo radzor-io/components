@@ -1,0 +1,141 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/email-template",
+  "version": "0.1.0",
+  "description": "Render email templates with variable interpolation using Handlebars-style syntax. Register reusable templates, render to HTML and plain text with data binding, conditionals, and loops.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "email",
+  "runtime": "server",
+  "tags": [
+    "email",
+    "template",
+    "handlebars",
+    "html",
+    "rendering",
+    "transactional"
+  ],
+  "inputs": [
+    {
+      "name": "defaultFrom",
+      "type": "string",
+      "description": "Default sender address to include in rendered metadata.",
+      "required": false
+    },
+    {
+      "name": "strictMode",
+      "type": "boolean",
+      "default": false,
+      "description": "If true, throw an error when a template variable is missing from the data context.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "renderedHtml",
+      "type": "string",
+      "description": "The rendered HTML output of the template."
+    },
+    {
+      "name": "renderedText",
+      "type": "string",
+      "description": "The rendered plain-text output of the template (HTML tags stripped)."
+    }
+  ],
+  "events": [
+    {
+      "name": "onRendered",
+      "payload": {
+        "templateName": "string",
+        "variableCount": "number"
+      },
+      "description": "Fired after a template is successfully rendered."
+    },
+    {
+      "name": "onError",
+      "payload": {
+        "code": "string",
+        "message": "string",
+        "templateName": "string"
+      },
+      "description": "Fired when template rendering fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "render",
+      "params": [
+        {
+          "name": "templateName",
+          "type": "string",
+          "description": "Name of a previously registered template."
+        },
+        {
+          "name": "data",
+          "type": "Record<string, unknown>",
+          "description": "Data context for variable interpolation."
+        }
+      ],
+      "returns": "Promise<{ html: string; text: string }>",
+      "description": "Render a registered template with the given data context."
+    },
+    {
+      "name": "registerTemplate",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Unique template name."
+        },
+        {
+          "name": "htmlBody",
+          "type": "string",
+          "description": "HTML template body with {{variable}} placeholders."
+        },
+        {
+          "name": "textBody",
+          "type": "string",
+          "description": "Optional plain-text template body.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Register a reusable email template."
+    },
+    {
+      "name": "listTemplates",
+      "params": [],
+      "returns": "string[]",
+      "description": "List all registered template names."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "renderedHtml",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/pdf-generate.action.fromHtml.html"
+        ]
+      },
+      {
+        "output": "renderedText",
+        "compatibleWith": [
+          "@radzor/sms-send.action.send.body",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "No external dependencies — uses a built-in Handlebars-compatible engine. Templates must be registered before rendering. Supports {{var}}, {{#if}}, {{#each}}, and {{#unless}} blocks. Does not support custom helpers."
+  }
+}

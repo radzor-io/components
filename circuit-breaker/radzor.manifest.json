@@ -133,7 +133,27 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onOpen",
+        "description": "Alert when circuit breaker opens (service degraded)",
+        "compatibleWith": [
+          "@radzor/notification-hub.action.send.body",
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/error-tracker.action.captureMessage.message"
+        ]
+      },
+      {
+        "event": "onClose",
+        "description": "Notify when circuit recovers",
+        "compatibleWith": [
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

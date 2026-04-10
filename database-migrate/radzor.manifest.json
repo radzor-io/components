@@ -1,0 +1,163 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/database-migrate",
+  "version": "0.1.0",
+  "description": "Run SQL database migrations with up/down support, status tracking, and migration file generation. Connects via raw TCP to PostgreSQL or via HTTP to compatible APIs.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "storage",
+  "runtime": "server",
+  "tags": [
+    "database",
+    "migration",
+    "sql",
+    "postgres",
+    "schema",
+    "versioning"
+  ],
+  "inputs": [
+    {
+      "name": "databaseUrl",
+      "type": "string",
+      "description": "Database connection URL (postgres://user:pass@host:5432/db).",
+      "required": true,
+      "envVar": "DATABASE_URL"
+    },
+    {
+      "name": "migrationsDir",
+      "type": "string",
+      "description": "Directory containing migration files (default: ./migrations).",
+      "required": false,
+      "default": "./migrations"
+    },
+    {
+      "name": "tableName",
+      "type": "string",
+      "description": "Table name for tracking migration state (default: _migrations).",
+      "required": false,
+      "default": "_migrations"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "migrationStatus",
+      "type": "{ applied: string[]; pending: string[]; current: string }",
+      "description": "Current migration status.",
+      "fields": [
+        {
+          "name": "applied",
+          "type": "string[]",
+          "description": "List of applied migration names."
+        },
+        {
+          "name": "pending",
+          "type": "string[]",
+          "description": "List of pending migration names."
+        },
+        {
+          "name": "current",
+          "type": "string",
+          "description": "Most recently applied migration name."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onMigrationComplete",
+      "payload": {
+        "name": "string",
+        "direction": "string",
+        "durationMs": "number"
+      },
+      "description": "Fired when a single migration runs successfully."
+    },
+    {
+      "name": "onMigrationFailed",
+      "payload": {
+        "name": "string",
+        "direction": "string",
+        "error": "string"
+      },
+      "description": "Fired when a migration fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "migrate",
+      "params": [
+        {
+          "name": "target",
+          "type": "string",
+          "description": "Migrate up to this migration name. If omitted, runs all pending migrations.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<{ applied: string[]; durationMs: number }>",
+      "description": "Run pending migrations forward."
+    },
+    {
+      "name": "rollback",
+      "params": [
+        {
+          "name": "steps",
+          "type": "number",
+          "description": "Number of migrations to roll back (default: 1).",
+          "required": false
+        }
+      ],
+      "returns": "Promise<{ rolledBack: string[]; durationMs: number }>",
+      "description": "Roll back the most recent migration(s)."
+    },
+    {
+      "name": "getStatus",
+      "params": [],
+      "returns": "Promise<{ applied: string[]; pending: string[]; current: string }>",
+      "description": "Get the current migration status."
+    },
+    {
+      "name": "createMigration",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Migration name (will be prefixed with timestamp)."
+        }
+      ],
+      "returns": "Promise<{ filePath: string; name: string }>",
+      "description": "Create a new empty migration file with up/down sections."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onMigrationComplete",
+        "description": "Notify team after successful migration",
+        "compatibleWith": [
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/notification-hub.action.send.body"
+        ]
+      },
+      {
+        "event": "onMigrationFailed",
+        "description": "Alert on migration failure",
+        "compatibleWith": [
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/email-send.action.send.message",
+          "@radzor/error-tracker.action.captureMessage.message"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Migration files must export up() and down() functions returning SQL strings. The migrations table is created automatically. Runs migrations in a transaction — a failed migration rolls back its own changes. File naming convention: YYYYMMDDHHMMSS_name.ts."
+  }
+}

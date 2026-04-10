@@ -1,0 +1,204 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/rag-pipeline",
+  "version": "0.1.0",
+  "description": "End-to-end Retrieval-Augmented Generation pipeline. Ingests documents, chunks and embeds them into an in-memory vector index, then answers queries by retrieving relevant context and calling an LLM completion endpoint.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "ai",
+  "runtime": "server",
+  "tags": [
+    "rag",
+    "retrieval",
+    "augmented-generation",
+    "embeddings",
+    "vector-search",
+    "ai",
+    "llm",
+    "openai"
+  ],
+  "inputs": [
+    {
+      "name": "embeddingApiKey",
+      "type": "string",
+      "description": "API key for the embeddings endpoint (OpenAI-compatible).",
+      "required": true,
+      "envVar": "OPENAI_API_KEY"
+    },
+    {
+      "name": "completionApiKey",
+      "type": "string",
+      "description": "API key for the completion endpoint (OpenAI-compatible). Defaults to embeddingApiKey if not set.",
+      "required": false,
+      "envVar": "OPENAI_API_KEY"
+    },
+    {
+      "name": "chunkSize",
+      "type": "number",
+      "description": "Maximum number of characters per text chunk during ingestion.",
+      "default": 512,
+      "required": false
+    },
+    {
+      "name": "overlapSize",
+      "type": "number",
+      "description": "Number of overlapping characters between consecutive chunks.",
+      "default": 64,
+      "required": false
+    },
+    {
+      "name": "embeddingModel",
+      "type": "string",
+      "description": "Model identifier for embeddings.",
+      "default": "text-embedding-3-small",
+      "required": false
+    },
+    {
+      "name": "completionModel",
+      "type": "string",
+      "description": "Model identifier for the completion/chat call.",
+      "default": "gpt-4o-mini",
+      "required": false
+    },
+    {
+      "name": "topK",
+      "type": "number",
+      "description": "Number of top matching chunks to retrieve per query.",
+      "default": 5,
+      "required": false
+    },
+    {
+      "name": "embeddingBaseUrl",
+      "type": "string",
+      "description": "Override base URL for the embeddings API.",
+      "default": "https://api.openai.com/v1",
+      "required": false
+    },
+    {
+      "name": "completionBaseUrl",
+      "type": "string",
+      "description": "Override base URL for the completion API.",
+      "default": "https://api.openai.com/v1",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "ragResult",
+      "type": "RagResult",
+      "description": "The result of a RAG query including the generated answer, source chunks, and confidence score.",
+      "fields": [
+        {
+          "name": "answer",
+          "type": "string",
+          "description": "The LLM-generated answer grounded in retrieved context."
+        },
+        {
+          "name": "sources",
+          "type": "Array<{ text: string; score: number; metadata?: Record<string, string> }>",
+          "description": "The retrieved chunks used as context, with similarity scores."
+        },
+        {
+          "name": "confidence",
+          "type": "number",
+          "description": "Average similarity score of retrieved sources (0-1)."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onQueryComplete",
+      "payload": {
+        "query": "string",
+        "answer": "string",
+        "sourceCount": "number",
+        "confidence": "number"
+      },
+      "description": "Fired when a RAG query completes successfully."
+    },
+    {
+      "name": "onIngestComplete",
+      "payload": {
+        "documentId": "string",
+        "chunkCount": "number"
+      },
+      "description": "Fired when a document finishes ingestion and indexing."
+    }
+  ],
+  "actions": [
+    {
+      "name": "ingest",
+      "params": [
+        {
+          "name": "text",
+          "type": "string",
+          "description": "The raw text content to ingest."
+        },
+        {
+          "name": "metadata",
+          "type": "Record<string, string>",
+          "description": "Optional metadata to attach to every chunk from this document.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<{ documentId: string; chunkCount: number }>",
+      "description": "Ingest a text document: chunk it, embed each chunk, and store in the vector index."
+    },
+    {
+      "name": "query",
+      "params": [
+        {
+          "name": "question",
+          "type": "string",
+          "description": "The user's question."
+        },
+        {
+          "name": "systemPrompt",
+          "type": "string",
+          "description": "Optional system prompt override for the completion call.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<RagResult>",
+      "description": "Query the pipeline: embed the question, retrieve top-K chunks, call the LLM with context, and return the grounded answer."
+    },
+    {
+      "name": "clearIndex",
+      "params": [],
+      "returns": "void",
+      "description": "Remove all documents and embeddings from the in-memory index."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "ragResult",
+        "compatibleWith": [
+          "@radzor/guardrails.action.validateOutput.text",
+          "@radzor/structured-output.action.extract.text"
+        ],
+        "mapField": "answer"
+      },
+      {
+        "event": "onQueryComplete",
+        "description": "Log RAG queries for analysis",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires an OpenAI-compatible API key for embeddings and completions. Uses native fetch (Node.js 18+). The vector index is in-memory — data is lost on restart."
+  }
+}

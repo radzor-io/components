@@ -1,0 +1,219 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/token-swap",
+  "version": "0.1.0",
+  "description": "Swap ERC-20 tokens via Uniswap-style DEX routers using raw JSON-RPC. Supports quoting, executing swaps, and balance queries on EVM chains.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "web3",
+  "runtime": "server",
+  "tags": [
+    "swap",
+    "dex",
+    "uniswap",
+    "erc20",
+    "defi",
+    "web3",
+    "token"
+  ],
+  "inputs": [
+    {
+      "name": "rpcUrl",
+      "type": "string",
+      "description": "JSON-RPC endpoint URL.",
+      "required": true,
+      "envVar": "ETH_RPC_URL"
+    },
+    {
+      "name": "routerAddress",
+      "type": "string",
+      "description": "DEX router contract address (e.g. Uniswap V2 Router02).",
+      "required": true
+    },
+    {
+      "name": "privateKey",
+      "type": "string",
+      "description": "Private key for signing swap transactions.",
+      "required": true,
+      "envVar": "ETH_PRIVATE_KEY"
+    },
+    {
+      "name": "chainId",
+      "type": "number",
+      "description": "Chain ID for transaction signing.",
+      "required": false,
+      "default": 1
+    },
+    {
+      "name": "slippageBps",
+      "type": "number",
+      "description": "Maximum slippage in basis points (default 50 = 0.5%).",
+      "required": false,
+      "default": 50
+    }
+  ],
+  "outputs": [
+    {
+      "name": "swapResult",
+      "type": "{ txHash: string; amountIn: string; amountOut: string; path: string[] }",
+      "description": "Result of a swap execution.",
+      "fields": [
+        {
+          "name": "txHash",
+          "type": "string",
+          "description": "Transaction hash."
+        },
+        {
+          "name": "amountIn",
+          "type": "string",
+          "description": "Amount of input token spent."
+        },
+        {
+          "name": "amountOut",
+          "type": "string",
+          "description": "Amount of output token received."
+        },
+        {
+          "name": "path",
+          "type": "string[]",
+          "description": "Token path used for the swap."
+        }
+      ]
+    },
+    {
+      "name": "quoteResult",
+      "type": "{ amountOut: string; path: string[]; priceImpact: string }",
+      "description": "Quote for a potential swap.",
+      "fields": [
+        {
+          "name": "amountOut",
+          "type": "string",
+          "description": "Expected output amount."
+        },
+        {
+          "name": "path",
+          "type": "string[]",
+          "description": "Token path for the swap."
+        },
+        {
+          "name": "priceImpact",
+          "type": "string",
+          "description": "Estimated price impact percentage."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onSwapCompleted",
+      "payload": {
+        "txHash": "string",
+        "tokenIn": "string",
+        "tokenOut": "string",
+        "amountIn": "string",
+        "amountOut": "string"
+      },
+      "description": "Fired when a swap transaction is confirmed."
+    }
+  ],
+  "actions": [
+    {
+      "name": "getQuote",
+      "params": [
+        {
+          "name": "tokenIn",
+          "type": "string",
+          "description": "Input token contract address."
+        },
+        {
+          "name": "tokenOut",
+          "type": "string",
+          "description": "Output token contract address."
+        },
+        {
+          "name": "amountIn",
+          "type": "string",
+          "description": "Amount of input token (in wei)."
+        }
+      ],
+      "returns": "Promise<{ amountOut: string; path: string[]; priceImpact: string }>",
+      "description": "Get a swap quote without executing."
+    },
+    {
+      "name": "executeSwap",
+      "params": [
+        {
+          "name": "tokenIn",
+          "type": "string",
+          "description": "Input token contract address."
+        },
+        {
+          "name": "tokenOut",
+          "type": "string",
+          "description": "Output token contract address."
+        },
+        {
+          "name": "amountIn",
+          "type": "string",
+          "description": "Amount of input token (in wei)."
+        },
+        {
+          "name": "minAmountOut",
+          "type": "string",
+          "description": "Minimum acceptable output (in wei). Use getQuote to compute.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<{ txHash: string; amountIn: string; amountOut: string }>",
+      "description": "Execute a token swap on-chain."
+    },
+    {
+      "name": "getTokenBalance",
+      "params": [
+        {
+          "name": "tokenAddress",
+          "type": "string",
+          "description": "ERC-20 token contract address."
+        },
+        {
+          "name": "walletAddress",
+          "type": "string",
+          "description": "Wallet address to check balance for."
+        }
+      ],
+      "returns": "Promise<string>",
+      "description": "Get the ERC-20 token balance for a wallet (in wei)."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "swapResult",
+        "compatibleWith": [
+          "@radzor/notification-hub.action.send.body",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ],
+        "mapField": "txHash"
+      },
+      {
+        "event": "onSwapCompleted",
+        "description": "Notify on completed token swap",
+        "compatibleWith": [
+          "@radzor/notification-hub.action.send.body",
+          "@radzor/event-tracker.action.track.eventName"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires a funded private key with sufficient ETH for gas and token allowance for the router. Always call getQuote before executeSwap to check price impact. slippageBps applies automatically during executeSwap."
+  }
+}

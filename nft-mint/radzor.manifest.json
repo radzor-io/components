@@ -1,0 +1,218 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/nft-mint",
+  "version": "0.1.0",
+  "description": "Mint NFTs on EVM-compatible chains via raw JSON-RPC. Supports single and batch minting, token URI retrieval, and approval management.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "web3",
+  "runtime": "server",
+  "tags": [
+    "nft",
+    "mint",
+    "evm",
+    "erc721",
+    "web3",
+    "blockchain",
+    "token"
+  ],
+  "inputs": [
+    {
+      "name": "rpcUrl",
+      "type": "string",
+      "description": "JSON-RPC endpoint URL (e.g. Infura, Alchemy, or local node).",
+      "required": true,
+      "envVar": "ETH_RPC_URL"
+    },
+    {
+      "name": "contractAddress",
+      "type": "string",
+      "description": "Deployed ERC-721 contract address.",
+      "required": true
+    },
+    {
+      "name": "privateKey",
+      "type": "string",
+      "description": "Private key for signing transactions (hex, with or without 0x prefix).",
+      "required": true,
+      "envVar": "ETH_PRIVATE_KEY"
+    },
+    {
+      "name": "chainId",
+      "type": "number",
+      "description": "Chain ID (1 = mainnet, 5 = goerli, 137 = polygon, etc.).",
+      "required": false,
+      "default": 1
+    }
+  ],
+  "outputs": [
+    {
+      "name": "mintResult",
+      "type": "{ txHash: string; tokenId: string; to: string }",
+      "description": "Result of a mint operation.",
+      "fields": [
+        {
+          "name": "txHash",
+          "type": "string",
+          "description": "Transaction hash."
+        },
+        {
+          "name": "tokenId",
+          "type": "string",
+          "description": "Minted token ID."
+        },
+        {
+          "name": "to",
+          "type": "string",
+          "description": "Recipient address."
+        }
+      ]
+    },
+    {
+      "name": "batchMintResult",
+      "type": "{ txHash: string; tokenIds: string[]; to: string }",
+      "description": "Result of a batch mint operation.",
+      "fields": [
+        {
+          "name": "txHash",
+          "type": "string",
+          "description": "Transaction hash."
+        },
+        {
+          "name": "tokenIds",
+          "type": "string[]",
+          "description": "Array of minted token IDs."
+        },
+        {
+          "name": "to",
+          "type": "string",
+          "description": "Recipient address."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onMinted",
+      "payload": {
+        "txHash": "string",
+        "tokenId": "string",
+        "to": "string"
+      },
+      "description": "Fired when a single NFT is successfully minted."
+    },
+    {
+      "name": "onTransferComplete",
+      "payload": {
+        "txHash": "string",
+        "from": "string",
+        "to": "string",
+        "tokenId": "string"
+      },
+      "description": "Fired when an NFT transfer is confirmed."
+    }
+  ],
+  "actions": [
+    {
+      "name": "mint",
+      "params": [
+        {
+          "name": "to",
+          "type": "string",
+          "description": "Recipient address."
+        },
+        {
+          "name": "tokenURI",
+          "type": "string",
+          "description": "Metadata URI for the token.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<{ txHash: string; tokenId: string }>",
+      "description": "Mint a single NFT to the specified address."
+    },
+    {
+      "name": "batchMint",
+      "params": [
+        {
+          "name": "to",
+          "type": "string",
+          "description": "Recipient address."
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "description": "Number of tokens to mint."
+        },
+        {
+          "name": "baseURI",
+          "type": "string",
+          "description": "Base URI for token metadata.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<{ txHash: string; tokenIds: string[] }>",
+      "description": "Mint multiple NFTs in a single transaction."
+    },
+    {
+      "name": "getTokenURI",
+      "params": [
+        {
+          "name": "tokenId",
+          "type": "string",
+          "description": "Token ID to query."
+        }
+      ],
+      "returns": "Promise<string>",
+      "description": "Retrieve the metadata URI for a given token ID."
+    },
+    {
+      "name": "setApproval",
+      "params": [
+        {
+          "name": "operator",
+          "type": "string",
+          "description": "Address to approve."
+        },
+        {
+          "name": "approved",
+          "type": "boolean",
+          "description": "Whether to grant or revoke approval."
+        }
+      ],
+      "returns": "Promise<{ txHash: string }>",
+      "description": "Set or revoke operator approval for all tokens."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "mintResult",
+        "compatibleWith": [
+          "@radzor/notification-hub.action.send.body",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ],
+        "mapField": "txHash"
+      },
+      {
+        "event": "onMinted",
+        "description": "Notify owner after NFT mint",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/notification-hub.action.send.body"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires a funded private key for write operations. Read operations (getTokenURI) only need rpcUrl and contractAddress. Gas estimation is performed automatically but chainId must match the RPC endpoint."
+  }
+}

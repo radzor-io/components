@@ -1,0 +1,145 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/funnel-report",
+  "version": "0.1.0",
+  "description": "Build and analyze conversion funnels. Define ordered steps, record user progression, and generate reports with conversion rates and dropoff analysis. In-memory, zero dependencies.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "analytics",
+  "runtime": "server",
+  "tags": [
+    "funnel",
+    "conversion",
+    "analytics",
+    "dropoff",
+    "pipeline",
+    "metrics"
+  ],
+  "inputs": [
+    {
+      "name": "funnelId",
+      "type": "string",
+      "description": "Unique identifier for this funnel.",
+      "required": true
+    },
+    {
+      "name": "steps",
+      "type": "string[]",
+      "description": "Ordered list of step names defining the funnel.",
+      "required": false
+    },
+    {
+      "name": "windowMs",
+      "type": "number",
+      "description": "Maximum time window in ms for a user to complete the funnel. Events outside the window are ignored.",
+      "default": 86400000,
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "funnelReport",
+      "type": "FunnelReport",
+      "description": "Complete funnel analysis with per-step conversion rates and dropoff.",
+      "fields": [
+        {
+          "name": "funnelId",
+          "type": "string",
+          "description": "Funnel identifier."
+        },
+        {
+          "name": "steps",
+          "type": "StepReport[]",
+          "description": "Per-step statistics."
+        },
+        {
+          "name": "conversionRates",
+          "type": "number[]",
+          "description": "Step-over-step conversion rates (0-1)."
+        },
+        {
+          "name": "dropoff",
+          "type": "number[]",
+          "description": "Per-step dropoff rates (0-1)."
+        },
+        {
+          "name": "overallConversion",
+          "type": "number",
+          "description": "Conversion rate from first step to last step (0-1)."
+        },
+        {
+          "name": "totalUsers",
+          "type": "number",
+          "description": "Total unique users who entered the funnel."
+        }
+      ]
+    }
+  ],
+  "events": [],
+  "actions": [
+    {
+      "name": "defineStep",
+      "params": [
+        {
+          "name": "stepName",
+          "type": "string",
+          "description": "Name of the step to add to the funnel."
+        }
+      ],
+      "returns": "void",
+      "description": "Add a step to the end of the funnel definition."
+    },
+    {
+      "name": "recordStep",
+      "params": [
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "Unique user identifier."
+        },
+        {
+          "name": "stepName",
+          "type": "string",
+          "description": "Name of the step the user completed."
+        }
+      ],
+      "returns": "void",
+      "description": "Record that a user completed a specific funnel step."
+    },
+    {
+      "name": "getReport",
+      "params": [],
+      "returns": "FunnelReport",
+      "description": "Generate a funnel report with conversion rates and dropoff analysis."
+    },
+    {
+      "name": "reset",
+      "params": [],
+      "returns": "void",
+      "description": "Clear all recorded step data. Funnel definition is preserved."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "funnelReport",
+        "compatibleWith": [
+          "@radzor/csv-export.action.generate.data",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ],
+        "mapField": "funnelId"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "All data is in-memory; resets on process restart. Steps must be defined before recording. The windowMs parameter sets the maximum time for a user to complete the funnel — user entries older than windowMs are pruned on report generation."
+  }
+}

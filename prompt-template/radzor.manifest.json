@@ -1,0 +1,165 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/prompt-template",
+  "version": "0.1.0",
+  "description": "Manage and render prompt templates with variable interpolation, conditional sections, and few-shot example injection. Supports template registration, validation, and composable prompt construction for LLM workflows.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "ai",
+  "runtime": "universal",
+  "tags": [
+    "prompt",
+    "template",
+    "llm",
+    "few-shot",
+    "ai",
+    "prompt-engineering",
+    "variables"
+  ],
+  "inputs": [
+    {
+      "name": "delimiters",
+      "type": "{ open: string; close: string }",
+      "description": "Custom delimiters for variable interpolation. Defaults to {{ and }}.",
+      "default": {
+        "open": "{{",
+        "close": "}}"
+      },
+      "required": false
+    },
+    {
+      "name": "strictMode",
+      "type": "boolean",
+      "description": "When true, rendering throws if any variables are unresolved. When false, unresolved variables remain as-is.",
+      "default": true,
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "renderedPrompt",
+      "type": "RenderedPrompt",
+      "description": "The fully rendered prompt string with all variables resolved and examples injected.",
+      "fields": [
+        {
+          "name": "text",
+          "type": "string",
+          "description": "The rendered prompt text."
+        },
+        {
+          "name": "templateName",
+          "type": "string",
+          "description": "Name of the template that was rendered."
+        },
+        {
+          "name": "variablesUsed",
+          "type": "string[]",
+          "description": "List of variable names that were resolved."
+        },
+        {
+          "name": "exampleCount",
+          "type": "number",
+          "description": "Number of few-shot examples injected."
+        }
+      ]
+    }
+  ],
+  "events": [],
+  "actions": [
+    {
+      "name": "render",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Name of a registered template to render."
+        },
+        {
+          "name": "variables",
+          "type": "Record<string, string>",
+          "description": "Key-value map of variables to substitute.",
+          "required": false
+        },
+        {
+          "name": "examples",
+          "type": "Array<{ input: string; output: string }>",
+          "description": "Few-shot examples to inject at the {{examples}} placeholder.",
+          "required": false
+        }
+      ],
+      "returns": "RenderedPrompt",
+      "description": "Render a registered template with the given variables and optional few-shot examples."
+    },
+    {
+      "name": "register",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Unique name for the template."
+        },
+        {
+          "name": "template",
+          "type": "string",
+          "description": "The template string with {{variable}} placeholders."
+        },
+        {
+          "name": "defaults",
+          "type": "Record<string, string>",
+          "description": "Default values for variables.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Register a new prompt template."
+    },
+    {
+      "name": "list",
+      "params": [],
+      "returns": "TemplateInfo[]",
+      "description": "List all registered templates with their variable names and defaults."
+    },
+    {
+      "name": "validate",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Name of the template to validate."
+        },
+        {
+          "name": "variables",
+          "type": "Record<string, string>",
+          "description": "Variables to check against the template.",
+          "required": false
+        }
+      ],
+      "returns": "ValidationResult",
+      "description": "Validate a template: check for unresolved variables, unclosed delimiters, and missing required variables."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "renderedPrompt",
+        "compatibleWith": [
+          "@radzor/llm-completion.action.complete.prompt",
+          "@radzor/rag-pipeline.action.query.question",
+          "@radzor/structured-output.action.generate.prompt"
+        ],
+        "mapField": "text"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Pure computation — no network calls, no API keys required. Runs in any JavaScript/Python environment. Template syntax uses {{ }} delimiters by default."
+  }
+}

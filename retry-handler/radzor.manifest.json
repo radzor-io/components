@@ -1,0 +1,192 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/retry-handler",
+  "version": "0.1.0",
+  "description": "Retry failed operations with configurable backoff strategies including exponential, linear, and jitter. Tracks attempt history and provides detailed statistics on retry behaviour.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "automation",
+  "runtime": "universal",
+  "tags": [
+    "retry",
+    "backoff",
+    "resilience",
+    "exponential-backoff",
+    "fault-tolerance",
+    "error-handling"
+  ],
+  "inputs": [
+    {
+      "name": "maxAttempts",
+      "type": "number",
+      "default": 3,
+      "description": "Maximum number of retry attempts (including the initial call).",
+      "required": false
+    },
+    {
+      "name": "strategy",
+      "type": "'exponential' | 'linear' | 'fixed'",
+      "default": "exponential",
+      "description": "Backoff strategy to use between retries.",
+      "required": false
+    },
+    {
+      "name": "baseDelay",
+      "type": "number",
+      "default": 1000,
+      "description": "Base delay in milliseconds before the first retry.",
+      "required": false
+    },
+    {
+      "name": "maxDelay",
+      "type": "number",
+      "default": 30000,
+      "description": "Maximum delay cap in milliseconds.",
+      "required": false
+    },
+    {
+      "name": "jitter",
+      "type": "boolean",
+      "default": true,
+      "description": "Add random jitter to the delay to prevent thundering herd.",
+      "required": false
+    },
+    {
+      "name": "retryOn",
+      "type": "(error: Error) => boolean",
+      "description": "Optional predicate to decide whether an error is retryable.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "retryResult",
+      "type": "RetryResult<T>",
+      "description": "Result of the retry operation.",
+      "fields": [
+        {
+          "name": "success",
+          "type": "boolean",
+          "description": "Whether the operation eventually succeeded."
+        },
+        {
+          "name": "data",
+          "type": "T | undefined",
+          "description": "Return value if successful."
+        },
+        {
+          "name": "attempts",
+          "type": "number",
+          "description": "Total number of attempts made."
+        },
+        {
+          "name": "lastError",
+          "type": "Error | null",
+          "description": "Last error encountered, or null if successful."
+        },
+        {
+          "name": "totalTime",
+          "type": "number",
+          "description": "Total elapsed time in milliseconds."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onRetry",
+      "payload": {
+        "attempt": "number",
+        "delay": "number",
+        "error": "string"
+      },
+      "description": "Fired before each retry attempt with the computed delay."
+    },
+    {
+      "name": "onExhausted",
+      "payload": {
+        "attempts": "number",
+        "lastError": "string",
+        "totalTime": "number"
+      },
+      "description": "Fired when all retry attempts are exhausted."
+    },
+    {
+      "name": "onSuccess",
+      "payload": {
+        "attempt": "number",
+        "totalTime": "number"
+      },
+      "description": "Fired when the operation succeeds (on first try or after retries)."
+    }
+  ],
+  "actions": [
+    {
+      "name": "execute",
+      "params": [
+        {
+          "name": "fn",
+          "type": "() => Promise<T>",
+          "description": "The async operation to execute with retry logic."
+        }
+      ],
+      "returns": "Promise<RetryResult<T>>",
+      "description": "Execute a function with retry logic applied."
+    },
+    {
+      "name": "configure",
+      "params": [
+        {
+          "name": "options",
+          "type": "Partial<RetryConfig>",
+          "description": "Updated configuration options."
+        }
+      ],
+      "returns": "void",
+      "description": "Update retry configuration at runtime."
+    },
+    {
+      "name": "getStats",
+      "params": [],
+      "returns": "RetryStats",
+      "description": "Get cumulative statistics across all executions."
+    },
+    {
+      "name": "reset",
+      "params": [],
+      "returns": "void",
+      "description": "Reset cumulative statistics."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onExhausted",
+        "description": "Alert when all retry attempts exhausted",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message",
+          "@radzor/notification-hub.action.send.body",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ]
+      },
+      {
+        "output": "retryResult",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message"
+        ],
+        "mapField": "attempts"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Delays use setTimeout; not suitable for sub-millisecond timing. The retryOn predicate should be a pure function. Stats are in-memory only."
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/saml-auth",
+  "version": "0.1.0",
+  "description": "SAML 2.0 SSO authentication for Service Provider-initiated flows. Generates login URLs, validates SAML responses, and extracts user attributes. Uses node:crypto for XML signing.",
+  "languages": [
+    "typescript"
+  ],
+  "category": "auth",
+  "runtime": "server",
+  "tags": [
+    "saml",
+    "sso",
+    "authentication",
+    "identity",
+    "enterprise",
+    "xml"
+  ],
+  "inputs": [
+    {
+      "name": "entityId",
+      "type": "string",
+      "description": "Service Provider entity ID (your application identifier).",
+      "required": true,
+      "envVar": "SAML_ENTITY_ID"
+    },
+    {
+      "name": "acsUrl",
+      "type": "string",
+      "description": "Assertion Consumer Service URL where the IdP sends SAML responses.",
+      "required": true,
+      "envVar": "SAML_ACS_URL"
+    },
+    {
+      "name": "idpLoginUrl",
+      "type": "string",
+      "description": "Identity Provider SSO login endpoint URL.",
+      "required": true,
+      "envVar": "SAML_IDP_LOGIN_URL"
+    },
+    {
+      "name": "idpCert",
+      "type": "string",
+      "description": "Identity Provider's X.509 certificate for signature validation (PEM format).",
+      "required": true,
+      "envVar": "SAML_IDP_CERT"
+    },
+    {
+      "name": "privateKey",
+      "type": "string",
+      "description": "SP private key for signing requests (PEM format). Optional if IdP does not require signed requests.",
+      "required": false,
+      "envVar": "SAML_SP_PRIVATE_KEY"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "samlUser",
+      "type": "SamlUser",
+      "description": "Authenticated user extracted from a valid SAML response.",
+      "fields": [
+        {
+          "name": "nameId",
+          "type": "string",
+          "description": "SAML NameID (unique user identifier from IdP)."
+        },
+        {
+          "name": "attributes",
+          "type": "Record<string, string | string[]>",
+          "description": "User attributes returned by the IdP."
+        },
+        {
+          "name": "sessionIndex",
+          "type": "string | null",
+          "description": "IdP session index for single logout."
+        },
+        {
+          "name": "issuer",
+          "type": "string",
+          "description": "IdP entity ID that issued the assertion."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onLoginSuccess",
+      "payload": {
+        "nameId": "string",
+        "issuer": "string",
+        "sessionIndex": "string"
+      },
+      "description": "Fired after a SAML response is successfully validated."
+    },
+    {
+      "name": "onLoginFailed",
+      "payload": {
+        "error": "string",
+        "issuer": "string"
+      },
+      "description": "Fired when SAML response validation fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "generateLoginUrl",
+      "params": [
+        {
+          "name": "relayState",
+          "type": "string",
+          "description": "URL to redirect to after successful login.",
+          "required": false
+        }
+      ],
+      "returns": "string",
+      "description": "Generate a SAML AuthnRequest URL for SP-initiated login."
+    },
+    {
+      "name": "validateResponse",
+      "params": [
+        {
+          "name": "samlResponse",
+          "type": "string",
+          "description": "Base64-encoded SAML response from the IdP."
+        }
+      ],
+      "returns": "Promise<SamlUser>",
+      "description": "Validate a SAML response and extract the authenticated user."
+    },
+    {
+      "name": "getMetadata",
+      "params": [],
+      "returns": "string",
+      "description": "Generate SP metadata XML for IdP configuration."
+    },
+    {
+      "name": "logout",
+      "params": [
+        {
+          "name": "nameId",
+          "type": "string",
+          "description": "NameID of the user to log out."
+        },
+        {
+          "name": "sessionIndex",
+          "type": "string",
+          "description": "Session index from the login assertion."
+        }
+      ],
+      "returns": "string",
+      "description": "Generate a SAML LogoutRequest URL for single logout."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "samlUser",
+        "compatibleWith": [
+          "@radzor/session-manager.action.create.data",
+          "@radzor/rbac.action.assignRole.userId"
+        ],
+        "mapField": "nameId"
+      },
+      {
+        "event": "onLoginSuccess",
+        "description": "Create session after SAML login",
+        "compatibleWith": [
+          "@radzor/session-manager.action.create.data",
+          "@radzor/event-tracker.action.track.eventName"
+        ]
+      },
+      {
+        "event": "onLoginFailed",
+        "description": "Track SAML login failures",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message",
+          "@radzor/log-aggregator.action.warn.message"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Server-only (uses node:crypto). Does not support IdP-initiated login. XML parsing is done with string manipulation and node:crypto — no external XML library needed. The IdP certificate must be provided in PEM format."
+  }
+}

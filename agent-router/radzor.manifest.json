@@ -1,0 +1,190 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/agent-router",
+  "version": "0.1.0",
+  "description": "Route prompts to different AI models or agents based on intent classification. Supports static rule-based routing, LLM-powered intent detection, and fallback chains for reliable multi-agent orchestration.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "ai",
+  "runtime": "server",
+  "tags": [
+    "agent",
+    "router",
+    "intent",
+    "multi-model",
+    "orchestration",
+    "ai",
+    "llm",
+    "routing"
+  ],
+  "inputs": [
+    {
+      "name": "apiKey",
+      "type": "string",
+      "description": "API key for the classifier LLM used to detect intent (OpenAI-compatible).",
+      "required": true,
+      "envVar": "OPENAI_API_KEY"
+    },
+    {
+      "name": "classifierModel",
+      "type": "string",
+      "description": "Model to use for intent classification.",
+      "default": "gpt-4o-mini",
+      "required": false
+    },
+    {
+      "name": "baseUrl",
+      "type": "string",
+      "description": "Base URL for the classifier API.",
+      "default": "https://api.openai.com/v1",
+      "required": false
+    },
+    {
+      "name": "fallbackAgent",
+      "type": "string",
+      "description": "Name of the agent to use when no intent matches. If not set, routing throws on no match.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "routeResult",
+      "type": "RouteResult",
+      "description": "The result of routing a prompt to an agent.",
+      "fields": [
+        {
+          "name": "selectedAgent",
+          "type": "string",
+          "description": "Name of the agent that handled the prompt."
+        },
+        {
+          "name": "confidence",
+          "type": "number",
+          "description": "Confidence score of the intent classification (0-1)."
+        },
+        {
+          "name": "response",
+          "type": "string",
+          "description": "The response from the selected agent."
+        },
+        {
+          "name": "intent",
+          "type": "string",
+          "description": "The detected intent label."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onRouted",
+      "payload": {
+        "prompt": "string",
+        "agent": "string",
+        "intent": "string",
+        "confidence": "number"
+      },
+      "description": "Fired when a prompt is successfully routed to an agent."
+    },
+    {
+      "name": "onFallback",
+      "payload": {
+        "prompt": "string",
+        "agent": "string",
+        "reason": "string"
+      },
+      "description": "Fired when routing falls back to the default agent."
+    }
+  ],
+  "actions": [
+    {
+      "name": "route",
+      "params": [
+        {
+          "name": "prompt",
+          "type": "string",
+          "description": "The user prompt to route."
+        }
+      ],
+      "returns": "Promise<RouteResult>",
+      "description": "Classify the prompt's intent and route it to the best matching agent."
+    },
+    {
+      "name": "registerAgent",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Unique name for this agent."
+        },
+        {
+          "name": "handler",
+          "type": "(prompt: string) => Promise<string>",
+          "description": "Async function that takes a prompt and returns a response."
+        },
+        {
+          "name": "intents",
+          "type": "string[]",
+          "description": "List of intent labels this agent handles."
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "description": "Description of what this agent does (used by the LLM classifier).",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Register an agent with its intents and handler function."
+    },
+    {
+      "name": "removeAgent",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Name of the agent to remove."
+        }
+      ],
+      "returns": "boolean",
+      "description": "Remove a registered agent. Returns true if the agent existed."
+    },
+    {
+      "name": "listAgents",
+      "params": [],
+      "returns": "AgentInfo[]",
+      "description": "List all registered agents with their intents and descriptions."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "routeResult",
+        "compatibleWith": [
+          "@radzor/llm-completion.action.complete.prompt",
+          "@radzor/structured-output.action.generate.prompt"
+        ],
+        "mapField": "response"
+      },
+      {
+        "event": "onFallback",
+        "description": "Alert when routing falls back to default agent",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message",
+          "@radzor/log-aggregator.action.warn.message"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires an OpenAI-compatible API key for intent classification. Agent handlers are user-provided async functions. Uses native fetch (Node.js 18+)."
+  }
+}

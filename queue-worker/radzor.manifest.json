@@ -124,10 +124,30 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onJobFailed",
+        "description": "Alert on job processing failure",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message",
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/notification-hub.action.send.body"
+        ]
+      },
+      {
+        "event": "onJobComplete",
+        "description": "Log job completions",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message",
+          "@radzor/event-tracker.action.track.eventName"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "No external dependencies. In-memory only \u2014 jobs are lost on process restart. For persistent queues use Redis or a dedicated message broker. Concurrency controls parallel workers."
+    "constraints": "No external dependencies. In-memory only — jobs are lost on process restart. For persistent queues use Redis or a dedicated message broker. Concurrency controls parallel workers."
   }
 }

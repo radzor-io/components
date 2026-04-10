@@ -1,0 +1,149 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/guardrails",
+  "version": "0.1.0",
+  "description": "Validate LLM inputs and outputs against configurable safety rules including PII detection, content filtering, prompt injection detection, and length limits. Provides a rule engine for building custom validation pipelines.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "ai",
+  "runtime": "server",
+  "tags": [
+    "guardrails",
+    "safety",
+    "pii",
+    "content-filter",
+    "validation",
+    "ai",
+    "llm",
+    "security"
+  ],
+  "inputs": [
+    {
+      "name": "enableBuiltinRules",
+      "type": "boolean",
+      "description": "Whether to load built-in rules (PII, prompt injection, profanity) on initialization.",
+      "default": true,
+      "required": false
+    },
+    {
+      "name": "maxInputLength",
+      "type": "number",
+      "description": "Maximum allowed character length for input text.",
+      "default": 50000,
+      "required": false
+    },
+    {
+      "name": "maxOutputLength",
+      "type": "number",
+      "description": "Maximum allowed character length for output text.",
+      "default": 100000,
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "validationResult",
+      "type": "ValidationResult",
+      "description": "Result of validating text against the active rules.",
+      "fields": [
+        {
+          "name": "passed",
+          "type": "boolean",
+          "description": "Whether the text passed all validation rules."
+        },
+        {
+          "name": "violations",
+          "type": "Array<{ rule: string; severity: string; message: string; matches?: string[] }>",
+          "description": "List of rule violations found in the text."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onViolation",
+      "payload": {
+        "rule": "string",
+        "severity": "string",
+        "text": "string",
+        "direction": "string"
+      },
+      "description": "Fired each time a rule violation is detected."
+    }
+  ],
+  "actions": [
+    {
+      "name": "validateInput",
+      "params": [
+        {
+          "name": "text",
+          "type": "string",
+          "description": "The input text (user prompt) to validate."
+        }
+      ],
+      "returns": "ValidationResult",
+      "description": "Validate input text against all active rules."
+    },
+    {
+      "name": "validateOutput",
+      "params": [
+        {
+          "name": "text",
+          "type": "string",
+          "description": "The output text (LLM response) to validate."
+        }
+      ],
+      "returns": "ValidationResult",
+      "description": "Validate output text against all active rules."
+    },
+    {
+      "name": "addRule",
+      "params": [
+        {
+          "name": "rule",
+          "type": "GuardrailRule",
+          "description": "The rule definition to add."
+        }
+      ],
+      "returns": "void",
+      "description": "Add a custom validation rule."
+    },
+    {
+      "name": "listRules",
+      "params": [],
+      "returns": "RuleInfo[]",
+      "description": "List all active validation rules."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onViolation",
+        "description": "Alert on content policy violations",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.warn.message",
+          "@radzor/error-tracker.action.captureMessage.message",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ]
+      },
+      {
+        "output": "validationResult",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName"
+        ],
+        "mapField": "passed"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "No API keys required — all validation is local. PII detection uses regex patterns and is not 100% accurate. For production PII handling, consider combining with a dedicated PII service."
+  }
+}

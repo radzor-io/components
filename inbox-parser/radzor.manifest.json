@@ -1,0 +1,163 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/inbox-parser",
+  "version": "0.1.0",
+  "description": "Parse raw email (MIME format) into structured data. Extract headers, body (HTML and text), attachments, and metadata from RFC 2822 / MIME messages with no external dependencies.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "email",
+  "runtime": "server",
+  "tags": [
+    "email",
+    "mime",
+    "parser",
+    "inbox",
+    "attachment",
+    "rfc2822"
+  ],
+  "inputs": [
+    {
+      "name": "maxAttachmentSize",
+      "type": "number",
+      "default": 10485760,
+      "description": "Maximum attachment size in bytes (default: 10 MB). Larger attachments are skipped.",
+      "required": false
+    },
+    {
+      "name": "decodeCharsets",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to decode non-UTF-8 charsets in headers and body parts.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "parsedEmail",
+      "type": "ParsedEmail",
+      "description": "Fully parsed email with headers, body, and attachments.",
+      "fields": [
+        {
+          "name": "messageId",
+          "type": "string",
+          "description": "Message-ID header value."
+        },
+        {
+          "name": "from",
+          "type": "EmailAddress",
+          "description": "Sender address (name + email)."
+        },
+        {
+          "name": "to",
+          "type": "EmailAddress[]",
+          "description": "Recipient addresses."
+        },
+        {
+          "name": "cc",
+          "type": "EmailAddress[]",
+          "description": "CC recipient addresses."
+        },
+        {
+          "name": "subject",
+          "type": "string",
+          "description": "Email subject line."
+        },
+        {
+          "name": "date",
+          "type": "string",
+          "description": "Date header parsed to ISO 8601."
+        },
+        {
+          "name": "html",
+          "type": "string",
+          "description": "HTML body content.",
+          "required": false
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "description": "Plain text body content.",
+          "required": false
+        },
+        {
+          "name": "attachments",
+          "type": "Attachment[]",
+          "description": "Array of extracted attachments."
+        },
+        {
+          "name": "headers",
+          "type": "Record<string, string>",
+          "description": "All parsed headers as key-value pairs."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onParsed",
+      "payload": {
+        "messageId": "string",
+        "subject": "string",
+        "attachmentCount": "number"
+      },
+      "description": "Fired when an email is successfully parsed."
+    },
+    {
+      "name": "onError",
+      "payload": {
+        "message": "string",
+        "phase": "string"
+      },
+      "description": "Fired when parsing fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "parse",
+      "params": [
+        {
+          "name": "rawEmail",
+          "type": "string | Buffer",
+          "description": "Raw MIME email content."
+        }
+      ],
+      "returns": "Promise<ParsedEmail>",
+      "description": "Parse a raw MIME email into structured data."
+    },
+    {
+      "name": "extractAttachments",
+      "params": [
+        {
+          "name": "rawEmail",
+          "type": "string | Buffer",
+          "description": "Raw MIME email content."
+        }
+      ],
+      "returns": "Promise<Attachment[]>",
+      "description": "Extract only attachments from a raw MIME email."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "parsedEmail",
+        "compatibleWith": [
+          "@radzor/ai-classifier.action.classify.text",
+          "@radzor/llm-completion.action.complete.prompt"
+        ],
+        "mapField": "text"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "No external dependencies — pure TypeScript MIME parser. Handles multipart/mixed, multipart/alternative, and nested multipart. Base64 and quoted-printable decoding are supported. Very large emails (>50MB) may cause high memory usage."
+  }
+}

@@ -1,0 +1,214 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/s3-upload",
+  "version": "0.1.0",
+  "description": "Upload, download, and manage files on S3-compatible storage (AWS S3, MinIO, R2, DigitalOcean Spaces) using raw fetch with AWS Signature V4 signing.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "storage",
+  "runtime": "server",
+  "tags": [
+    "s3",
+    "upload",
+    "storage",
+    "aws",
+    "minio",
+    "r2",
+    "files"
+  ],
+  "inputs": [
+    {
+      "name": "accessKeyId",
+      "type": "string",
+      "description": "AWS access key ID.",
+      "required": true,
+      "envVar": "AWS_ACCESS_KEY_ID"
+    },
+    {
+      "name": "secretAccessKey",
+      "type": "string",
+      "description": "AWS secret access key.",
+      "required": true,
+      "envVar": "AWS_SECRET_ACCESS_KEY"
+    },
+    {
+      "name": "region",
+      "type": "string",
+      "description": "AWS region (e.g. us-east-1).",
+      "required": true,
+      "envVar": "AWS_REGION"
+    },
+    {
+      "name": "bucket",
+      "type": "string",
+      "description": "S3 bucket name.",
+      "required": true
+    },
+    {
+      "name": "endpoint",
+      "type": "string",
+      "description": "Custom S3-compatible endpoint URL (for MinIO, R2, Spaces, etc.).",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "uploadResult",
+      "type": "{ key: string; etag: string; url: string }",
+      "description": "Result of an upload operation.",
+      "fields": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Object key in the bucket."
+        },
+        {
+          "name": "etag",
+          "type": "string",
+          "description": "ETag of the uploaded object."
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "description": "Public URL of the object."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onUploadComplete",
+      "payload": {
+        "key": "string",
+        "bucket": "string",
+        "size": "number",
+        "etag": "string"
+      },
+      "description": "Fired when a file upload completes successfully."
+    }
+  ],
+  "actions": [
+    {
+      "name": "upload",
+      "params": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Object key (path within bucket)."
+        },
+        {
+          "name": "body",
+          "type": "Buffer | string | ReadableStream",
+          "description": "File content."
+        },
+        {
+          "name": "contentType",
+          "type": "string",
+          "description": "MIME type (default: application/octet-stream).",
+          "required": false
+        },
+        {
+          "name": "metadata",
+          "type": "Record<string, string>",
+          "description": "Custom metadata headers (x-amz-meta-*).",
+          "required": false
+        }
+      ],
+      "returns": "Promise<{ key: string; etag: string; url: string }>",
+      "description": "Upload a file to S3."
+    },
+    {
+      "name": "download",
+      "params": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Object key to download."
+        }
+      ],
+      "returns": "Promise<{ body: Buffer; contentType: string; etag: string }>",
+      "description": "Download a file from S3."
+    },
+    {
+      "name": "delete",
+      "params": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Object key to delete."
+        }
+      ],
+      "returns": "Promise<void>",
+      "description": "Delete an object from S3."
+    },
+    {
+      "name": "listObjects",
+      "params": [
+        {
+          "name": "prefix",
+          "type": "string",
+          "description": "Key prefix to filter by.",
+          "required": false
+        },
+        {
+          "name": "maxKeys",
+          "type": "number",
+          "description": "Maximum number of results (default: 1000).",
+          "required": false
+        }
+      ],
+      "returns": "Promise<Array<{ key: string; size: number; lastModified: string }>>",
+      "description": "List objects in the bucket with an optional prefix filter."
+    },
+    {
+      "name": "getSignedUrl",
+      "params": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Object key."
+        },
+        {
+          "name": "expiresIn",
+          "type": "number",
+          "description": "URL validity in seconds (default: 3600).",
+          "required": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "description": "Generate a pre-signed URL for temporary access to a private object."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "uploadResult",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/notification-hub.action.send.body"
+        ],
+        "mapField": "url"
+      },
+      {
+        "event": "onUploadComplete",
+        "description": "Log upload completions",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message",
+          "@radzor/event-tracker.action.track.eventName"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "No external dependencies — implements AWS Signature V4 using Node.js crypto. For non-AWS providers, set the endpoint parameter. Object keys should not start with /. Maximum single PUT upload size is 5GB (use multipart for larger files)."
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/error-tracker",
+  "version": "0.1.0",
+  "description": "Capture and report errors to external services (Sentry-style). Supports exceptions, messages, context enrichment, and breadcrumb trails. Uses raw fetch to a configurable endpoint — zero dependencies.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "monitoring",
+  "runtime": "universal",
+  "tags": [
+    "error",
+    "tracking",
+    "sentry",
+    "monitoring",
+    "exception",
+    "breadcrumb"
+  ],
+  "inputs": [
+    {
+      "name": "endpoint",
+      "type": "string",
+      "description": "HTTP endpoint to POST error reports to.",
+      "required": true,
+      "envVar": "ERROR_TRACKER_ENDPOINT"
+    },
+    {
+      "name": "dsn",
+      "type": "string",
+      "description": "Optional DSN string included in the report header for service identification.",
+      "required": false,
+      "envVar": "ERROR_TRACKER_DSN"
+    },
+    {
+      "name": "environment",
+      "type": "string",
+      "description": "Environment label (e.g. 'production', 'staging').",
+      "default": "production",
+      "required": false
+    },
+    {
+      "name": "maxBreadcrumbs",
+      "type": "number",
+      "description": "Maximum number of breadcrumbs to retain per report.",
+      "default": 50,
+      "required": false
+    },
+    {
+      "name": "headers",
+      "type": "Record<string, string>",
+      "description": "Additional HTTP headers sent with each report.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "errorReport",
+      "type": "ErrorReport",
+      "description": "Structured error report sent to the endpoint.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Unique report identifier."
+        },
+        {
+          "name": "level",
+          "type": "'fatal' | 'error' | 'warning' | 'info'",
+          "description": "Severity level."
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "description": "Error message or exception message."
+        },
+        {
+          "name": "stack",
+          "type": "string",
+          "description": "Stack trace if available.",
+          "required": false
+        },
+        {
+          "name": "context",
+          "type": "Record<string, unknown>",
+          "description": "Additional context attached to the report."
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "Breadcrumb[]",
+          "description": "Trail of breadcrumbs leading up to the error."
+        },
+        {
+          "name": "timestamp",
+          "type": "number",
+          "description": "Unix timestamp of the error."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onErrorCaptured",
+      "payload": {
+        "id": "string",
+        "level": "string",
+        "message": "string",
+        "sent": "boolean"
+      },
+      "description": "Fired when an error or message is captured and reported."
+    }
+  ],
+  "actions": [
+    {
+      "name": "captureException",
+      "params": [
+        {
+          "name": "error",
+          "type": "Error",
+          "description": "The error to capture."
+        },
+        {
+          "name": "extra",
+          "type": "Record<string, unknown>",
+          "description": "Additional context for this specific error.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "description": "Capture an exception and send it to the endpoint. Returns the report ID."
+    },
+    {
+      "name": "captureMessage",
+      "params": [
+        {
+          "name": "message",
+          "type": "string",
+          "description": "Message to capture."
+        },
+        {
+          "name": "level",
+          "type": "'fatal' | 'error' | 'warning' | 'info'",
+          "description": "Severity level.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "description": "Capture a message (not an exception) and send it. Returns the report ID."
+    },
+    {
+      "name": "setContext",
+      "params": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Context key (e.g. 'user', 'request')."
+        },
+        {
+          "name": "value",
+          "type": "Record<string, unknown>",
+          "description": "Context data."
+        }
+      ],
+      "returns": "void",
+      "description": "Set persistent context that is attached to all subsequent reports."
+    },
+    {
+      "name": "addBreadcrumb",
+      "params": [
+        {
+          "name": "breadcrumb",
+          "type": "{ category: string; message: string; level?: string; data?: Record<string, unknown> }",
+          "description": "Breadcrumb to add to the trail."
+        }
+      ],
+      "returns": "void",
+      "description": "Add a breadcrumb to the current trail. Oldest breadcrumbs are evicted when maxBreadcrumbs is reached."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "errorReport",
+        "compatibleWith": [
+          "@radzor/notification-hub.action.send.body",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ],
+        "mapField": "message"
+      },
+      {
+        "event": "onErrorCaptured",
+        "description": "Route captured errors to notification channels",
+        "compatibleWith": [
+          "@radzor/notification-hub.action.send.body",
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/email-send.action.send.message"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Uses raw fetch() to POST JSON error reports — the endpoint must accept JSON. Breadcrumbs are stored in memory and capped at maxBreadcrumbs. Context is cumulative (setContext merges). Reports are fire-and-forget — network failures are silently ignored to avoid recursive error loops."
+  }
+}

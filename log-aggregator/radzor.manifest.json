@@ -1,0 +1,212 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/log-aggregator",
+  "version": "0.1.0",
+  "description": "Structured logging with multiple transports (console, HTTP, custom). Supports log levels, JSON formatting, context enrichment, and pluggable transport system. Zero dependencies.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "monitoring",
+  "runtime": "server",
+  "tags": [
+    "logging",
+    "structured",
+    "transport",
+    "monitoring",
+    "observability",
+    "json"
+  ],
+  "inputs": [
+    {
+      "name": "level",
+      "type": "'debug' | 'info' | 'warn' | 'error' | 'fatal'",
+      "description": "Minimum log level. Messages below this level are discarded.",
+      "default": "info",
+      "required": false
+    },
+    {
+      "name": "defaultMeta",
+      "type": "Record<string, unknown>",
+      "description": "Metadata attached to every log entry (e.g. service name, version).",
+      "required": false
+    },
+    {
+      "name": "transports",
+      "type": "TransportConfig[]",
+      "description": "Pre-configured transports to add on initialization.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "logEntry",
+      "type": "LogEntry",
+      "description": "A structured log entry produced by the logger.",
+      "fields": [
+        {
+          "name": "level",
+          "type": "string",
+          "description": "Log level."
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "description": "Log message."
+        },
+        {
+          "name": "timestamp",
+          "type": "string",
+          "description": "ISO 8601 timestamp."
+        },
+        {
+          "name": "meta",
+          "type": "Record<string, unknown>",
+          "description": "Merged metadata (default + per-entry)."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onLog",
+      "payload": {
+        "level": "string",
+        "message": "string",
+        "timestamp": "string"
+      },
+      "description": "Fired for every log entry that passes the level filter."
+    }
+  ],
+  "actions": [
+    {
+      "name": "log",
+      "params": [
+        {
+          "name": "level",
+          "type": "'debug' | 'info' | 'warn' | 'error' | 'fatal'",
+          "description": "Log level."
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "description": "Log message."
+        },
+        {
+          "name": "meta",
+          "type": "Record<string, unknown>",
+          "description": "Additional metadata for this entry.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Write a log entry at the specified level."
+    },
+    {
+      "name": "info",
+      "params": [
+        {
+          "name": "message",
+          "type": "string",
+          "description": "Log message."
+        },
+        {
+          "name": "meta",
+          "type": "Record<string, unknown>",
+          "description": "Additional metadata.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Shorthand for log('info', ...)."
+    },
+    {
+      "name": "warn",
+      "params": [
+        {
+          "name": "message",
+          "type": "string",
+          "description": "Log message."
+        },
+        {
+          "name": "meta",
+          "type": "Record<string, unknown>",
+          "description": "Additional metadata.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Shorthand for log('warn', ...)."
+    },
+    {
+      "name": "error",
+      "params": [
+        {
+          "name": "message",
+          "type": "string",
+          "description": "Log message."
+        },
+        {
+          "name": "meta",
+          "type": "Record<string, unknown>",
+          "description": "Additional metadata.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Shorthand for log('error', ...)."
+    },
+    {
+      "name": "setLevel",
+      "params": [
+        {
+          "name": "level",
+          "type": "'debug' | 'info' | 'warn' | 'error' | 'fatal'",
+          "description": "New minimum log level."
+        }
+      ],
+      "returns": "void",
+      "description": "Change the minimum log level at runtime."
+    },
+    {
+      "name": "addTransport",
+      "params": [
+        {
+          "name": "transport",
+          "type": "Transport",
+          "description": "Transport instance to add."
+        }
+      ],
+      "returns": "void",
+      "description": "Add a transport for log output."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "logEntry",
+        "compatibleWith": [
+          "@radzor/search-index.action.index.documents"
+        ],
+        "mapField": "message"
+      },
+      {
+        "event": "onLog",
+        "description": "Forward critical logs to alerting",
+        "compatibleWith": [
+          "@radzor/notification-hub.action.send.body",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Log entries below the configured level are silently discarded. The HTTP transport uses fetch() and is fire-and-forget — network failures do not throw. The file transport uses Node.js fs.appendFileSync — not available in browsers. Console transport works everywhere."
+  }
+}

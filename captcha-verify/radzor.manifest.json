@@ -111,7 +111,25 @@
     "packages": {},
     "radzor": []
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "verificationResult",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message",
+          "@radzor/event-tracker.action.track.eventName"
+        ],
+        "mapField": "success"
+      },
+      {
+        "event": "onFailed",
+        "description": "Track CAPTCHA verification failures",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

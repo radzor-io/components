@@ -1,0 +1,166 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/state-machine",
+  "version": "0.1.0",
+  "description": "Finite state machine with guards, transition actions, and history tracking. Define states, transitions, and conditional logic for complex stateful workflows.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "automation",
+  "runtime": "universal",
+  "tags": [
+    "state-machine",
+    "fsm",
+    "statechart",
+    "transitions",
+    "guards",
+    "automation"
+  ],
+  "inputs": [
+    {
+      "name": "definition",
+      "type": "MachineDefinition",
+      "description": "State machine definition with states, transitions, and guards.",
+      "required": true
+    },
+    {
+      "name": "context",
+      "type": "Record<string, unknown>",
+      "default": {},
+      "description": "Initial context data available to guards and actions.",
+      "required": false
+    },
+    {
+      "name": "historySize",
+      "type": "number",
+      "default": 100,
+      "description": "Maximum number of transition records to keep in history.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "machineState",
+      "type": "MachineState",
+      "description": "Current state of the machine.",
+      "fields": [
+        {
+          "name": "current",
+          "type": "string",
+          "description": "Name of the current state."
+        },
+        {
+          "name": "context",
+          "type": "Record<string, unknown>",
+          "description": "Current context data."
+        },
+        {
+          "name": "history",
+          "type": "TransitionRecord[]",
+          "description": "List of past transitions."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onTransition",
+      "payload": {
+        "from": "string",
+        "to": "string",
+        "event": "string",
+        "context": "Record<string, unknown>"
+      },
+      "description": "Fired after a successful state transition."
+    },
+    {
+      "name": "onGuardRejected",
+      "payload": {
+        "from": "string",
+        "event": "string",
+        "guard": "string",
+        "context": "Record<string, unknown>"
+      },
+      "description": "Fired when a transition is blocked by a guard condition."
+    }
+  ],
+  "actions": [
+    {
+      "name": "transition",
+      "params": [
+        {
+          "name": "event",
+          "type": "string",
+          "description": "Event name that triggers the transition."
+        },
+        {
+          "name": "payload",
+          "type": "Record<string, unknown>",
+          "description": "Optional payload passed to guards and actions.",
+          "required": false
+        }
+      ],
+      "returns": "MachineState",
+      "description": "Attempt to transition the machine by sending an event."
+    },
+    {
+      "name": "getState",
+      "params": [],
+      "returns": "MachineState",
+      "description": "Get the current machine state, context, and history."
+    },
+    {
+      "name": "getHistory",
+      "params": [],
+      "returns": "TransitionRecord[]",
+      "description": "Get the full transition history."
+    },
+    {
+      "name": "reset",
+      "params": [],
+      "returns": "void",
+      "description": "Reset the machine to its initial state and clear history."
+    },
+    {
+      "name": "canTransition",
+      "params": [
+        {
+          "name": "event",
+          "type": "string",
+          "description": "Event name to check."
+        }
+      ],
+      "returns": "boolean",
+      "description": "Check if an event can trigger a transition from the current state."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onTransition",
+        "description": "Track state transitions for audit trail",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/log-aggregator.action.info.message"
+        ]
+      },
+      {
+        "output": "machineState",
+        "compatibleWith": [
+          "@radzor/notification-hub.action.send.body"
+        ],
+        "mapField": "current"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "State is in-memory; lost on process restart. Guards must be synchronous functions. Context mutations in actions should return new objects, not mutate in place."
+  }
+}

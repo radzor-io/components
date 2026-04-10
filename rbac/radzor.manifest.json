@@ -1,0 +1,187 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/rbac",
+  "version": "0.1.0",
+  "description": "Role-Based Access Control with hierarchical roles, fine-grained permissions, and wildcard matching. Supports role inheritance and permission auditing for server-side authorization.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "auth",
+  "runtime": "server",
+  "tags": [
+    "rbac",
+    "authorization",
+    "permissions",
+    "roles",
+    "access-control",
+    "security"
+  ],
+  "inputs": [
+    {
+      "name": "roles",
+      "type": "RoleDefinition[]",
+      "description": "Initial role definitions with permissions and inheritance.",
+      "required": false
+    },
+    {
+      "name": "separator",
+      "type": "string",
+      "default": ":",
+      "description": "Separator character for hierarchical permission strings (e.g. 'posts:write').",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "authorizationResult",
+      "type": "AuthorizationResult",
+      "description": "Result of a permission check.",
+      "fields": [
+        {
+          "name": "allowed",
+          "type": "boolean",
+          "description": "Whether the permission check passed."
+        },
+        {
+          "name": "role",
+          "type": "string | null",
+          "description": "Role that granted the permission, or null if denied."
+        },
+        {
+          "name": "permissions",
+          "type": "string[]",
+          "description": "All effective permissions for the checked role chain."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onAccessDenied",
+      "payload": {
+        "userId": "string",
+        "permission": "string",
+        "roles": "string[]"
+      },
+      "description": "Fired when a permission check fails."
+    }
+  ],
+  "actions": [
+    {
+      "name": "checkPermission",
+      "params": [
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "User identifier."
+        },
+        {
+          "name": "permission",
+          "type": "string",
+          "description": "Permission string to check (e.g. 'posts:write')."
+        }
+      ],
+      "returns": "AuthorizationResult",
+      "description": "Check if a user has a specific permission through their assigned roles."
+    },
+    {
+      "name": "assignRole",
+      "params": [
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "User identifier."
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "description": "Role name to assign."
+        }
+      ],
+      "returns": "void",
+      "description": "Assign a role to a user."
+    },
+    {
+      "name": "removeRole",
+      "params": [
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "User identifier."
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "description": "Role name to remove."
+        }
+      ],
+      "returns": "void",
+      "description": "Remove a role from a user."
+    },
+    {
+      "name": "defineRole",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Unique role name."
+        },
+        {
+          "name": "permissions",
+          "type": "string[]",
+          "description": "List of permission strings."
+        },
+        {
+          "name": "inherits",
+          "type": "string[]",
+          "description": "Roles this role inherits from.",
+          "required": false
+        }
+      ],
+      "returns": "void",
+      "description": "Define or redefine a role with its permissions and optional inheritance."
+    },
+    {
+      "name": "listPermissions",
+      "params": [
+        {
+          "name": "userId",
+          "type": "string",
+          "description": "User identifier."
+        }
+      ],
+      "returns": "string[]",
+      "description": "List all effective permissions for a user, including inherited ones."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onAccessDenied",
+        "description": "Log unauthorized access attempts",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message",
+          "@radzor/log-aggregator.action.warn.message",
+          "@radzor/event-tracker.action.track.eventName"
+        ]
+      },
+      {
+        "output": "authorizationResult",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message"
+        ],
+        "mapField": "allowed"
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Roles and user assignments are in-memory; persist externally for production. Wildcard permissions (e.g. 'posts:*') match all sub-permissions. Circular role inheritance is detected and prevented."
+  }
+}

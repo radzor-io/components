@@ -1,0 +1,155 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/json-transform",
+  "version": "0.1.0",
+  "description": "Transform JSON data using JSONPath expressions, field mapping rules, filtering, flattening, and merging. Supports composable transformation pipelines for reshaping data between APIs, databases, and LLM contexts.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "data",
+  "runtime": "universal",
+  "tags": [
+    "json",
+    "transform",
+    "mapping",
+    "jsonpath",
+    "data",
+    "etl",
+    "pipeline"
+  ],
+  "inputs": [
+    {
+      "name": "strictMode",
+      "type": "boolean",
+      "description": "When true, missing source paths throw errors. When false, missing paths produce undefined.",
+      "default": false,
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "transformedData",
+      "type": "unknown",
+      "description": "The transformed JSON data. Shape depends on the transformation rules applied.",
+      "fields": [
+        {
+          "name": "data",
+          "type": "unknown",
+          "description": "The transformed data payload."
+        },
+        {
+          "name": "metadata",
+          "type": "{ inputKeys: number; outputKeys: number; transformations: number }",
+          "description": "Metadata about the transformation that was applied."
+        }
+      ]
+    }
+  ],
+  "events": [],
+  "actions": [
+    {
+      "name": "transform",
+      "params": [
+        {
+          "name": "data",
+          "type": "unknown",
+          "description": "The input JSON data."
+        },
+        {
+          "name": "rules",
+          "type": "TransformRule[]",
+          "description": "Array of transformation rules to apply sequentially."
+        }
+      ],
+      "returns": "TransformResult",
+      "description": "Apply a sequence of transformation rules to the input data."
+    },
+    {
+      "name": "map",
+      "params": [
+        {
+          "name": "data",
+          "type": "Record<string, unknown>",
+          "description": "The input object."
+        },
+        {
+          "name": "mapping",
+          "type": "Record<string, string>",
+          "description": "A mapping of output field names to JSONPath expressions on the input."
+        }
+      ],
+      "returns": "Record<string, unknown>",
+      "description": "Map fields from input to output using JSONPath expressions."
+    },
+    {
+      "name": "filter",
+      "params": [
+        {
+          "name": "data",
+          "type": "unknown[]",
+          "description": "Array of items to filter."
+        },
+        {
+          "name": "predicate",
+          "type": "FilterPredicate",
+          "description": "Filter condition (field, operator, value)."
+        }
+      ],
+      "returns": "unknown[]",
+      "description": "Filter an array of objects based on a predicate."
+    },
+    {
+      "name": "flatten",
+      "params": [
+        {
+          "name": "data",
+          "type": "Record<string, unknown>",
+          "description": "Nested object to flatten."
+        },
+        {
+          "name": "separator",
+          "type": "string",
+          "description": "Separator for flattened keys.",
+          "default": ".",
+          "required": false
+        }
+      ],
+      "returns": "Record<string, unknown>",
+      "description": "Flatten a nested object into a single-level object with dot-separated keys."
+    },
+    {
+      "name": "merge",
+      "params": [
+        {
+          "name": "objects",
+          "type": "Record<string, unknown>[]",
+          "description": "Array of objects to deep-merge."
+        }
+      ],
+      "returns": "Record<string, unknown>",
+      "description": "Deep-merge multiple objects. Later objects override earlier ones for scalar values; arrays are concatenated."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "transformedData",
+        "compatibleWith": [
+          "@radzor/data-validator.action.validate.data",
+          "@radzor/csv-export.action.generate.data",
+          "@radzor/embeddings-store.action.add.text"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Pure computation — no network calls, no API keys. Runs in any JavaScript/Python environment. JSONPath implementation covers common expressions but not the full JSONPath spec."
+  }
+}

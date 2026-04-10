@@ -127,7 +127,25 @@
     "packages": {},
     "radzor": []
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "tweetResult",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ],
+        "mapField": "tweetId"
+      },
+      {
+        "event": "onError",
+        "description": "Track Twitter posting errors",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

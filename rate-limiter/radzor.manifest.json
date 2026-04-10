@@ -155,10 +155,28 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onBlocked",
+        "description": "Log rate-limited requests for security monitoring",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.warn.message",
+          "@radzor/event-tracker.action.track.eventName"
+        ]
+      },
+      {
+        "output": "rateLimitResult",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message"
+        ],
+        "mapField": "allowed"
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "In-memory only \u2014 rate limits reset on process restart. For distributed systems, use an external store (Redis). Automatic cleanup prevents memory leaks."
+    "constraints": "In-memory only — rate limits reset on process restart. For distributed systems, use an external store (Redis). Automatic cleanup prevents memory leaks."
   }
 }

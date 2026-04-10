@@ -1,0 +1,215 @@
+{
+  "radzor": "1.0.0",
+  "name": "@radzor/video-transcode",
+  "version": "0.1.0",
+  "description": "Transcode video files between formats using FFmpeg subprocess. Supports format conversion, resolution scaling, codec selection, thumbnail extraction, and progress reporting.",
+  "languages": [
+    "typescript",
+    "python"
+  ],
+  "category": "media",
+  "runtime": "server",
+  "tags": [
+    "video",
+    "transcode",
+    "ffmpeg",
+    "media",
+    "conversion",
+    "encoding"
+  ],
+  "inputs": [
+    {
+      "name": "ffmpegPath",
+      "type": "string",
+      "default": "ffmpeg",
+      "description": "Path to the ffmpeg binary.",
+      "required": false
+    },
+    {
+      "name": "ffprobePath",
+      "type": "string",
+      "default": "ffprobe",
+      "description": "Path to the ffprobe binary for metadata extraction.",
+      "required": false
+    },
+    {
+      "name": "outputDir",
+      "type": "string",
+      "description": "Default output directory for transcoded files.",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "name": "transcodeResult",
+      "type": "TranscodeResult",
+      "description": "Result of a transcode operation.",
+      "fields": [
+        {
+          "name": "outputPath",
+          "type": "string",
+          "description": "Path to the transcoded output file."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "description": "Duration of the output file in seconds."
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "description": "Container format of the output (e.g. mp4, webm)."
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "description": "File size in bytes."
+        },
+        {
+          "name": "codec",
+          "type": "string",
+          "description": "Video codec used (e.g. h264, vp9)."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "onTranscodeComplete",
+      "payload": {
+        "inputPath": "string",
+        "outputPath": "string",
+        "duration": "number"
+      },
+      "description": "Fired when a transcode operation completes successfully."
+    },
+    {
+      "name": "onTranscodeFailed",
+      "payload": {
+        "inputPath": "string",
+        "error": "string",
+        "exitCode": "number"
+      },
+      "description": "Fired when a transcode operation fails."
+    },
+    {
+      "name": "onProgress",
+      "payload": {
+        "inputPath": "string",
+        "percent": "number",
+        "fps": "number",
+        "speed": "string"
+      },
+      "description": "Fired periodically during transcoding with progress information."
+    }
+  ],
+  "actions": [
+    {
+      "name": "transcode",
+      "params": [
+        {
+          "name": "inputPath",
+          "type": "string",
+          "description": "Path to the input video file."
+        },
+        {
+          "name": "outputPath",
+          "type": "string",
+          "description": "Path for the output file."
+        },
+        {
+          "name": "options",
+          "type": "TranscodeOptions",
+          "description": "Transcoding options (codec, resolution, bitrate, etc.).",
+          "required": false
+        }
+      ],
+      "returns": "Promise<TranscodeResult>",
+      "description": "Transcode a video file with the specified options."
+    },
+    {
+      "name": "getProgress",
+      "params": [
+        {
+          "name": "jobId",
+          "type": "string",
+          "description": "ID of the transcode job."
+        }
+      ],
+      "returns": "ProgressInfo | null",
+      "description": "Get the current progress of a running transcode job."
+    },
+    {
+      "name": "extractThumbnail",
+      "params": [
+        {
+          "name": "inputPath",
+          "type": "string",
+          "description": "Path to the video file."
+        },
+        {
+          "name": "outputPath",
+          "type": "string",
+          "description": "Path for the output thumbnail image."
+        },
+        {
+          "name": "timestamp",
+          "type": "number",
+          "description": "Time position in seconds for the thumbnail.",
+          "required": false
+        }
+      ],
+      "returns": "Promise<string>",
+      "description": "Extract a thumbnail image from a video file."
+    },
+    {
+      "name": "getMetadata",
+      "params": [
+        {
+          "name": "inputPath",
+          "type": "string",
+          "description": "Path to the video file."
+        }
+      ],
+      "returns": "Promise<VideoMetadata>",
+      "description": "Get metadata (duration, resolution, codec, etc.) from a video file."
+    }
+  ],
+  "dependencies": {
+    "packages": {},
+    "radzor": []
+  },
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "transcodeResult",
+        "compatibleWith": [
+          "@radzor/s3-upload.action.upload.key",
+          "@radzor/file-upload.action.upload.data"
+        ],
+        "mapField": "outputPath"
+      },
+      {
+        "event": "onTranscodeComplete",
+        "description": "Upload transcoded video to storage",
+        "compatibleWith": [
+          "@radzor/s3-upload.action.upload.key",
+          "@radzor/notification-hub.action.send.body"
+        ]
+      },
+      {
+        "event": "onTranscodeFailed",
+        "description": "Alert on transcode failure",
+        "compatibleWith": [
+          "@radzor/error-tracker.action.captureMessage.message",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ]
+      }
+    ]
+  },
+  "llm": {
+    "integrationPrompt": "llm/integration.md",
+    "usageExamples": "llm/examples.md",
+    "constraints": "Requires FFmpeg and FFprobe binaries installed on the system. Server-only (uses child_process). Transcode jobs are in-memory; progress is lost on process restart. Large files may take significant time and disk space."
+  }
+}

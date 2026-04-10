@@ -128,10 +128,28 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onEvicted",
+        "description": "Log cache evictions for capacity monitoring",
+        "compatibleWith": [
+          "@radzor/log-aggregator.action.info.message",
+          "@radzor/event-tracker.action.track.eventName"
+        ]
+      },
+      {
+        "event": "onMiss",
+        "description": "Track cache misses for optimization",
+        "compatibleWith": [
+          "@radzor/event-tracker.action.track.eventName"
+        ]
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "No external dependencies. In-memory only \u2014 cache is lost on process restart. Set maxSize to prevent memory leaks. TTL is in milliseconds."
+    "constraints": "No external dependencies. In-memory only — cache is lost on process restart. Set maxSize to prevent memory leaks. TTL is in milliseconds."
   }
 }
