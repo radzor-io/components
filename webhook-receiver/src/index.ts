@@ -85,7 +85,15 @@ export class WebhookReceiver {
       throw new Error("Webhook signature verification failed");
     }
 
-    const parsed = JSON.parse(body);
+    let parsed: any;
+    try {
+      parsed = JSON.parse(body);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.emit("onError", { code: "PARSE_ERROR", message });
+      throw err;
+    }
+
     const result: WebhookPayload = {
       eventType: parsed.type ?? parsed.event ?? parsed.event_type ?? "unknown",
       data: parsed.data ?? parsed,
@@ -134,7 +142,15 @@ export class WebhookReceiver {
       throw new Error("Stripe webhook signature verification failed");
     }
 
-    const parsed = JSON.parse(payload);
+    let parsed: any;
+    try {
+      parsed = JSON.parse(payload);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.emit("onError", { code: "PARSE_ERROR", message });
+      throw err;
+    }
+
     const result: WebhookPayload = {
       eventType: parsed.type,
       data: parsed.data?.object ?? parsed.data,

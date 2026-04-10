@@ -27,7 +27,7 @@ export interface ErrorEvent {
 
 export type EventMap = {
   onGenerated: GeneratedEvent;
-  onDecoded: { data: string };
+  onDecoded: { data: string; format: string };
   onError: ErrorEvent;
 };
 
@@ -458,13 +458,25 @@ export class QrCode {
    * Note: Decoding requires image processing. Install @zxing/library or
    * use an external service. This method throws a descriptive error.
    */
-  async decode(_input: Buffer | string): Promise<string> {
-    const err = new Error(
-      "QR code decoding requires image processing capabilities not available in a zero-dependency context. " +
-      "Install @zxing/library (npm install @zxing/library) or use an external decode API."
-    );
-    this.emit("onError", { code: "DECODE_UNSUPPORTED", message: err.message });
-    throw err;
+  async decode(input: Buffer | string): Promise<string> {
+    try {
+      const _buffer = typeof input === "string" ? await fs.readFile(input) : input;
+
+      // Full decoding requires image processing capabilities.
+      // When a decoder is available, the result would be emitted here:
+      // const data = await decoderLibrary.decode(_buffer);
+      // this.emit("onDecoded", { data, format: "qr_code" });
+      // return data;
+
+      throw new Error(
+        "QR code decoding requires image processing capabilities not available in a zero-dependency context. " +
+        "Install @zxing/library (npm install @zxing/library) or use an external decode API."
+      );
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.emit("onError", { code: "DECODE_UNSUPPORTED", message });
+      throw err;
+    }
   }
 }
 

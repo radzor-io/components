@@ -88,12 +88,14 @@ export class DiscordBot {
 
       if (res.status === 204) return;
       const data = await res.json();
-      return {
+      const message = {
         id: data.id,
         channelId: data.channel_id,
         content: data.content ?? "",
         authorId: data.author?.id ?? "",
       };
+      this.emit("onMessage", { channelId: message.channelId, content: message.content, authorId: message.authorId });
+      return message;
     } catch (err: any) {
       this.emit("onError", { code: "API_ERROR", message: err.message });
       throw err;

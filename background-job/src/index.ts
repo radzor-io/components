@@ -1,3 +1,4 @@
+// @radzor/background-job — Persistent job queue with retries and scheduling
 import PgBoss from "pg-boss";
 
 export interface BackgroundJobConfig {

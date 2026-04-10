@@ -1,3 +1,4 @@
+// @radzor/vector-search — Vector embedding storage and semantic search
 import { Pinecone } from "@pinecone-database/pinecone";
 
 export interface VectorSearchConfig {

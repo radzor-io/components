@@ -125,17 +125,29 @@ export class CacheStore<T = unknown> {
   getOrSet(key: string, factory: () => T, ttl?: number): T {
     const cached = this.get(key);
     if (cached !== undefined) return cached;
-    const value = factory();
-    this.set(key, value, ttl);
-    return value;
+    try {
+      const value = factory();
+      this.set(key, value, ttl);
+      return value;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.emit("onError", { code: "FACTORY_ERROR", message });
+      throw err;
+    }
   }
 
   async getOrSetAsync(key: string, factory: () => Promise<T>, ttl?: number): Promise<T> {
     const cached = this.get(key);
     if (cached !== undefined) return cached;
-    const value = await factory();
-    this.set(key, value, ttl);
-    return value;
+    try {
+      const value = await factory();
+      this.set(key, value, ttl);
+      return value;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.emit("onError", { code: "FACTORY_ERROR", message });
+      throw err;
+    }
   }
 
   private evictLru(): void {

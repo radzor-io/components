@@ -96,13 +96,19 @@ export class RateLimiter {
     const fullKey = this.config.keyPrefix ? `${this.config.keyPrefix}:${key}` : key;
 
     let result: RateLimitResult;
-    switch (this.config.algorithm) {
-      case "token-bucket":
-        result = this.consumeTokenBucket(fullKey);
-        break;
-      case "sliding-window":
-        result = this.consumeSlidingWindow(fullKey);
-        break;
+    try {
+      switch (this.config.algorithm) {
+        case "token-bucket":
+          result = this.consumeTokenBucket(fullKey);
+          break;
+        case "sliding-window":
+          result = this.consumeSlidingWindow(fullKey);
+          break;
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.emit("onError", { code: "CONSUME_ERROR", message });
+      throw err;
     }
 
     if (result.allowed) {

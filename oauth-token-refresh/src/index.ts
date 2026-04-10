@@ -1,3 +1,4 @@
+// @radzor/oauth-token-refresh — Automatic OAuth 2.0 token refresh
 export interface OAuthTokenRefreshConfig {
   clientId: string;
   clientSecret: string;

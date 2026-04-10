@@ -1,3 +1,4 @@
+// @radzor/image-transform — High-performance image resize, crop, and convert
 import sharp from "sharp";
 
 export interface ImageTransformConfig {

@@ -69,7 +69,12 @@ export class CronScheduler {
       const multipliers: Record<string, number> = { s: 1000, m: 60000, h: 3600000 };
       entry.intervalMs = value * multipliers[unit];
     } else {
-      entry.cronFields = this.parseCron(expression);
+      try {
+        entry.cronFields = this.parseCron(expression);
+      } catch (err: any) {
+        this.emit("onError", { code: "INVALID_CRON", message: err.message });
+        throw err;
+      }
     }
 
     this.jobs.set(jobId, entry);

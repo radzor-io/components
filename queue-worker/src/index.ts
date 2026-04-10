@@ -124,6 +124,7 @@ export class QueueWorker<T = unknown> {
         job.status = "failed";
         this.deadLetter.push(job);
         this.emit("onJobFailed", job as unknown as Job);
+        this.emit("onError", { code: "JOB_FAILED", message: `Job ${job.id} failed after ${job.attempts} attempts: ${message}` });
       }
     } finally {
       this.activeCount--;

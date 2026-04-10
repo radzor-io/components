@@ -1,3 +1,4 @@
+// @radzor/csv-import — Parse, validate, and batch-import CSV files
 import { parse } from "csv-parse";
 import { Readable } from "stream";
 

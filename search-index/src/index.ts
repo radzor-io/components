@@ -1,3 +1,4 @@
+// @radzor/search-index — Full-text search with facets and typo-tolerance
 import { MeiliSearch } from "meilisearch";
 
 export interface SearchIndexConfig {
