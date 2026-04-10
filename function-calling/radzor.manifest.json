@@ -146,8 +146,7 @@
         "output": "finalResponse",
         "compatibleWith": [
           "@radzor/llm-completion.action.complete.prompt"
-        ],
-        "mapField": "result"
+        ]
       }
     ]
   },

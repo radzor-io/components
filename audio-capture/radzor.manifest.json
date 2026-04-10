@@ -103,9 +103,8 @@
       },
       {
         "output": "audioStream",
-        "compatibleWith": [
-          "@radzor/audio-visualizer.input.audioStream"
-        ]
+        "compatibleWith": [],
+        "note": "No compatible consumer component exists yet for raw audio streams."
       }
     ]
   },

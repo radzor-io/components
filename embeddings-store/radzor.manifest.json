@@ -49,7 +49,13 @@
     {
       "name": "searchResults",
       "type": "SearchResult[]",
-      "description": "Ranked results with similarity scores."
+      "description": "Ranked results with similarity scores.",
+      "fields": [
+        { "name": "id", "type": "string" },
+        { "name": "text", "type": "string" },
+        { "name": "score", "type": "number" },
+        { "name": "metadata", "type": "Record<string, any>" }
+      ]
     }
   ],
   "events": [
@@ -142,7 +148,7 @@
         "compatibleWith": [
           "@radzor/llm-completion.action.complete.prompt"
         ],
-        "mapField": "content"
+        "mapField": "text"
       }
     ]
   },

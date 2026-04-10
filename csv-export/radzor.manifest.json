@@ -111,7 +111,7 @@
   "composability": {
     "connectsTo": [
       {
-        "output": "csvBuffer",
+        "output": "csvString",
         "compatibleWith": [
           "@radzor/file-upload.action.upload.data",
           "@radzor/email-send.action.send.message"

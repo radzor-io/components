@@ -69,7 +69,12 @@
     {
       "name": "searchResults",
       "type": "SearchResult[]",
-      "description": "Array of matched documents with id, score, and metadata."
+      "description": "Array of matched documents with id, score, and metadata.",
+      "fields": [
+        { "name": "id", "type": "string" },
+        { "name": "score", "type": "number" },
+        { "name": "metadata", "type": "Record<string, unknown>" }
+      ]
     },
     {
       "name": "indexStats",
@@ -217,8 +222,7 @@
         "output": "searchResults",
         "compatibleWith": [
           "@radzor/llm-completion.action.complete.prompt"
-        ],
-        "mapField": "content"
+        ]
       }
     ]
   },

@@ -190,15 +190,7 @@
     "packages": {}
   },
   "composability": {
-    "connectsTo": [
-      {
-        "output": "messageResult",
-        "compatibleWith": [
-          "@radzor/llm-completion.action.complete.prompt"
-        ],
-        "mapField": "content"
-      }
-    ]
+    "connectsTo": []
   },
   "llm": {
     "integrationPrompt": "llm/integration.md",

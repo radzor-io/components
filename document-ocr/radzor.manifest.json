@@ -58,12 +58,22 @@
     {
       "name": "extractionResult",
       "type": "{ text: string; pages: number; confidence: number }",
-      "description": "Extracted text, page count, and average confidence score."
+      "description": "Extracted text, page count, and average confidence score.",
+      "fields": [
+        { "name": "text", "type": "string" },
+        { "name": "pages", "type": "number" },
+        { "name": "confidence", "type": "number" }
+      ]
     },
     {
       "name": "structuredData",
       "type": "{ tables: object[][]; fields: Record<string, string>; lines: string[] }",
-      "description": "Structured extraction result with tables, form fields, and individual text lines."
+      "description": "Structured extraction result with tables, form fields, and individual text lines.",
+      "fields": [
+        { "name": "tables", "type": "object[][]" },
+        { "name": "fields", "type": "Record<string, string>" },
+        { "name": "lines", "type": "string[]" }
+      ]
     }
   ],
   "events": [
@@ -139,7 +149,7 @@
         "compatibleWith": [
           "@radzor/llm-completion.action.complete.prompt",
           "@radzor/search-index.action.index.documents",
-          "@radzor/embeddings-store.action.add.id"
+          "@radzor/embeddings-store.action.add.text"
         ],
         "mapField": "text"
       }

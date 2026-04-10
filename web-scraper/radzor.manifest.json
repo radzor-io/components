@@ -127,10 +127,10 @@
         "compatibleWith": [
           "@radzor/search-index.action.index.documents",
           "@radzor/llm-completion.action.complete.prompt",
-          "@radzor/embeddings-store.action.add.id",
+          "@radzor/embeddings-store.action.add.text",
           "@radzor/structured-output.action.extract.text"
         ],
-        "mapField": "text"
+        "mapField": "html"
       }
     ]
   },

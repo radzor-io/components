@@ -38,7 +38,8 @@ const dirs = fs
       !d.startsWith(".") &&
       d !== "scripts" &&
       d !== "node_modules" &&
-      d !== "spec"
+      d !== "spec" &&
+      d !== "test"
     );
   })
   .sort();
