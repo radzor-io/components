@@ -154,6 +154,16 @@
         "compatibleWith": [
           "@radzor/file-upload.action.upload.data"
         ]
+      },
+      {
+        "output": "screenshotBuffer",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/slack-bot.action.uploadFile.content",
+          "@radzor/image-resize.action.resize.input",
+          "@radzor/image-transform.action.resize.input"
+        ],
+        "description": "Share, email, or transform screenshots."
       }
     ]
   },

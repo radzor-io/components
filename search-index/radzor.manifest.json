@@ -197,10 +197,21 @@
       "meilisearch": "^0.44.0"
     }
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "searchResults",
+        "compatibleWith": [
+          "@radzor/llm-completion.action.complete.prompt",
+          "@radzor/csv-export.action.generate.data"
+        ],
+        "description": "Feed search results to LLM or export them."
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Requires a running Meilisearch or Typesense instance \u2014 not a managed SaaS. Indexing is async in Meilisearch (tasks complete in background). Always set searchableFields and filterableFields before indexing data to avoid full re-indexing."
+    "constraints": "Requires a running Meilisearch or Typesense instance — not a managed SaaS. Indexing is async in Meilisearch (tasks complete in background). Always set searchableFields and filterableFields before indexing data to avoid full re-indexing."
   }
 }

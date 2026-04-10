@@ -147,6 +147,17 @@
         "compatibleWith": [
           "@radzor/llm-completion.action.complete.prompt"
         ]
+      },
+      {
+        "output": "finalResponse",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/text-to-speech.action.synthesize.text",
+          "@radzor/structured-output.action.extract.text",
+          "@radzor/markdown-render.action.render.markdown"
+        ],
+        "description": "Route agent's final response to notifications, TTS, or structured extraction."
       }
     ]
   },

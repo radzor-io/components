@@ -159,7 +159,18 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onMessage",
+        "compatibleWith": [
+          "@radzor/llm-completion.action.complete.prompt",
+          "@radzor/structured-output.action.extract.text"
+        ],
+        "description": "Feed chat messages to LLM for AI chatbot or structured extraction."
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

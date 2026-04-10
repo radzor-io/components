@@ -131,6 +131,15 @@
           "@radzor/structured-output.action.extract.text"
         ],
         "mapField": "html"
+      },
+      {
+        "output": "scrapeResult",
+        "compatibleWith": [
+          "@radzor/csv-export.action.generate.data",
+          "@radzor/pdf-generate.action.fromHtml.html"
+        ],
+        "mapField": "data",
+        "description": "Export scraped data to CSV or generate PDF from HTML."
       }
     ]
   },

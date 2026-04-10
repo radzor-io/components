@@ -230,6 +230,15 @@
         "compatibleWith": [
           "@radzor/session-manager.action.create.data"
         ]
+      },
+      {
+        "event": "onLogin",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/event-bus.action.publish.payload"
+        ],
+        "description": "Notify on new user login/signup."
       }
     ]
   },

@@ -152,6 +152,16 @@
         "compatibleWith": [
           "@radzor/file-upload.action.upload.data"
         ]
+      },
+      {
+        "output": "generationResult",
+        "compatibleWith": [
+          "@radzor/image-resize.action.resize.input",
+          "@radzor/email-send.action.send.message",
+          "@radzor/slack-bot.action.uploadFile.content",
+          "@radzor/telegram-bot.action.sendPhoto.photo"
+        ],
+        "description": "Process, share, or send AI-generated images."
       }
     ]
   },

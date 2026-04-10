@@ -156,7 +156,18 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "qrBuffer",
+        "compatibleWith": [
+          "@radzor/file-upload.action.upload.data",
+          "@radzor/email-send.action.send.message"
+        ],
+        "description": "Upload or email QR codes."
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

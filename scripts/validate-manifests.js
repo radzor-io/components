@@ -243,10 +243,14 @@ for (const dir of dirs) {
     if (!Array.isArray(manifest.composability.connectsTo)) {
       errors.push(`${prefix} composability.connectsTo must be an array`);
     } else {
-      const allowedConn = ["output", "compatibleWith", "runtime", "note", "mapField"];
+      const allowedConn = ["output", "event", "compatibleWith", "runtime", "note", "mapField", "description"];
       manifest.composability.connectsTo.forEach((conn, i) => {
-        if (!conn.output) errors.push(`${prefix} composability.connectsTo[${i}] missing output`);
+        if (!conn.output && !conn.event) errors.push(`${prefix} composability.connectsTo[${i}] missing output or event`);
+        if (conn.output && conn.event) errors.push(`${prefix} composability.connectsTo[${i}] cannot have both output and event`);
         if (!conn.compatibleWith) errors.push(`${prefix} composability.connectsTo[${i}] missing compatibleWith`);
+        if (conn.event && !/^on[A-Z][a-zA-Z]*$/.test(conn.event)) {
+          errors.push(`${prefix} composability.connectsTo[${i}] invalid event name (must match on[A-Z]...): "${conn.event}"`);
+        }
         if (conn.runtime && !["same-process", "cross-environment"].includes(conn.runtime)) {
           errors.push(`${prefix} composability.connectsTo[${i}] invalid runtime: "${conn.runtime}"`);
         }

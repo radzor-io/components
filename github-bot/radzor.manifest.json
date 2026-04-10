@@ -216,7 +216,19 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onIssueCreated",
+        "compatibleWith": [
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/email-send.action.send.message",
+          "@radzor/llm-completion.action.complete.prompt"
+        ],
+        "description": "Notify team or auto-triage issues with LLM."
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

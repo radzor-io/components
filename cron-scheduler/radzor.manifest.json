@@ -120,7 +120,24 @@
     "radzor": []
   },
   "composability": {
-    "connectsTo": []
+    "connectsTo": [
+      {
+        "event": "onJobComplete",
+        "compatibleWith": [
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/email-send.action.send.message"
+        ],
+        "description": "Report scheduled job results."
+      },
+      {
+        "event": "onJobError",
+        "compatibleWith": [
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/email-send.action.send.message"
+        ],
+        "description": "Alert on cron job failure."
+      }
+    ]
   },
   "llm": {
     "integrationPrompt": "llm/integration.md",

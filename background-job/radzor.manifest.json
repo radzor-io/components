@@ -239,10 +239,28 @@
       "pg-boss": "^10.0.0"
     }
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onJobFailed",
+        "compatibleWith": [
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/email-send.action.send.message"
+        ],
+        "description": "Alert team when a background job fails."
+      },
+      {
+        "event": "onJobCompleted",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message"
+        ],
+        "description": "Notify on job completion."
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "Call process() once per queue at application startup, not inside request handlers. Job payloads must be JSON-serializable. pg-boss creates its own schema in PostgreSQL \u2014 no migration needed. BullMQ requires a Redis 6.2+ instance."
+    "constraints": "Call process() once per queue at application startup, not inside request handlers. Job payloads must be JSON-serializable. pg-boss creates its own schema in PostgreSQL — no migration needed. BullMQ requires a Redis 6.2+ instance."
   }
 }

@@ -149,7 +149,22 @@
     "packages": {},
     "radzor": []
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "verifiedPayload",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/event-bus.action.publish.payload",
+          "@radzor/background-job.action.enqueue.payload",
+          "@radzor/push-notification.action.sendToDevice.notification"
+        ],
+        "mapField": "data",
+        "description": "Route verified webhook events to notifications or async processing."
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

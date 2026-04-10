@@ -190,12 +190,22 @@
         "compatibleWith": [
           "@radzor/background-job.action.enqueue.payload"
         ]
+      },
+      {
+        "output": "rows",
+        "compatibleWith": [
+          "@radzor/embeddings-store.action.add.text",
+          "@radzor/search-index.action.index.documents",
+          "@radzor/llm-completion.action.complete.prompt",
+          "@radzor/csv-export.action.generate.data"
+        ],
+        "description": "Feed imported CSV data to embeddings, search, LLM analysis, or re-export."
       }
     ]
   },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",
-    "constraints": "For files over 50MB, always use parseStream() instead of parseBuffer() to avoid memory issues. The schema coercion casts strings to types but does not validate ranges or formats \u2014 add your own business logic after parsing. date fields are coerced with new Date() \u2014 ensure dates are in ISO 8601 or MM/DD/YYYY format."
+    "constraints": "For files over 50MB, always use parseStream() instead of parseBuffer() to avoid memory issues. The schema coercion casts strings to types but does not validate ranges or formats — add your own business logic after parsing. date fields are coerced with new Date() — ensure dates are in ISO 8601 or MM/DD/YYYY format."
   }
 }

@@ -183,6 +183,37 @@
           "@radzor/markdown-render.action.render.markdown"
         ],
         "mapField": "content"
+      },
+      {
+        "output": "completionResult",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/discord-bot.action.sendMessage.content",
+          "@radzor/telegram-bot.action.sendMessage.text",
+          "@radzor/sms-send.action.send.body",
+          "@radzor/push-notification.action.sendToDevice.notification"
+        ],
+        "mapField": "content",
+        "description": "Send LLM-generated text to any notification channel."
+      },
+      {
+        "output": "completionResult",
+        "compatibleWith": [
+          "@radzor/image-generation.action.generate.prompt"
+        ],
+        "mapField": "content",
+        "description": "Use LLM output as image generation prompt."
+      },
+      {
+        "output": "completionResult",
+        "compatibleWith": [
+          "@radzor/pdf-generate.action.fromHtml.html",
+          "@radzor/search-index.action.index.documents",
+          "@radzor/embeddings-store.action.add.text"
+        ],
+        "mapField": "content",
+        "description": "Persist or render LLM output."
       }
     ]
   },

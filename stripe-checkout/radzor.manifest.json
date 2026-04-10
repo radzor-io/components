@@ -186,7 +186,50 @@
       "stripe": "^14.0.0"
     }
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "event": "onPaymentSuccess",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/push-notification.action.sendToDevice.notification",
+          "@radzor/sms-send.action.send.body"
+        ],
+        "description": "Notify customer and team when payment succeeds."
+      },
+      {
+        "event": "onPaymentFailed",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message",
+          "@radzor/slack-bot.action.sendMessage.text"
+        ],
+        "description": "Alert on payment failure."
+      },
+      {
+        "event": "onSubscriptionCreated",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message"
+        ],
+        "description": "Send welcome email for new subscribers."
+      },
+      {
+        "event": "onSubscriptionCanceled",
+        "compatibleWith": [
+          "@radzor/email-send.action.send.message"
+        ],
+        "description": "Send cancellation confirmation."
+      },
+      {
+        "output": "checkoutSession",
+        "compatibleWith": [
+          "@radzor/pdf-generate.action.fromTemplate.data"
+        ],
+        "description": "Generate invoice/receipt PDF from checkout session data.",
+        "mapField": "id"
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

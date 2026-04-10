@@ -136,7 +136,18 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "html",
+        "compatibleWith": [
+          "@radzor/pdf-generate.action.fromHtml.html",
+          "@radzor/email-send.action.send.message"
+        ],
+        "description": "Convert rendered HTML to PDF or email it."
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

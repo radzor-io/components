@@ -135,7 +135,29 @@
   "dependencies": {
     "packages": {}
   },
-  "composability": {},
+  "composability": {
+    "connectsTo": [
+      {
+        "output": "publishResult",
+        "compatibleWith": [
+          "@radzor/slack-bot.action.sendMessage.text",
+          "@radzor/email-send.action.send.message",
+          "@radzor/push-notification.action.sendToDevice.notification",
+          "@radzor/sms-send.action.send.body",
+          "@radzor/discord-bot.action.sendMessage.content",
+          "@radzor/telegram-bot.action.sendMessage.text"
+        ],
+        "description": "Fan-out internal events to notification channels."
+      },
+      {
+        "output": "publishResult",
+        "compatibleWith": [
+          "@radzor/background-job.action.enqueue.payload"
+        ],
+        "description": "Queue events for async processing."
+      }
+    ]
+  },
   "llm": {
     "integrationPrompt": "llm/integration.md",
     "usageExamples": "llm/examples.md",

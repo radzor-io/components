@@ -60,9 +60,18 @@
       "type": "{ text: string; pages: number; confidence: number }",
       "description": "Extracted text, page count, and average confidence score.",
       "fields": [
-        { "name": "text", "type": "string" },
-        { "name": "pages", "type": "number" },
-        { "name": "confidence", "type": "number" }
+        {
+          "name": "text",
+          "type": "string"
+        },
+        {
+          "name": "pages",
+          "type": "number"
+        },
+        {
+          "name": "confidence",
+          "type": "number"
+        }
       ]
     },
     {
@@ -70,9 +79,18 @@
       "type": "{ tables: object[][]; fields: Record<string, string>; lines: string[] }",
       "description": "Structured extraction result with tables, form fields, and individual text lines.",
       "fields": [
-        { "name": "tables", "type": "object[][]" },
-        { "name": "fields", "type": "Record<string, string>" },
-        { "name": "lines", "type": "string[]" }
+        {
+          "name": "tables",
+          "type": "object[][]"
+        },
+        {
+          "name": "fields",
+          "type": "Record<string, string>"
+        },
+        {
+          "name": "lines",
+          "type": "string[]"
+        }
       ]
     }
   ],
@@ -152,6 +170,21 @@
           "@radzor/embeddings-store.action.add.text"
         ],
         "mapField": "text"
+      },
+      {
+        "output": "extractionResult",
+        "compatibleWith": [
+          "@radzor/structured-output.action.extract.text"
+        ],
+        "mapField": "text",
+        "description": "Extract structured fields (invoices, forms) from OCR'd text."
+      },
+      {
+        "output": "structuredData",
+        "compatibleWith": [
+          "@radzor/csv-export.action.generate.data"
+        ],
+        "description": "Export OCR'd tables directly to CSV."
       }
     ]
   },
